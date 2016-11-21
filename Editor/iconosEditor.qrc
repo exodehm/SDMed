@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/dibujos">
+        <file>iconos/backward.png</file>
+        <file>iconos/copy.png</file>
+        <file>iconos/cut.png</file>
+        <file>iconos/default.png</file>
+        <file>iconos/floppy.png</file>
+        <file>iconos/forward.png</file>
+        <file>iconos/opened.png</file>
+        <file>iconos/paste.png</file>
+        <file>iconos/textdocument.png</file>
+        <file>iconos/alinear_derecha.png</file>
+        <file>iconos/alinear_izquierda.png</file>
+        <file>iconos/centrado.png</file>
+        <file>iconos/justificar.png</file>
+        <file>iconos/cursiva.png</file>
+        <file>iconos/negrita.png</file>
+        <file>iconos/color_letra.png</file>
+        <file>iconos/color_fondo.png</file>
+        <file>iconos/fuente.png</file>
+        <file>iconos/App-package-graphics-icon.png</file>
+    </qresource>
+</RCC>

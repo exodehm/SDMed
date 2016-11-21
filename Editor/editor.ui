@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Editor</class>
+ <widget class="QMainWindow" name="Editor">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>582</width>
+    <height>414</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>URW Gothic L</family>
+    <italic>true</italic>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Texto</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="font">
+       <font>
+        <family>URW Gothic L</family>
+        <pointsize>8</pointsize>
+        <italic>true</italic>
+       </font>
+      </property>
+      <property name="tabChangesFocus">
+       <bool>false</bool>
+      </property>
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'URW Gothic L'; font-size:8pt; font-weight:400; font-style:italic;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans'; font-size:9pt; font-style:normal;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="BarraEstado"/>
+  <widget class="QToolBar" name="BarraHerramientas">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNegrita"/>
+   <addaction name="actionCursiva"/>
+   <addaction name="separator"/>
+   <addaction name="action_Copiar"/>
+   <addaction name="actionCut"/>
+   <addaction name="actionPaste"/>
+   <addaction name="separator"/>
+   <addaction name="action_Undo"/>
+   <addaction name="actionRedo"/>
+   <addaction name="separator"/>
+   <addaction name="actionFuente"/>
+   <addaction name="actionColor_Letra"/>
+   <addaction name="actionColor_Fondo"/>
+   <addaction name="separator"/>
+   <addaction name="actionJustificar"/>
+   <addaction name="actionDerecha"/>
+   <addaction name="actionIzquierda"/>
+   <addaction name="actionCentrar"/>
+  </widget>
+  <action name="action_Quit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_Undo">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/backward.png</normaloff>:/dibujos/iconos/backward.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="action_Copiar">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/copy.png</normaloff>:/dibujos/iconos/copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/cut.png</normaloff>:/dibujos/iconos/cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/paste.png</normaloff>:/dibujos/iconos/paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionInfo">
+   <property name="text">
+    <string>Info</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/forward.png</normaloff>:/dibujos/iconos/forward.png</iconset>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="actionFuente">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/fuente.png</normaloff>:/dibujos/iconos/fuente.png</iconset>
+   </property>
+   <property name="text">
+    <string>Fuente</string>
+   </property>
+  </action>
+  <action name="actionColor_Letra">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/color_letra.png</normaloff>:/dibujos/iconos/color_letra.png</iconset>
+   </property>
+   <property name="text">
+    <string>Color Letra</string>
+   </property>
+  </action>
+  <action name="actionColor_Fondo">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/color_fondo.png</normaloff>:/dibujos/iconos/color_fondo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Color Fondo</string>
+   </property>
+  </action>
+  <action name="actionJustificar">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/justificar.png</normaloff>:/dibujos/iconos/justificar.png</iconset>
+   </property>
+   <property name="text">
+    <string>Justificar</string>
+   </property>
+  </action>
+  <action name="actionDerecha">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/alinear_derecha.png</normaloff>:/dibujos/iconos/alinear_derecha.png</iconset>
+   </property>
+   <property name="text">
+    <string>Derecha</string>
+   </property>
+  </action>
+  <action name="actionIzquierda">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/alinear_izquierda.png</normaloff>:/dibujos/iconos/alinear_izquierda.png</iconset>
+   </property>
+   <property name="text">
+    <string>Izquierda</string>
+   </property>
+  </action>
+  <action name="actionCentrar">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/centrado.png</normaloff>:/dibujos/iconos/centrado.png</iconset>
+   </property>
+   <property name="text">
+    <string>Centrar</string>
+   </property>
+  </action>
+  <action name="actionNegrita">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/negrita.png</normaloff>:/dibujos/iconos/negrita.png</iconset>
+   </property>
+   <property name="text">
+    <string>Negrita</string>
+   </property>
+  </action>
+  <action name="actionCursiva">
+   <property name="icon">
+    <iconset resource="iconosEditor.qrc">
+     <normaloff>:/dibujos/iconos/cursiva.png</normaloff>:/dibujos/iconos/cursiva.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cursiva</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="iconosEditor.qrc"/>
+ </resources>
+ <connections/>
+</ui>
