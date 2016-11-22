@@ -35,12 +35,12 @@ void Concepto::anadirConcepto()
     TEXTO C;
     TEXTO R;
     float P;
-    std::cout<<"Introduce código: "<<std::endl;
+    /*std::cout<<"Introduce código: "<<std::endl;
     std::cin>>C;
     std::cout<<"Introduce resúmen: "<<std::endl;
     std::cin>>R;
     std::cout<<"Introduce precio: "<<std::endl;
-    std::cin>>P;
+    std::cin>>P;*/
     Codigo=C;
     Resumen=R;
     Importe[MEDICION]=P;
@@ -58,7 +58,7 @@ const TEXTO Concepto::LeeResumen() const
 
 const TEXTO Concepto::LeeUd() const
 {
-    return U.LeeUd();
+    return QString::fromStdString(U.LeeUd());
 }
 
 int Concepto::LeeNUd() const
@@ -73,7 +73,7 @@ int Concepto::LeeNUd() const
 
 const TEXTO Concepto::LeeFecha() const
 {
-    return fecha.LeeFecha();
+    //return fecha.LeeFecha();
 }
 
 const float Concepto::LeeImportePres() const
@@ -133,12 +133,14 @@ bool Concepto::esPrecioBloqueado()
 
 void Concepto::EscribeCodigo (TEXTO C)
 {
-    Codigo = C.substr (0,AnchoCodigo);//limito el codigo a 10 caracteres
+    C.truncate(AnchoCodigo);//limito el codigo a 10 caracteres
+    Codigo = C;
 }
 
 void Concepto::EscribeResumen (TEXTO R)
 {
-    Resumen = R.substr(0,AnchoResumen);//limito el resumen a 50 caracteres
+    R.truncate(AnchoResumen);//limito el resumen a 50 caracteres
+    Resumen = R;
 }
 
 void Concepto::EscribePrecio(float P)
@@ -169,8 +171,8 @@ void Concepto::desbloquearPrecio()
 
 void Concepto::EscribeUd(TEXTO ud)
 {
-    ud=ud.substr(0,2);
-    U.EscribeUd(ud);
+    /*ud=ud.substr(0,2);
+    U.EscribeUd(ud);*/
 }
 
 void Concepto::EscribeUd(int numUd)

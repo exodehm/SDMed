@@ -6,7 +6,7 @@ Obra::Obra(TEXTO Cod, TEXTO Res, int ud, int CuadroDePrecios):G(),Codificacion(C
 {
     Concepto* conceptoRaiz=new Concepto(Cod,ud,Res);
     IniciarObra(*conceptoRaiz);
-    std::cout<<"Iniciada la obra con "<<LeeCodigoObra()<<std::endl;
+    std::cout<<"Iniciada la obra con "<<LeeCodigoObra().toStdString()<<std::endl;
 }
 
 Obra::Obra(Concepto conceptoRaiz)
@@ -60,18 +60,8 @@ void Obra::IniciarObra (Concepto conceptoRaiz)
 
 void Obra::CrearPartida (TEXTO CodPadre, float cantidad, TEXTO CodHijo)
 {
-    pNodo padre = existeConcepto(CodPadre);
-    pNodo hijo = existeConcepto(CodHijo);
-    if (!padre)
-    {
-        padre = new t_nodo(CodPadre);
-    }
-    if (!hijo)
-    {
-        hijo  = new t_nodo(CodHijo);
-    }
-    pArista relacion=new arista<MedCert,Concepto>(cantidad);
-    G.Insertar(padre, hijo, relacion);
+    MedCert m(cantidad);
+    CrearPartida(CodPadre,m,CodHijo);
 }
 
 void Obra::CrearPartida (TEXTO CodPadre, MedCert med, TEXTO CodHijo)
@@ -100,7 +90,7 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
     pNodo nuevoNodo = existeConcepto(Cod);
     if (!nuevoNodo)
     {
-        if (Cod.find('%')!=std::string::npos)
+        if (Cod.contains("%"))
         {
             ud=Unidad::porcentaje;
             N=AsignadorDeNaturaleza::Sin_clasificar;
@@ -116,7 +106,7 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
             }
             else
             {
-                N=Codificacion.AsignarNaturalezaSegunCuadro(Cod);
+                N=Codificacion.AsignarNaturalezaSegunCuadro(Cod.toStdString());
             }
             /***si la naturaleza del concepto es maquinaria o mano de obra podemos asignar
             de forma automatica la unidad a la hora**/
@@ -246,7 +236,7 @@ void Obra::HijoSiguiente()
     if (aristaActual && aristaActual->siguiente)
     {
         aristaActual=aristaActual->siguiente;
-        std::cout<<aristaActual->destino->datonodo.LeeResumen()<<std::endl;
+        //std::cout<<aristaActual->destino->datonodo.LeeResumen()<<std::endl;
     }
 }
 
@@ -255,7 +245,7 @@ void Obra::HijoAnterior()
     if (aristaActual && aristaActual->anterior)
     {
         aristaActual=aristaActual->anterior;
-        std::cout<<aristaActual->destino->datonodo.LeeResumen()<<std::endl;
+        //std::cout<<aristaActual->destino->datonodo.LeeResumen()<<std::endl;
     }
 }
 
@@ -336,11 +326,11 @@ void Obra::MostrarHijos()
 
     //texto
     std::cout<<"\n\n"<<padre->datonodo.LeeTexto()<<"\n\n";*/
-    std::list<pNodo> lista = G.recorrerHijos(padre);
-    lista.push_front(padre);
-    for (auto it= lista.begin(); it!=lista.end(); ++it)
+    //ListaNodosAristas lista = G.recorrerHijos(padre);
+    //lista.push_front(padre);
+    //for (auto it= lista.begin(); it!=lista.end(); ++it)
     {
-        std::cout<<(*it)->datonodo.LeeCodigo()<<"|"                              //codigo
+        /*std::cout<<(*it)->datonodo.LeeCodigo()<<"|"                              //codigo
                  <<(*it)->datonodo.LeeNat()<<"|"                                 //naturaleza
                  <<(*it)->datonodo.LeeUd()<<"|"                                  //ud
                  <<(*it)->datonodo.LeeResumen()<<"|"                             //resumen
@@ -355,7 +345,7 @@ void Obra::MostrarHijos()
                  <<(((*it)->datonodo.LeeImporteCert()==0)
                     ? (*it)->datonodo.LeeImporteCert()*1
                     : (*it)->datonodo.LeeImporteCert()*aristaPadre->datoarista.LeeCertificacion().LeeTotal())<<"|"
-                 <<std::endl;
+                 <<std::endl;*/
 
     }
     /***************mediciones*****************/
@@ -363,7 +353,7 @@ void Obra::MostrarHijos()
     aristaPadre->datoarista.Ver();
     /***************texto********************/
     std::cout<<"Texto:"<<std::endl;
-    std::cout<<"\n"<<padre->datonodo.LeeTexto()<<"\n\n";
+    //std::cout<<"\n"<<padre->datonodo.LeeTexto()<<"\n\n";
 }
 
 TEXTO Obra::VerTexto()
@@ -375,14 +365,14 @@ const QList<QStringList>&Obra::VerActual()
 {
     listadoTablaP.clear();
     QStringList lineapadre;
-    lineapadre = RellenaLinea(padre);
+    lineapadre = RellenaLinea(padre, aristaPadre);
     listadoTablaP.append(lineapadre);
 
-    std::list<pNodo> listahijos = G.recorrerHijos(padre);
+    ListaNodosAristas listahijos = G.recorrerHijos(padre);
     QStringList lineahijo;
     for (auto elem:listahijos)
     {
-        lineahijo = RellenaLinea(elem);
+        lineahijo = RellenaLinea(elem.first, elem.second);
         listadoTablaP.append(lineahijo);
         lineahijo.clear();
     }
@@ -393,21 +383,21 @@ void Obra::SumarHijos(pNodo n)
 {
     if (n->adyacente)
     {
-        std::cout<<"Sumando hijos de "<<n->datonodo.LeeCodigo()<<std::endl;
+        //std::cout<<"Sumando hijos de "<<n->datonodo.LeeCodigo()<<std::endl;
         float sumapres=0, sumacert=0;
         float medicion = 0, certificacion = 0;
         float precio = 0;
         pArista aux = n->adyacente;
-        std::list<pNodo> lista = G.recorrerHijos(n);
+        ListaNodosAristas lista = G.recorrerHijos(n);
         for (auto elem : lista)
         {
             medicion = aux->datoarista.LeeMedicion().LeeTotal();
             certificacion = aux->datoarista.LeeCertificacion().LeeTotal();
-            precio = elem->datonodo.LeeImportePres();
+            precio = elem.first->datonodo.LeeImportePres();
             std::cout<<"Precio: "<<precio<<" * Cantidad: "<<medicion<<std::endl;;
-            if (elem->datonodo.LeeCodigo().find('%')!=std::string::npos) //si es un porcentaje
+            if (elem.first->datonodo.LeeCodigo().contains("%")) //si es un porcentaje
             {
-                elem->datonodo.EscribeImportePres(sumapres/100.0);
+                elem.first->datonodo.EscribeImportePres(sumapres/100.0);
             }
             sumapres+=precio * medicion;
             sumacert+=precio * certificacion;
@@ -545,7 +535,7 @@ std::list<TEXTO> Obra::copiarMedicion()
         std::string aux(oss.str());
         listaMediciones.push_back(aux);
     }*/
-    return listaMediciones;
+    //return listaMediciones;
 }
 
 void Obra::inicializarActual()
@@ -655,7 +645,7 @@ void Obra::VerNodos()
     std::list<pNodo> lista = G.recorrerNodos();
     for (auto elem:lista)
     {
-        std::cout<<elem->datonodo.LeeCodigo()<<"-";
+        std::cout<<elem->datonodo.LeeCodigo().toStdString()<<"-";
     }
     std::cout<<std::endl;
 }
@@ -663,11 +653,11 @@ void Obra::VerNodos()
 void Obra::VerArbol()
 {
     std::list<std::pair<pNodo,int>>lista = G.recorrerGrafoConNiveles(G.LeeRaiz());
-    std::cout<<G.LeeRaiz()->datonodo.LeeCodigo()<<std::endl;
+    //std::cout<<G.LeeRaiz()->datonodo.LeeCodigo()<<std::endl;
     for (auto elem : lista)
     {
         std::cout<<std::setw(elem.second*2);
-        std::cout<<elem.first->datonodo.LeeCodigo()<<std::endl;
+       // std::cout<<elem.first->datonodo.LeeCodigo()<<std::endl;
     }
 }
 
@@ -677,7 +667,7 @@ void Obra::VerRama()
     for (auto elem : lista)
     {
         std::cout<<std::setw(elem.second*2);
-        std::cout<<elem.first->datonodo.LeeCodigo()<<std::endl;
+        //std::cout<<elem.first->datonodo.LeeCodigo()<<std::endl;
     }
 }
 
@@ -692,12 +682,12 @@ void Obra::Actualizar(pNodo nodoactual)
         nodoactual=padre;
     }
 
-    std::cout<<"Actualizando desde el nodo: "<<nodoactual->datonodo.LeeCodigo()<<std::endl;
+    //std::cout<<"Actualizando desde el nodo: "<<nodoactual->datonodo.LeeCodigo()<<std::endl;
     std::list<pNodo>lista =  G.recorrerAncestros(nodoactual);
 
     std::list<pNodo> listaunica;
     bool existe=false;
-    std::string codigo_a_comparar;
+    TEXTO codigo_a_comparar;
     //crear lista unica
     for (auto it = lista.crbegin(); it!=lista.crend(); ++it)
     {
@@ -774,7 +764,7 @@ bool Obra::esPrecioBloqueado()
 
 void Obra::escribirPrecio(float precio)
 {
-    std::cout<<"Poniendo al nodo: "<<aristaActual->destino->datonodo.LeeCodigo()<<" el precio de "<<precio<<std::endl;
+    //std::cout<<"Poniendo al nodo: "<<aristaActual->destino->datonodo.LeeCodigo()<<" el precio de "<<precio<<std::endl;
     aristaActual->destino->datonodo.EscribePrecio(precio);
     Actualizar(aristaActual->destino);
 }
@@ -910,11 +900,11 @@ bool Obra::hayCertificacion() const
     return aristaActual->datoarista.LeeCertificacion().hayMedicion();
 }
 
-pNodo Obra::existeConcepto(TEXTO codigo)
+pNodo Obra::existeConcepto(const TEXTO &codigo)
 {
     std::list<pNodo> lista = G.recorrerNodos();
     for (auto elem:lista)
-    {
+    {        
         if (elem->datonodo.LeeCodigo()==codigo)
         {
             return elem;
@@ -948,12 +938,12 @@ bool Obra::NivelUno() const
     return false;
 }
 
-const std::string Obra::LeeCodigoObra() const
+const TEXTO Obra::LeeCodigoObra() const
 {
     return G.LeeRaiz()->datonodo.LeeCodigo();
 }
 
-const std::string Obra::LeeResumenObra() const
+const TEXTO Obra::LeeResumenObra() const
 {
     return G.LeeRaiz()->datonodo.LeeResumen();
 }
@@ -963,45 +953,45 @@ const float Obra::LeePrecioObra() const
     return G.LeeRaiz()->datonodo.LeeImportePres();
 }
 
-const std::string Obra::LeeFecha() const
+const TEXTO Obra::LeeFecha() const
 {
     return G.LeeRaiz()->datonodo.LeeFecha();
 }
 
-void Obra::EscribeCodigoObra(std::string codigo)
+void Obra::EscribeCodigoObra(TEXTO codigo)
 {
     G.LeeRaiz()->datonodo.EscribeCodigo(codigo);
 }
 
-void Obra::EscribeResumenObra(std::string resumen)
+void Obra::EscribeResumenObra(TEXTO resumen)
 {
     G.LeeRaiz()->datonodo.EscribeResumen(resumen);
 }
 
-void Obra::EscribeRaiz(std::string nombreRaiz)
+void Obra::EscribeRaiz(TEXTO nombreRaiz)
 {
     pNodo raiz = existeConcepto(nombreRaiz);
     G.escribeRaiz(raiz);
 }
 
-QStringList Obra::RellenaLinea(pNodo nodo)
+QStringList Obra::RellenaLinea(pNodo nodo,pArista arista)
 {
     QStringList linea;
-    linea.append(QString::fromStdString(nodo->datonodo.LeeCodigo()));                    //codigo
-    linea.append(QString::number(nodo->datonodo.LeeNat()));                       //naturaleza
-    linea.append(QString::fromStdString(nodo->datonodo.LeeUd()));                        //ud
-    linea.append(QString::fromStdString((nodo->datonodo.LeeResumen())));                   //resumen
-    linea.append(QString::number(aristaPadre->datoarista.LeeMedicion().LeeTotal(),'f',2));     //Cantidad presupuestada(medida)
-    linea.append(QString::number(aristaPadre->datoarista.LeeCertificacion().LeeTotal(),'f',2));//Cantidad certificada
-    linea.append(QString::number((aristaPadre->datoarista.LeeCertificacion().LeeTotal()/aristaPadre->datoarista.LeeMedicion().LeeTotal())*100,'f',2));//porcentaje certificado
+    linea.append(nodo->datonodo.LeeCodigo());                    //codigo
+    linea.append(QString::number(nodo->datonodo.LeeNat()));      //naturaleza
+    linea.append(nodo->datonodo.LeeUd());                        //ud
+    linea.append((nodo->datonodo.LeeResumen()));                   //resumen
+    linea.append(QString::number(arista->datoarista.LeeMedicion().LeeTotal(),'f',2));     //Cantidad presupuestada(medida)
+    linea.append(QString::number(arista->datoarista.LeeCertificacion().LeeTotal(),'f',2));//Cantidad certificada
+    linea.append(QString::number((arista->datoarista.LeeCertificacion().LeeTotal()/arista->datoarista.LeeMedicion().LeeTotal())*100,'f',2));//porcentaje certificado
     linea.append(QString::number(nodo->datonodo.LeeImportePres(),'f',2));               //precio de la medicion
     linea.append(QString::number(nodo->datonodo.LeeImporteCert(),'f',2));               //precio de la certificacion
     linea.append(nodo->datonodo.LeeImportePres()==0
                 ? QString::number(nodo->datonodo.LeeImportePres()*1,'f',2)
-                : QString::number(nodo->datonodo.LeeImportePres()*aristaPadre->datoarista.LeeMedicion().LeeTotal(),'f',2));
+                : QString::number(nodo->datonodo.LeeImportePres()*arista->datoarista.LeeMedicion().LeeTotal(),'f',2));
     linea.append(nodo->datonodo.LeeImporteCert()==0
                 ? QString::number(nodo->datonodo.LeeImporteCert()*1,'f',2)
-                : QString::number(nodo->datonodo.LeeImporteCert()*aristaPadre->datoarista.LeeCertificacion().LeeTotal(),'f',2));
+                : QString::number(nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal(),'f',2));
 
     return linea;
 }

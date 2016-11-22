@@ -4,7 +4,11 @@
 
 #include <fstream>
 #include <sstream>
+#include <QFile>
+#include <QTextStream>
+#include <QDebug>
 #include "./Obra.h"
+#include "./include/definiciones.h"
 
 
 class AbrirGuardar
@@ -15,7 +19,7 @@ class AbrirGuardar
         typedef nodo<Concepto,MedCert>* pNodo;
         typedef arista<MedCert,Concepto>* pArista;
 
-        virtual Obra*  Leer(std::ifstream &ifs) = 0;
+        virtual Obra* Leer(QString nombre) = 0;
         virtual void Escribir(std::ofstream &ofs) = 0;
 };
 
@@ -24,7 +28,8 @@ class AbrirGuardarNormal : public AbrirGuardar
     public:
 
         /*****************LEER****************************************/
-        Obra* Leer(std::ifstream &ifs);
+        //Obra* Leer(std::ifstream &ifs);
+        Obra* Leer(QString nombre);
         Concepto* leerConcepto( std::ifstream &ifs);
         std::string leerString(std::ifstream& ifs);
         void procesarAristas(Obra* o, pNodo n, std::ifstream& ifs);
@@ -51,10 +56,11 @@ public:
 
     AbrirGuardarBC3();
     Obra*  Leer(std::ifstream &ifs);
-    void procesarConceptos(Obra* &obra, char* linea, std::list<std::string>&listaT);
-    void procesarRelaciones (Obra* &obra, std::string linea, std::list<std::string>&listaM);
+    Obra*  Leer(QString nombrefichero);
+    void procesarConceptos(Obra* &obra, QStringList& registroC);
+    void procesarRelaciones (Obra* &obra, QString linea);
     MedCert procesarMediciones (std::list<std::string>&listaM, std::string nombrepadre, std::string nombrehijo);
-    std::string procesarTexto(std::list<std::__cxx11::string> &listaT, std::__cxx11::string nombrepadre);
+    void procesarTexto(Obra* &obra, const QStringList& registroT);
 
     void Escribir(std::ofstream &ofs);
     void EscribirRegistroV(std::ofstream &ofs);
@@ -64,9 +70,9 @@ public:
     void EscribirRegistroM(pArista A, std::ofstream &ofs, const Obra* obra);
     void EscribirRegistroT(const pNodo concepto, std::ofstream &ofs);
 
-    bool esRaiz(const std::string& S);
+    bool esRaiz(const QString &S);
     void quitarSimbolos (pNodo n);
-    void quitarSimbolos(std::string &codigo);
+    void quitarSimbolos(TEXTO &codigo);
     void escribirAlmohadilla(const pNodo concepto, const Obra* obra, std::string &cadena);
     pNodo buscarPadre(const pArista A, const Obra* obra);
 

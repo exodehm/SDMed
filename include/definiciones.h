@@ -1,6 +1,8 @@
 #ifndef DEFINICIONES_H_INCLUDED
 #define DEFINICIONES_H_INCLUDED
 
+#include <QString>
+
 #include "Concepto.h"
 #include "MedCert.h"
 
@@ -12,7 +14,7 @@ typedef arista<datoarista_t,datonodo_t>* pArista;
 typedef nodo<datonodo_t,datoarista_t> t_nodo;
 typedef arista<datoarista_t,datonodo_t> t_arista;
 
-typedef std::string TEXTO;
+typedef QString TEXTO;
 
 
 

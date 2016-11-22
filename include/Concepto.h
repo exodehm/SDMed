@@ -4,12 +4,13 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <QString>
 #include "Fecha.h"
 #include "AsignadorDeNaturaleza.h"
 #include "Precio.h"
 #include "Unidades.h"
 
-typedef std::string TEXTO;
+typedef QString TEXTO;
 
 class Concepto
 {
@@ -68,11 +69,11 @@ public:
     friend bool operator==(const Concepto& C1, const Concepto& C2);
     friend bool operator!=(const Concepto& C1, const Concepto& C2);
 
-    friend std::ostream& operator<<(std::ostream& os, const Concepto& C)
+    /*friend std::ostream& operator<<(std::ostream& os, const Concepto& C)
     {
         os<<C.LeeCodigo();
         return os;
-    }
+    }*/
 
 private:
 

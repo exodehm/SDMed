@@ -8,10 +8,10 @@ AbrirGuardarBC3::AbrirGuardarBC3()
 }
 
 
-Obra* AbrirGuardarNormal::Leer(std::ifstream &ifs )
+/*Obra* AbrirGuardarNormal::Leer(std::ifstream &ifs )
 {
     /*************variables auxiliares*********************/
-    int numNodos;
+    /*int numNodos;
     Concepto* C;
     pNodo nuevonodo;
     bool hoja;
@@ -55,13 +55,13 @@ Obra* AbrirGuardarNormal::Leer(std::ifstream &ifs )
     obra->padre=obra->G.LeeRaiz();
     obra->aristaPadre->destino=obra->G.LeeRaiz();
 
-    return obra;*/
-}
+    return obra;
+}*/
 
 Concepto* AbrirGuardarNormal::leerConcepto( std::ifstream &ifs)
 {
     //tamaño de los miembros no variables
-    int tamannoconcepto=sizeof(Unidad)+sizeof(Precio)+5*sizeof(int)+sizeof(float)+sizeof(Fecha)+sizeof(Concepto::Divisas);
+   /* int tamannoconcepto=sizeof(Unidad)+sizeof(Precio)+5*sizeof(int)+sizeof(float)+sizeof(Fecha)+sizeof(Concepto::Divisas);
     std::string sAux;
     Concepto* C=new Concepto;
     //en esta lectura capturo todos los miembros fijos
@@ -77,7 +77,7 @@ Concepto* AbrirGuardarNormal::leerConcepto( std::ifstream &ifs)
     sAux=leerString(ifs);
     C->EscribeTexto(sAux);
 
-    return C;
+    return C;*/
 }
 
 
@@ -165,7 +165,7 @@ void AbrirGuardarNormal::Escribir(std::ofstream &ofs )
 
 void AbrirGuardarNormal::EscribirConcepto(Concepto C, std::ofstream &ofs)
 {
-    std::cout<<"Guardando nodo: "<<C.LeeCodigo()<<std::endl;
+    /*std::cout<<"Guardando nodo: "<<C.LeeCodigo()<<std::endl;
     //el tamaño de todos los miembros fijos (todos menos los strings)
     int tamannoconcepto=sizeof(Unidad)+sizeof(Precio)+5*sizeof(int)+sizeof(float)+sizeof(Fecha)+sizeof(Concepto::Divisas);
     //guardo los miembros fijos
@@ -176,7 +176,7 @@ void AbrirGuardarNormal::EscribirConcepto(Concepto C, std::ofstream &ofs)
     guardarString(C.LeeResumen(),ofs);
     //texto
     guardarString(C.LeeTexto(),ofs);
-    std::cout<<"Ya he guardado el nodo"<<std::endl;
+    std::cout<<"Ya he guardado el nodo"<<std::endl;*/
 }
 
 void AbrirGuardarNormal::escribirAristas(pArista a,std::ofstream &ofs)

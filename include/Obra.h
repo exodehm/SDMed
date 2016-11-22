@@ -2,13 +2,12 @@
 #define OBRA_H
 
 #include <iomanip>
-//#include <fstream>
-//#include <sstream>
 #include <cstring>
 
 #include <QList>
 #include <QString>
 #include <QStringList>
+#include <QDebug>
 
 #include "Grafo.h"
 #include "Concepto.h"
@@ -17,12 +16,12 @@
 #include "Certificacion.h"
 #include "Datos.h"
 
-typedef std::string TEXTO;
-
 
 class Obra
 {
 public:
+
+    typedef std::list<std::pair<pNodo,pArista>> ListaNodosAristas;
 
     //Constructor
     Obra();
@@ -110,20 +109,20 @@ public:
     bool hayDescomposicion();
     bool hayMedicion() const;
     bool hayCertificacion() const;
-    pNodo existeConcepto(TEXTO codigo);
+    pNodo existeConcepto(const TEXTO& codigo);
     bool existeHermano(TEXTO codigo);
     bool NivelCero() const;
     bool NivelUno() const;
     /************************Codigo y Resumen de la obra*************/
-    const std::string LeeCodigoObra() const;
-    const std::string LeeResumenObra() const;
+    const TEXTO LeeCodigoObra() const;
+    const TEXTO LeeResumenObra() const;
     const float LeePrecioObra() const;
-    const std::string LeeFecha() const;
-    void EscribeCodigoObra(std::string codigo);
-    void EscribeResumenObra(std::string resumen);
-    void EscribeRaiz(std::string nombreRaiz);
+    const TEXTO LeeFecha() const;
+    void EscribeCodigoObra(TEXTO codigo);
+    void EscribeResumenObra(TEXTO resumen);
+    void EscribeRaiz(TEXTO nombreRaiz);
     /*************************auxiliar crear tabla*********************/
-    QStringList RellenaLinea(pNodo nodo);
+    QStringList RellenaLinea(pNodo nodo, pArista arista);
 
 
 private:

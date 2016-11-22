@@ -4,50 +4,50 @@
 InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazObra)
 {
     AbrirGuardar* A = new AbrirGuardarBC3();
-    std::ifstream fichero("/home/david/programacion/cmasmas/PruebasObra/bin/Debug/SyS_ARMILLA.bc3", std::ifstream::in);
-    if (fichero.good())
+    QString nombrefichero = "/home/david/programacion/cmasmas/PruebasObra/bin/Debug/CENZANO.bc3";
+    O = A->Leer(nombrefichero);
+    if (O)
     {
-        O = A->Leer(fichero);
         O->IrAInicio();
         O->MostrarHijos();
+
+        ui->setupUi(this);
+
+        modeloTablaP = new PrincipalModel(O);
+        ui->tablaPrinc->setAlternatingRowColors(true);
+        ui->tablaPrinc->setModel(modeloTablaP);
+        ui->tablaPrinc->resizeColumnsToContents();
+
+        ui->tablaPrinc->setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::AnyKeyPressed);
+        cabeceraTablaP = ui->tablaPrinc->horizontalHeader();
+
+        MostrarDeSegun(0);
+
+        /**********editor*****************/
+        EscribirTexto();
+
+        /************signals y slots*****************/
+        QObject::connect(ui->tablaPrinc,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
+        QObject::connect(ui->tablaPrinc,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
+        //QObject::connect(tablaMC[0],SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
+        QObject::connect(cabeceraTablaP,SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
+        QObject::connect(ui->comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(MostrarDeSegun(int)));
+        //QObject::connect(modeloTablaP,SIGNAL(EditarCampoTexto(int, QString)),this,SLOT(EditarCodigoResumen(int, QString)));
+        //QObject::connect(modeloTablaP,SIGNAL(EditarNaturaleza(int)),this,SLOT(EditarNaturaleza(int)));
+        //QObject::connect(modeloTablaP,SIGNAL(EditarCampoNumerico(int,float)),this,SLOT(EditarCantidadPrecio(int,float)));
+        //QObject::connect(modeloTablaM,SIGNAL(EditarCampoLineaMedicion(int,float,QString)),this,SLOT(EditarCampoLineaMedicion(int,float, QString)));
+        //QObject::connect(tabMedCert,SIGNAL(currentChanged(int)),this,SLOT(CambiarMedCert(int)));
+
+        QObject::connect(ui->botonAdelante,SIGNAL(clicked(bool)),this,SLOT(Avanzar()));
+        QObject::connect(ui->botonAtras,SIGNAL(clicked(bool)),this,SLOT(Retroceder()));
     }
-    ui->setupUi(this);
-
-    modeloTablaP = new PrincipalModel(O);
-    ui->tablaPrinc->setAlternatingRowColors(true);
-    ui->tablaPrinc->setModel(modeloTablaP);
-    ui->tablaPrinc->resizeColumnsToContents();
-
-    ui->tablaPrinc->setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::AnyKeyPressed);
-    cabeceraTablaP = ui->tablaPrinc->horizontalHeader();
-
-    MostrarDeSegun(0);
-
-    /**********editor*****************/
-    EscribirTexto();
-
-
-
-    /************signals y slots*****************/
-    QObject::connect(ui->tablaPrinc,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
-    QObject::connect(ui->tablaPrinc,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
-    //QObject::connect(tablaMC[0],SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
-    QObject::connect(cabeceraTablaP,SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
-    QObject::connect(ui->comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(MostrarDeSegun(int)));
-    //QObject::connect(modeloTablaP,SIGNAL(EditarCampoTexto(int, QString)),this,SLOT(EditarCodigoResumen(int, QString)));
-    //QObject::connect(modeloTablaP,SIGNAL(EditarNaturaleza(int)),this,SLOT(EditarNaturaleza(int)));
-    //QObject::connect(modeloTablaP,SIGNAL(EditarCampoNumerico(int,float)),this,SLOT(EditarCantidadPrecio(int,float)));
-    //QObject::connect(modeloTablaM,SIGNAL(EditarCampoLineaMedicion(int,float,QString)),this,SLOT(EditarCampoLineaMedicion(int,float, QString)));
-    //QObject::connect(tabMedCert,SIGNAL(currentChanged(int)),this,SLOT(CambiarMedCert(int)));
-
-    QObject::connect(ui->botonAdelante,SIGNAL(clicked(bool)),this,SLOT(Avanzar()));
-    QObject::connect(ui->botonAtras,SIGNAL(clicked(bool)),this,SLOT(Retroceder()));
 }
 
 
 InterfazObra::~InterfazObra()
 {
     delete ui;
+    delete O;
 }
 
 void InterfazObra::MostrarDeSegun(int indice)
@@ -144,7 +144,7 @@ void InterfazObra::RefrescarVista()
 
 void InterfazObra::EscribirTexto()
 {
-    ui->editor->EscribeTexto(QString::fromStdString(O->VerTexto()));
+    ui->editor->EscribeTexto(O->VerTexto());
 }
 
 void InterfazObra::PosicionarTablaP(QModelIndex indice)

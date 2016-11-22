@@ -2,162 +2,117 @@
 
 #include <typeinfo>
 
-Obra* AbrirGuardarBC3::Leer(std::ifstream &ifs)
+Obra*  AbrirGuardarBC3::Leer(QString nombrefichero)
 {
+    Obra* obra = nullptr;//= new Obra;
+    QFile fichero(nombrefichero);
+    if(!fichero.open(QIODevice::ReadOnly))
+    {
+        qFatal("No puedo abrir el fichero");
+        return obra;
+    }
+    QTextStream datos(&fichero);
+    datos.setCodec("Windows-1252");
+    QStringList registros = datos.readAll().split('~');
+    QStringList registroD;
+    QStringList registroM;
+    QStringList registroC;
+    QStringList registroT;
 
-    Obra* obra;//= new Obra;
-    const int MAXCHAR = 100000;
-    char registro[MAXCHAR];
-    std::list<std::string>listaD;
-    std::list<std::string>listaM;
-    std::list<std::string>listaC;
-    std::list<std::string>listaT;
-    /**********************************/
-    /**********crear lista D***********/
-    /**********************************/
-    while (!ifs.eof())
+    foreach (QString linea, registros)
     {
-        ifs.getline (registro,MAXCHAR,'~');
-        if (registro[0]=='D')
+        if (linea[0]=='C')
         {
-            listaD.push_back(&registro[2]);
+            linea.chop(2);
+            linea.remove(0,2);
+            //qDebug()<<linea;
+            registroC.append(linea);
+        }
+        if (linea[0]=='D' && linea[1]=='|')
+        {
+            linea.chop(2);
+            linea.remove(0,2);
+            //qDebug()<<linea;
+            registroD.append(linea);
+        }
+        if (linea[0]=='M')
+        {
+            linea.chop(2);
+            linea.remove(0,2);
+            //qDebug()<<linea;
+            registroM.append(linea);
+        }
+        if (linea[0]=='T')
+        {
+            linea.chop(2);
+            linea.remove(0,2);
+            //qDebug()<<linea;
+            registroT.append(linea);
         }
     }
-    /**********************************/
-    /**********crear lista M***********/
-    /**********************************/
-    ifs.seekg(0,std::ios::beg);
-    while (!ifs.eof())
+    //empiezo construyendo el grafo solo con los codigos-->registroD
+    foreach (QString linea, registroD)
     {
-        ifs.getline (registro,MAXCHAR,'~');
-        if (registro[0]=='M')
-        {
-            listaM.push_back(&registro[2]);
-        }
+        procesarRelaciones(obra,linea);
     }
-    /**********************************/
-    /**********crear lista C***********/
-    /**********************************/
-    ifs.seekg(0,std::ios::beg);
-    while (!ifs.eof())
-    {
-        ifs.getline (registro,MAXCHAR,'~');
-        if (registro[0]=='C')
-        {
-            listaC.push_back(&registro[2]);
-        }
-    }
-    /**********************************/
-    /**********crear lista T***********/
-    /**********************************/
-    ifs.seekg(0,std::ios::beg);
-    while (!ifs.eof())
-    {
-        ifs.getline (registro,MAXCHAR,'~');
-        if (registro[0]=='T')
-        {
-            listaT.push_back(&registro[2]);
-        }
-    }
-    /***********************************/
-    /********Registro D*****************/
-    /***********************************/
-    std::cout<<"Procesar registro D"<<std::endl;
-    for (auto elem = listaD.begin();elem!=listaD.end();++elem)
-    {
-        std::cout<<*elem<<std::endl;
-        procesarRelaciones(obra, *elem,listaM);
-    }
-    /***********************************/
-    /********Registro C*****************/
-    /***********************************/
-    std::cout<<"Procesar registro C"<<std::endl;
-    ifs.seekg(0,std::ios::beg);
-    while (!ifs.eof())
-    {
-        ifs.getline (registro,MAXCHAR,'~');
-        if (registro[0]=='C')
-        {
-            procesarConceptos(obra, &registro[2], listaT);
-        }
-    }
-    /***********************************/
-    /********Registros N y T************/
-    /***********************************/
-    /*std::cout<<"Procesar registro N"<<std::endl;
-    ifs.seekg(0,std::ios::beg);
-    while (!ifs.eof())
-    {
-        ifs.getline (registro,100000,'~');
-        if (registro[0]=='N')
-        {
-            //std::cout<<"Procesar N"<<std::endl;
-            procesarMediciones(obra, &registro[2]);
-        }
-        if (registro[0]=='T')
-        {
-            procesarTexto(obra, &registro[2]);
-        }
-    }*/
-    std::cout<<"Salgo de Leer"<<std::endl;
+    procesarConceptos(obra,registroC);
+    procesarTexto(obra,registroT);
+    fichero.close();
     return obra;
 }
 
-void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, std::string linea, std::list<std::string>&listaM)
+void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, QString linea)
 {
     //Miro si el registro tiene 2 o 3 campos
     //3 campos->verson FIEBDC-3/2012->tener en cuenta porcentajes
     //2 campos->version anterior->no considera porcentajes
-    int nHijos=0;
-    int nCampos=0;
-    int i=0;
-    std::string nombreRaiz="";
-    while (linea[i]!='\0')
+
+    QStringList lista = linea.split("|");
+    TEXTO padre = lista.at(0);
+
+    int nHijos=(linea.count("\\")/3);
+    int nCampos = lista.size()-1;
+    TEXTO resto;
+    if (nCampos == 2)
     {
-        if (linea[i]=='|')
-        {
-            nCampos++;
-        }
-        if (linea[i]=='\\')
-        {
-            nHijos++;
-        }
-        i++;
+        resto = lista.at(1);
     }
-    std::string nombrepadre,nombrehijos;
-    //std::cout<<"Hijos: "<<nHijos/3<<std::endl;
-    //std::cout<<"Campos: "<<nCampos-1<<std::endl;
-    std::stringstream iss(linea);
-    std::getline (iss,nombrepadre,'|');
-    //std::getline (iss,nombrehijos,'|');
-    //std::cout<<"Padre: "<<nombrepadre<<"- Num Hijos: "<<nHijos/3<<std::endl;
+    else
+    {
+        resto = lista.at(2);
+    }
+    TEXTO nombreRaiz="";
     if (!obra)
     {
-        obra= new Obra(nombrepadre);
+        obra= new Obra(padre);
     }
     //guardo el nombre de la raiz para ponerlo al principio
-    if (esRaiz(nombrepadre))
+    if (esRaiz(padre))
     {
-        nombreRaiz=nombrepadre;
+        nombreRaiz=padre;
     }
+    quitarSimbolos(padre);
 
-    quitarSimbolos(nombrepadre);
-    std::cout<<"Relaciones::NombrePadre: "<<nombrepadre<<std::endl;
-    std::string nombrehijo,factor,cantidad;
-
-    for (int i=0; i<nHijos/3; i++)
+    //TEXTO nombrehijo,factor,cantidad;
+    TEXTO registros[3]; //nombrehijo, factor, cantidad
+    QStringList relaciones = resto.split("\\");
+    for (int i=0; i<nHijos; i++)
     {
-        //std::cout<<"Vuelta "<<i<<std::endl;
-        std::getline (iss,nombrehijo,'\\');
-        std::getline (iss,factor,'\\');
-        std::getline (iss,cantidad,'\\');
-        std::cout<<"Relaciones::Hijo: "<<nombrehijo<<" Factor: "<<factor<<" Cantidad: "<<cantidad<<std::endl;
-
-        float cant = std::atof(cantidad.c_str());
+        qDebug()<<"Vuelta "<<i<<nHijos<<" - "<<relaciones.size()<<"Num hjijos: "<<nHijos;
+        for (int j=0;j<3;j++)
+        {
+            registros[j] = relaciones.first();
+            relaciones.pop_front();
+        }
+        for (int j=0;j<3;j++)
+        {
+            qDebug()<<"registros["<<j<<"]: "<<registros[j];
+        }
+        float cant =  registros[2].toFloat();
+        qDebug()<<"Cantidad: "<<cant;
         //procesarMediciones(listaM, nombrepadre, nombrehijo);
-        MedCert medi = procesarMediciones(listaM, nombrepadre, nombrehijo);
-        //int n;std::cin>>n;
-        obra->CrearPartida(nombrepadre, medi, nombrehijo);
+        //MedCert medi = procesarMediciones(listaM, nombrepadre, nombrehijo);
+        obra->CrearPartida(padre, cant, registros[0]);
     }
     //si tengo la raiz la pongo al comienzo
     if (nombreRaiz.length()>0)
@@ -167,56 +122,55 @@ void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, std::string linea, std::l
     }
 }
 
-void AbrirGuardarBC3::procesarConceptos(Obra* &obra, char* linea, std::list<std::string>&listaT)
+void AbrirGuardarBC3::procesarConceptos(Obra* &obra, QStringList &registroC)
 {
-    //std::cout<<linea<<std::endl;
-    char datos[6][200];
-    std::istringstream iss(linea);
-    for (int i=0; i<6; i++)
+    QString linea;
+    foreach (linea, registroC)
     {
-        iss.getline(datos[i],200,'|');
-        //std::cout<<"Dato["<<i<<"]: "<<datos[i]<<std::endl;
-    }
-    //hago una cadena para albergar el nombre del nodo
-    std::string codigo(datos[0]);
-    //otra cadena para el resumen
-    std::string resumen(datos[2]);
-    //hago una cadena para albergar los datos de la fecha y poder usar el constructor
-    std::string F(datos[4]);
-    Fecha fecha(F);
-    //unidad
-    Unidad UU;
-    UU.EscribeUd(datos[1]);
-    int numUd= UU.LeeNumUd(datos[1]);
-
-    //naturaleza
-    int nat=0;
-    if (datos[5][0]!='0')
-    {
-        nat=atoi(datos[5]);
-    }
-    else if (codigo.find('#')!=std::string::npos)
-    {
-        nat=AsignadorDeNaturaleza::Capitulo;
-    }
-    else
-    {
-        nat=AsignadorDeNaturaleza::Partida;
-    }
-    quitarSimbolos(codigo);
-    Concepto NuevoConcepto(codigo,numUd,resumen,atof(datos[3]),nat);
-    NuevoConcepto.EscribeTexto(procesarTexto(listaT,codigo));
-    std::cout<<"El nuevo concepto tiene un txto de: "<<NuevoConcepto.LeeTexto()<<std::endl;
-    pNodo actual = obra->existeConcepto(codigo);
-    if (actual)
-    {
-        actual->datonodo = NuevoConcepto;
+        QStringList datos = linea.split("|");
+        for (int i=0;i<datos.size();i++)
+        {
+            qDebug()<<datos.at(i);
+        }
+        QString codigo = datos.at(0);
+        codigo.remove('#');
+        pNodo minodo = obra->existeConcepto(codigo);
+        if (minodo)
+        {
+            //unidad
+            Unidad U;
+            int numUd= U.LeeNumUd(datos.at(1).toStdString());
+            minodo->datonodo.EscribeUd(numUd);
+            //resumen
+            minodo->datonodo.EscribeResumen(datos.at(2));
+            //cantidad
+            float cantidad = datos.at(3).toFloat();
+            minodo->datonodo.EscribePrecio(cantidad);
+            //fecha
+            std::string cadenafecha = datos.at(4).toStdString();
+            Fecha F(cadenafecha);
+            minodo->datonodo.EscribeFecha(F);
+            //naturaleza
+            /*int nat=0;
+            if (datos[5][0]!='0')
+            {
+                nat=atoi(datos[5]);
+            }
+            else if (codigo.find('#')!=std::string::npos)
+            {
+                nat=AsignadorDeNaturaleza::Capitulo;
+            }
+            else
+            {
+                nat=AsignadorDeNaturaleza::Partida;
+            }*/
+        }
     }
 }
 
 MedCert AbrirGuardarBC3::procesarMediciones (std::list<std::string>&listaM, std::string nombrepadre, std::string nombrehijo)
 {
-    for (auto it = listaM.begin(); it!=listaM.end(); ++it)
+    /*for (auto it = listaM.begin(); it!=listaM.end(); ++it)
     {
         std::string codpadre;
         std::string codhijo;
@@ -274,46 +228,23 @@ MedCert AbrirGuardarBC3::procesarMediciones (std::list<std::string>&listaM, std:
         {
             return MedCert();
         }
-    }
+    }*/
 }
 
-std::__cxx11::string AbrirGuardarBC3::procesarTexto(std::list<std::string>&listaT, std::string nombrepadre)
-{
-    for (auto it = listaT.begin(); it!=listaT.end(); ++it)
+void AbrirGuardarBC3::procesarTexto(Obra *&obra,const QStringList &registroT)
+{    
+    QString linea;
+    foreach (linea, registroT)
     {
-        std::string codpadre;
-        std::string textocodigo;
-        std::stringstream iss(*it);
-        std::getline(iss,codpadre,'|');
-        std::getline(iss,textocodigo,'|');
-        quitarSimbolos(codpadre);
-
-
-        if (codpadre == nombrepadre)
+        QStringList datos = linea.split("|");
+        QString codigo = datos.at(0);
+        codigo.remove('#');
+        pNodo minodo = obra->existeConcepto(codigo);
+        if (minodo)
         {
-            std::cout<<"Codpadre: "<<codpadre<<" - nombrpadre: "<<nombrepadre<<std::endl;
-            std::cout<<"TextoCodigo: "<<textocodigo<<std::endl;
-            //listaT.erase(it);
-            return textocodigo;
+            minodo->datonodo.EscribeTexto(datos.at(1));
         }
     }
-    return "";
-
-            /*std::stringstream iss(linea);
-    std::string datos[2];
-    for (int i=0; i<2; i++)
-    {
-        std::getline (iss,datos[i],'|');
-    }
-    std::size_t posicion=datos[0].find('#');
-    if (posicion!=std::string::npos)
-    {
-        datos[0]=datos[0].substr(0,posicion);
-    }
-    //std::cout<<"Código: "<<datos[0]<<std::endl;
-    pNodo nodoPadre=buscaNodoPorCodigo(datos[0],obra);
-    //std::cout<<nodoPadre->datonodo.LeeCodigo()<<std::endl;
-    nodoPadre->datonodo.EscribeTexto(datos[1]);*/
 }
 
 /*********************GUARDAR****************************************/
@@ -378,7 +309,7 @@ void AbrirGuardarBC3::EscribirRegistroK(std::ofstream &ofs)
 
 void AbrirGuardarBC3::EscribirRegistroC(const pNodo concepto, std::ofstream &ofs, const Obra* obra)
 {
-    std::string registroC="~C|";
+    /*std::string registroC="~C|";
     registroC.append(concepto->datonodo.LeeCodigo());
     escribirAlmohadilla(concepto,obra,registroC);
     registroC.append("|");
@@ -393,12 +324,12 @@ void AbrirGuardarBC3::EscribirRegistroC(const pNodo concepto, std::ofstream &ofs
     registroC.append(tostr(concepto->datonodo.LeeNat()));
     registroC.append("|");
     ofs<<registroC;
-    ofs<<"\r\n";
+    ofs<<"\r\n";*/
 }
 
 void AbrirGuardarBC3::EscribirRegistroD(const pNodo concepto, std::ofstream &ofs, const Obra* obra)
 {
-    std::string factor="1";//por ahora factor vale 1...en el futuro puede tener un valor
+    /*std::string factor="1";//por ahora factor vale 1...en el futuro puede tener un valor
     std::string registroD="~D|";
     registroD.append(concepto->datonodo.LeeCodigo());
     escribirAlmohadilla(concepto,obra,registroD);
@@ -419,7 +350,7 @@ void AbrirGuardarBC3::EscribirRegistroD(const pNodo concepto, std::ofstream &ofs
     }
     registroD.append("|");
     ofs<<registroD;
-    ofs<<"\r\n";
+    ofs<<"\r\n";*/
 }
 
 void AbrirGuardarBC3::EscribirRegistroM(pArista A, std::ofstream &ofs, const Obra* obra)
@@ -448,37 +379,37 @@ void AbrirGuardarBC3::EscribirRegistroM(pArista A, std::ofstream &ofs, const Obr
 
 void AbrirGuardarBC3::EscribirRegistroT(const pNodo concepto, std::ofstream &ofs)
 {
-    std::string registroT="~T|";
+   /* std::string registroT="~T|";
     registroT.append(concepto->datonodo.LeeCodigo());
     registroT.append("|");
     registroT.append(concepto->datonodo.LeeTexto());
     registroT.append("|");
     ofs<<registroT;
-    ofs<<"\r\n";
+    ofs<<"\r\n";*/
 }
 
-
 /*********************VARIOS**************************/
-bool AbrirGuardarBC3::esRaiz(const std::string& S)
+bool AbrirGuardarBC3::esRaiz(const QString& S)
 {
-    return (S[S.length()-1]=='#' && S[S.length()-2]=='#');
+    return (S.at(S.length()-1)=='#' && S.at(S.length()-2)=='#');
 }
 
 void AbrirGuardarBC3::quitarSimbolos (pNodo n)
 {
-    std::size_t posicion=n->datonodo.LeeCodigo().find('#');
+    /*std::size_t posicion=n->datonodo.LeeCodigo().find('#');
     if (posicion!=std::string::npos)
     {
         n->datonodo.EscribeCodigo(n->datonodo.LeeCodigo().substr(0,posicion));
-    }
+    }*/
 }
 
-void AbrirGuardarBC3::quitarSimbolos (std::string &codigo)
+void AbrirGuardarBC3::quitarSimbolos (TEXTO &codigo)
 {
-    std::size_t posicion=codigo.find('#');
-    if (posicion!=std::string::npos)
+    int posicion=-1;
+    posicion = codigo.indexOf('#');
+    if (posicion>0 || posicion==0)
     {
-        codigo=codigo.substr(0,posicion);
+        codigo.truncate(posicion);
     }
 }
 
