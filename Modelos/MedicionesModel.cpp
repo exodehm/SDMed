@@ -54,11 +54,24 @@ QVariant MedicionesModel::data(const QModelIndex& indice,int role) const
     QStringList fila = datos.value(indice.row());
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
-        {          
-            return fila.value(indice.column());
-            //QLocale::setDefault(QLocale( QLocale::Spanish, QLocale::Spain ));
-            //return QString( "%L1" ).arg(fila.at(indice.column()).toFloat());
+    {
+        if (indice.column() != tipoColumna::FASE && indice.column() != tipoColumna::COMENTARIO && indice.column() != tipoColumna::FORMULA)
+        {
+            if (fila.at(indice.column()) == "0")
+            {
+                return "";//dejo vacia la casilla si el valor es 0
+            }
+            else
+            {
+                QLocale::setDefault(QLocale( QLocale::Spanish, QLocale::Spain ));
+                return QString( "%L1" ).arg(fila.at(indice.column()).toFloat());
+            }
         }
+        else
+        {
+            return fila.value(indice.column());
+        }
+    }
     return QVariant();
 }
 
