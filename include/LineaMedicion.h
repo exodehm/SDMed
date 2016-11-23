@@ -5,6 +5,8 @@
 
 #include <string>
 #include <iostream>
+#include <QString>
+#include <QStringList>
 
 struct LineaMedicion
 {
@@ -39,6 +41,7 @@ struct LineaMedicion
     const float& LeeSubtotal() const;
     const tipo& LeeTipo() const;
     const std::string& LeeFormula() const;
+    QStringList LeeLineaMedicion();
     //metodos modificadores
     void EscribeFase (int F);
     void EscribeComentario (std::string C);

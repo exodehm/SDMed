@@ -55,6 +55,7 @@ public:
     /******funciones para mostrar datos*******/
     void MostrarHijos();
     const QList<QStringList>&VerActual();
+    const QList<QStringList>& VerMedCert();
     void VerNodos();
     void VerArbol();
     void VerRama();
@@ -145,6 +146,7 @@ private:
     Coeficientes Redondeos;
     //Datos DatosDeObra;
     QList<QStringList> listadoTablaP;
+    QList<QStringList> listadoTablaMC;
 
 };
 

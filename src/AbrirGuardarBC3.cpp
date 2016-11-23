@@ -1,7 +1,5 @@
 #include "../include/AbrirGuardar.h"
 
-#include <typeinfo>
-
 Obra*  AbrirGuardarBC3::Leer(QString nombrefichero)
 {
     Obra* obra = nullptr;//= new Obra;
@@ -35,7 +33,7 @@ Obra*  AbrirGuardarBC3::Leer(QString nombrefichero)
             //qDebug()<<linea;
             registroD.append(linea);
         }
-        if (linea[0]=='M')
+        if (linea[0]=='M' && linea[1]=='|')
         {
             linea.chop(2);
             linea.remove(0,2);
@@ -53,7 +51,7 @@ Obra*  AbrirGuardarBC3::Leer(QString nombrefichero)
     //empiezo construyendo el grafo solo con los codigos-->registroD
     foreach (QString linea, registroD)
     {
-        procesarRelaciones(obra,linea);
+        procesarRelaciones(obra,linea,registroM);
     }
     procesarConceptos(obra,registroC);
     procesarTexto(obra,registroT);
@@ -61,7 +59,7 @@ Obra*  AbrirGuardarBC3::Leer(QString nombrefichero)
     return obra;
 }
 
-void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, QString linea)
+void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, QString linea, QStringList &registroM)
 {
     //Miro si el registro tiene 2 o 3 campos
     //3 campos->verson FIEBDC-3/2012->tener en cuenta porcentajes
@@ -93,26 +91,19 @@ void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, QString linea)
     }
     quitarSimbolos(padre);
 
-    //TEXTO nombrehijo,factor,cantidad;
     TEXTO registros[3]; //nombrehijo, factor, cantidad
     QStringList relaciones = resto.split("\\");
     for (int i=0; i<nHijos; i++)
     {
-        qDebug()<<"Vuelta "<<i<<nHijos<<" - "<<relaciones.size()<<"Num hjijos: "<<nHijos;
+        //qDebug()<<"Vuelta "<<i<<nHijos<<" - "<<relaciones.size()<<"Num hjijos: "<<nHijos;
         for (int j=0;j<3;j++)
         {
             registros[j] = relaciones.first();
             relaciones.pop_front();
         }
-        for (int j=0;j<3;j++)
-        {
-            qDebug()<<"registros["<<j<<"]: "<<registros[j];
-        }
-        float cant =  registros[2].toFloat();
-        qDebug()<<"Cantidad: "<<cant;
-        //procesarMediciones(listaM, nombrepadre, nombrehijo);
-        //MedCert medi = procesarMediciones(listaM, nombrepadre, nombrehijo);
-        obra->CrearPartida(padre, cant, registros[0]);
+        //float cant =  registros[2].toFloat();
+        MedCert medi = procesarMediciones(registroM, padre, registros[0]);//registros[0]==nombrehijo
+        obra->CrearPartida(padre, medi, registros[0]);
     }
     //si tengo la raiz la pongo al comienzo
     if (nombreRaiz.length()>0)
@@ -128,11 +119,8 @@ void AbrirGuardarBC3::procesarConceptos(Obra* &obra, QStringList &registroC)
     foreach (linea, registroC)
     {
         QStringList datos = linea.split("|");
-        for (int i=0;i<datos.size();i++)
-        {
-            qDebug()<<datos.at(i);
-        }
         QString codigo = datos.at(0);
+        QString codigo_comp = datos.at(0);
         codigo.remove('#');
         pNodo minodo = obra->existeConcepto(codigo);
         if (minodo)
@@ -151,55 +139,47 @@ void AbrirGuardarBC3::procesarConceptos(Obra* &obra, QStringList &registroC)
             Fecha F(cadenafecha);
             minodo->datonodo.EscribeFecha(F);
             //naturaleza
-            /*int nat=0;
-            if (datos[5][0]!='0')
+            int nat=0; //inicializo a 0 (sin definir)
+            if (datos.at(5)!="0")
             {
-                nat=atoi(datos[5]);
+                nat=datos.at(5).toInt();
             }
-            else if (codigo.find('#')!=std::string::npos)
+            else if (codigo_comp.contains("#"))
             {
                 nat=AsignadorDeNaturaleza::Capitulo;
             }
             else
             {
                 nat=AsignadorDeNaturaleza::Partida;
-            }*/
+            }
+            minodo->datonodo.EscribeNaturaleza(nat);
         }
     }
 }
 
-MedCert AbrirGuardarBC3::procesarMediciones (std::list<std::string>&listaM, std::string nombrepadre, std::string nombrehijo)
+MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombrepadre, TEXTO nombrehijo)
 {
-    /*for (auto it = listaM.begin(); it!=listaM.end(); ++it)
+    QString linea;
+    int i=0;
+    foreach (linea, registroM)
     {
-        std::string codpadre;
-        std::string codhijo;
-        std::string posicion;
-        std::string total;
-
-        std::stringstream iss(*it);
-        std::getline(iss,codpadre,'\\');
-        std::getline(iss,codhijo,'|');
-        std::getline(iss,posicion,'|');
-        std::getline(iss,total,'|');
-        quitarSimbolos(codpadre);
-        std::cout<<"Codpadre: "<<codpadre<<std::endl;
-        std::cout<<"Codhijo: "<<codhijo<<std::endl;
-
-        if (codpadre == nombrepadre && codhijo == nombrehijo)
+        QStringList datos = linea.split("|");
+        QStringList padrehijo = datos.at(0).split("\\");
+        QString padre = padrehijo.at(0);
+        quitarSimbolos(padre);
+        QString hijo = padrehijo.at(1);
+        if (padre==nombrepadre && hijo == nombrehijo)
         {
-            std::cout<<"total: "<<total<<std::endl;
-            std::cout<<"medicion: "<<iss.str()<<std::endl;
-            std::cout<<codpadre<<" - "<<codhijo<<" - "<<std::endl;
-            //int n;std::cin>>n;
             Medicion eme;
-            while (iss.peek()!='|')
+            QStringList medicion = datos.at(3).split("\\");
+            int lineasmedicion = medicion.size()/6;
+            std::string conceptos[6];
+            for (int i=0;i<lineasmedicion;i++)
             {
-                std::string conceptos[6];
-                for (int i=0; i<6; i++)
+                for (int j=0;j<6;j++)
                 {
-                    std::getline (iss,conceptos[i],'\\');
-                    //std::cout<<"Concepto["<<i<<"]= "<<conceptos[i]<<std::endl;
+                    conceptos[j]= medicion.first().toStdString();
+                    medicion.pop_front();
                 }
                 //int n;std::cin>>n;
                 float cantidades[4];
@@ -220,15 +200,12 @@ MedCert AbrirGuardarBC3::procesarMediciones (std::list<std::string>&listaM, std:
             }
             MedCert MC;
             MC.EscribeMedicion(eme);
-            listaM.erase(it);
+            registroM.removeAt(i);
             return MC;
-
         }
-        else
-        {
-            return MedCert();
-        }
-    }*/
+        i++;
+    }
+    return MedCert();
 }
 
 void AbrirGuardarBC3::procesarTexto(Obra *&obra,const QStringList &registroT)
@@ -379,7 +356,7 @@ void AbrirGuardarBC3::EscribirRegistroM(pArista A, std::ofstream &ofs, const Obr
 
 void AbrirGuardarBC3::EscribirRegistroT(const pNodo concepto, std::ofstream &ofs)
 {
-   /* std::string registroT="~T|";
+    /* std::string registroT="~T|";
     registroT.append(concepto->datonodo.LeeCodigo());
     registroT.append("|");
     registroT.append(concepto->datonodo.LeeTexto());

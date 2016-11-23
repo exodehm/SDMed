@@ -15,7 +15,6 @@ PrincipalModel::PrincipalModel (Obra *O, QObject* parent):QAbstractTableModel(pa
     LeyendasCabecera[10]=QObject::tr("ImpCert\n");
 
     miobra = O;
-    std::cout<<"Direccion de puntero Obra: "<<miobra<<std::endl;
 
     ActualizarDatos();
 }
@@ -61,7 +60,8 @@ QVariant PrincipalModel::data(const QModelIndex& indice,int role) const
             indice.column()==tipoColumna::PRPRES ||
             indice.column()==tipoColumna::PRCERT ||
             indice.column()==tipoColumna::IMPPRES ||
-            indice.column()==tipoColumna:: IMPCERT  )
+            indice.column()==tipoColumna:: IMPCERT ||
+            indice.column()==tipoColumna::NATURALEZA )
     {
         if (role==Qt::DisplayRole || role == Qt::EditRole)
         {
@@ -81,7 +81,7 @@ QVariant PrincipalModel::data(const QModelIndex& indice,int role) const
         }
     }
 
-    if (indice.column()==tipoColumna::NATURALEZA)
+    /*if (indice.column()==tipoColumna::NATURALEZA)
     {
 
         int valor=fila.at(indice.column()).toInt()-1;
@@ -102,7 +102,7 @@ QVariant PrincipalModel::data(const QModelIndex& indice,int role) const
             //tip += QString("%1</b>").arg(I.Icon_Nat[valor].first);
             return tip;
         }
-    }
+    }*/
     return QVariant();
 }
 

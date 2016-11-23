@@ -1,5 +1,5 @@
-#ifndef PRINCIPALMODEL_H
-#define PRINCIPALMODEL_H
+#ifndef MEDICIONESMODEL_H
+#define MEDICIONESMODEL_H
 
 #include <QAbstractTableModel>
 #include <QStandardItemModel>
@@ -8,23 +8,21 @@
 #include <QVariant>
 #include <QDebug>
 #include <QTextStream>
+#include <QFileDialog>
+#include <iostream>
 
 #include "./include/Obra.h"
+#include "../defs.h"
 
 
-//#include "iconos.h"
-#include "./defs.h"
 
-
-class PrincipalModel : public QAbstractTableModel
+class MedicionesModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
-    PrincipalModel(Obra* O, QObject* parent=nullptr);
-    ~PrincipalModel();
-
-    static const int IconIndexRole = Qt::UserRole + 1;
+    MedicionesModel(Obra* O, QObject* parent=nullptr);
+    ~MedicionesModel();
 
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;
@@ -39,17 +37,13 @@ public:
     void ActualizarDatos();
 
 signals:
-    void EditarCampoTexto (int, QString);
-    void EditarCampoNumerico(int,float);
-    void EditarNaturaleza (int);
+    void EditarCampoLineaMedicion (int, float, QString);
+
 
 private:
-    QList <QStringList> datos;
-    QStringList cabecera;
-    QString LeyendasCabecera[11];
     Obra* miobra;
-    //IconosNat I;
+    QList<QStringList>datos;
+    QStringList LeyendasCabecera;    
 };
 
-#endif // PRINCIPALMODEL_H
-
+#endif

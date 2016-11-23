@@ -7,7 +7,7 @@
 #include "./include/Obra.h"
 #include "./include/AbrirGuardar.h"
 #include "./Modelos/PrincipalModel.h"
-#include <fstream>
+#include "./Modelos/MedicionesModel.h"
 
 namespace Ui {
 class InterfazObra;
@@ -52,6 +52,7 @@ private:
     Ui::InterfazObra *ui;    
     QHeaderView* cabeceraTablaP;
     PrincipalModel* modeloTablaP;
+    MedicionesModel* modeloTablaMC;
 
     Obra* O;
 };

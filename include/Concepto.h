@@ -1,9 +1,6 @@
 #ifndef CONCEPTO_H
 #define CONCEPTO_H
 
-#include <iostream>
-#include <string>
-#include <cstring>
 #include <QString>
 #include "Fecha.h"
 #include "AsignadorDeNaturaleza.h"
@@ -63,6 +60,7 @@ public:
     void EscribeImportePres(float P);
     void EscribeImporteCert(float P);
     void EscribeTexto(TEXTO nuevotexto);
+    void EscribeNaturaleza(int nat);
     //operador de asignacion
     Concepto& operator=(const Concepto& Ref);
     //operadores relacionales

@@ -143,6 +143,11 @@ void Concepto::EscribeResumen (TEXTO R)
     Resumen = R;
 }
 
+void Concepto::EscribeNaturaleza(int nat)
+{
+    Nat = nat;
+}
+
 void Concepto::EscribePrecio(float P)
 {
     Importe[MEDICION].EscribePrecio(P);

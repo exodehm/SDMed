@@ -79,6 +79,22 @@ const float& LineaMedicion::LeeSubtotal() const
     return subtotal;
 }
 
+QStringList LineaMedicion::LeeLineaMedicion()
+{
+    QStringList lineamedicion;
+    lineamedicion.append(QString::number(nFase));
+    lineamedicion.append(QString::fromStdString(comentario));
+    lineamedicion.append(QString::number(n_unidades));
+    lineamedicion.append(QString::number(largo));
+    lineamedicion.append(QString::number(ancho));
+    lineamedicion.append(QString::number(alto));
+    lineamedicion.append(QString::number(nFase));
+    lineamedicion.append(QString::fromStdString(formula));
+    lineamedicion.append(QString::number(parcial));
+    lineamedicion.append(QString::number(subtotal));
+    return lineamedicion;
+}
+
 void LineaMedicion::EscribeFase (int F)
 {
     nFase=F;

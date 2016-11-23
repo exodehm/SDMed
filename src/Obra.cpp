@@ -361,7 +361,7 @@ TEXTO Obra::VerTexto()
     return padre->datonodo.LeeTexto();
 }
 
-const QList<QStringList>&Obra::VerActual()
+const QList<QStringList>& Obra::VerActual()
 {
     listadoTablaP.clear();
     QStringList lineapadre;
@@ -377,6 +377,23 @@ const QList<QStringList>&Obra::VerActual()
         lineahijo.clear();
     }
     return listadoTablaP;
+}
+
+const QList<QStringList>& Obra::VerMedCert()
+{
+    qDebug()<<"Funcion vermedcert!!!";
+    std::list<LineaMedicion> lista = aristaPadre->datoarista.LeeMedCer().LeeLista();
+    listadoTablaMC.clear();
+    for (auto elem : lista)
+    {
+        listadoTablaMC.append(elem.LeeLineaMedicion());
+        QString dato;
+        /*foreach (dato, elem.LeeLineaMedicion())
+        {
+            qDebug()<<dato;
+        }*/
+    }
+    return listadoTablaMC;
 }
 
 void Obra::SumarHijos(pNodo n)

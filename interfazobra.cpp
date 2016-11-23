@@ -16,10 +16,14 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
         modeloTablaP = new PrincipalModel(O);
         ui->tablaPrinc->setAlternatingRowColors(true);
         ui->tablaPrinc->setModel(modeloTablaP);
-        ui->tablaPrinc->resizeColumnsToContents();
 
         ui->tablaPrinc->setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::AnyKeyPressed);
         cabeceraTablaP = ui->tablaPrinc->horizontalHeader();
+
+        modeloTablaMC =  new MedicionesModel(O);
+        ui->TablaMed->setModel(modeloTablaMC);
+
+        RefrescarVista();
 
         MostrarDeSegun(0);
 
@@ -130,14 +134,15 @@ void InterfazObra::Retroceder()
 void InterfazObra::RefrescarVista()
 {
     modeloTablaP->ActualizarDatos();
+    modeloTablaMC->ActualizarDatos();
     O->MostrarHijos();
     EscribirTexto();
-    //modeloTablaM->ActualizarDatos(O);
     //MostrarTexto();
     modeloTablaP->layoutChanged();
-    //modeloTablaM->layoutChanged();
-    //tablaP->resizeColumnsToContents();
-    //tablaMC[0]->resizeColumnsToContents();
+    modeloTablaMC->layoutChanged();
+    ui->tablaPrinc->resizeColumnsToContents();
+    ui->TablaMed->resizeColumnsToContents();
+
     //AjustarAltura();
     //MostrarTablasMyC();
 }

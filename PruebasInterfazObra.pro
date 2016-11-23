@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     src/Obra.cpp \
     src/Precio.cpp \
     src/Redondeos.cpp \
-    src/Unidades.cpp
+    src/Unidades.cpp \
+    Modelos/MedicionesModel.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -51,7 +52,6 @@ HEADERS  += interfazobra.h \
     include/Concepto.h \
     include/Datos.h \
     include/definiciones.h \
-    include/Exportar.h \
     include/Fecha.h \
     include/GestorEntradaDatosLineasMedicion.h \
     include/Grafo.h \
@@ -63,7 +63,8 @@ HEADERS  += interfazobra.h \
     include/Obra.h \
     include/Precio.h \
     include/Redondeos.h \
-    include/Unidades.h
+    include/Unidades.h \
+    Modelos/MedicionesModel.h
 
 FORMS    += interfazobra.ui
 

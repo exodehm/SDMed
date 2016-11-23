@@ -683,8 +683,7 @@ std::list<std::pair<nodo<datonodo_t,datoarista_t>*, arista<datoarista_t, datonod
         }
         aux.first=A->destino;
         aux.second=A;
-        hijos.push_back(aux);
-        hijos.push_back(aux);
+        hijos.push_back(aux);        
     }
     return hijos;
 }
