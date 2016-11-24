@@ -57,6 +57,11 @@ int MedCert::NumCertificaciones() const
     return -1;
 }
 
+bool MedCert::hayMedCert(int n)
+{
+    return MC[n].hayMedicion();
+}
+
 void MedCert::EscribeMedicion()
 {
     MC[MEDICION].Insertar();

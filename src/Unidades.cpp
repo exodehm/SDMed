@@ -3,21 +3,21 @@
 Unidad::Unidad()
 {
    strcpy(ListaUnidades[0],"");
-   strcpy(ListaUnidades[1],"m");
+   strcpy(ListaUnidades[1],"m.");
    strcpy(ListaUnidades[2],"m2");
    strcpy(ListaUnidades[3],"m3");
    strcpy(ListaUnidades[4],"kg");
    strcpy(ListaUnidades[5],"km");
    strcpy(ListaUnidades[6],"t");
    strcpy(ListaUnidades[7],"l");
-   strcpy(ListaUnidades[8],"h");
+   strcpy(ListaUnidades[8],"h.");
    strcpy(ListaUnidades[9],"d");
    strcpy(ListaUnidades[10],"a");
    strcpy(ListaUnidades[11],"Ha");
    strcpy(ListaUnidades[12],"cm3");
    strcpy(ListaUnidades[13],"cm2");
    strcpy(ListaUnidades[14],"dm3");
-   strcpy(ListaUnidades[15],"u");
+   strcpy(ListaUnidades[15],"ud");
    strcpy(ListaUnidades[16],"mu");
    strcpy(ListaUnidades[17],"cu");
    strcpy(ListaUnidades[18],"mes");

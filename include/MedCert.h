@@ -21,6 +21,7 @@ class MedCert
         const Medicion& LeeCertificacion() const;
         const Medicion& LeeMedCer(int n=MEDICION);
         int NumCertificaciones() const;
+        bool hayMedCert(int n=MEDICION);
         /******modificadores*********/
         void EscribeMedicion();
         void EscribeMedicion(const Medicion& m);

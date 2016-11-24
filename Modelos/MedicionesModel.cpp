@@ -150,6 +150,6 @@ void MedicionesModel::ActualizarDatos()
             qDebug()<<"linea: "<<linea;
         }
     }
-    //QString suma=QString::number(O->LeeTotalLineasMedicion(),'f',2);
+    //QString suma=QString::number(miobra->LeeTotalLineasMedicion(),'f',2);
     //LeyendasCabecera[tipoColumna::PARCIAL].append("Parcial\n").append(suma);
 }

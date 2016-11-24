@@ -101,9 +101,16 @@ void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, QString linea, QStringLis
             registros[j] = relaciones.first();
             relaciones.pop_front();
         }
-        //float cant =  registros[2].toFloat();
+        float cant =  registros[2].toFloat();
         MedCert medi = procesarMediciones(registroM, padre, registros[0]);//registros[0]==nombrehijo
-        obra->CrearPartida(padre, medi, registros[0]);
+        if (medi.hayMedCert())
+        {
+            obra->CrearPartida(padre, medi, registros[0]);
+        }
+        else
+        {
+            obra->CrearPartida(padre, cant, registros[0]);
+        }
     }
     //si tengo la raiz la pongo al comienzo
     if (nombreRaiz.length()>0)
@@ -181,7 +188,6 @@ MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombre
                     conceptos[j]= medicion.first().toStdString();
                     medicion.pop_front();
                 }
-                //int n;std::cin>>n;
                 float cantidades[4];
                 for (int i=0; i<4; i++)
                 {

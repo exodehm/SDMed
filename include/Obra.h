@@ -144,7 +144,7 @@ private:
     int selectorMedCer;
     //redondeos de la obra
     Coeficientes Redondeos;
-    //Datos DatosDeObra;
+    //Listados para tablas;
     QList<QStringList> listadoTablaP;
     QList<QStringList> listadoTablaMC;
 
