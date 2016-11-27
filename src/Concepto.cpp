@@ -73,7 +73,7 @@ int Concepto::LeeNUd() const
 
 const TEXTO Concepto::LeeFecha() const
 {
-    //return fecha.LeeFecha();
+    return QString::fromStdString(fecha.LeeFecha());
 }
 
 const float Concepto::LeeImportePres() const
@@ -86,7 +86,7 @@ const float Concepto::LeeImporteCert() const
     return Importe[CERTIFICACION].LeePrecio();
 }
 
-const int Concepto:: LeeNat() const
+const int &Concepto::LeeNat() const
 {
     return Nat;
 }

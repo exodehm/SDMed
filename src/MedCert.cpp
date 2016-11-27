@@ -51,6 +51,18 @@ const Medicion& MedCert::LeeMedCer(int n)
     }
 }
 
+Medicion& MedCert::ModificaMedCer(int n)
+{
+    if (n==MEDICION || n==CERTIFICACION)
+    {
+        return MC[n];
+    }
+    else
+    {
+        return MC[MEDICION];
+    }
+}
+
 int MedCert::NumCertificaciones() const
 {
 //    return MC.size()-1;

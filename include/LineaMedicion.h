@@ -24,16 +24,16 @@ struct LineaMedicion
     std::string comentario;
     std::string formula;
     //constructores
-    LineaMedicion(int fase=1, tipo Tip=NORMAL, std::string com="", int uds=1,float larg=0, float lat=0, float alt=0,
+    LineaMedicion(int fase=1, tipo Tip=NORMAL, std::string com="", float uds=1,float larg=0, float lat=0, float alt=0,
         std::string form="", float parc=0, float subt=0,  bool act=true, int factor = 4, bool sel=false);
     LineaMedicion(const LineaMedicion& origen);
 
     //destructor
     //~LineaMedicion();
     //metodos consultores
-    const int& LeeFase() const ;
-    const std::string& LeeComentario() const ;
-    const int Lee_N_Uds() const;
+    const int& LeeFase() const;
+    const std::string& LeeComentario() const;
+    const float Lee_N_Uds() const;
     const float& LeeLargo() const;
     const float& LeeAncho() const;
     const float& LeeAlto() const;

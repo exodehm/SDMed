@@ -1,43 +1,43 @@
-#include "../include/AsignadorDeNaturaleza.h"
+#include "../include/Codificacion.h"
 
 
-AsignadorDeNaturaleza::AsignadorDeNaturaleza(int n):Cuadro(n)
+Codificacion::Codificacion(int n):Cuadro(n)
 {
-    Codificacion.push_back("Sin Codificacion");
-    Codificacion.push_back("PREOC_EOCE");
-    Codificacion.push_back("IVE_CAM");
-    Codificacion.push_back("ITEC");
-    Codificacion.push_back("FCBP");
-    Codificacion.push_back("ARAGON");
-    Codificacion.push_back("ARCOS");
-    Codificacion.push_back("PRESTO_CENTRO");
-    Codificacion.push_back("EK");
-    Codificacion.push_back("CHILE");
-    Codificacion.push_back("BPCCL");
-    Codificacion.push_back("AGRO");
-    Codificacion.push_back("FITC");
-    Codificacion.push_back("FECE");
-    Codificacion.push_back("EMEDOS");
+    ListaCodificacion.push_back("Sin Codificacion");
+    ListaCodificacion.push_back("PREOC_EOCE");
+    ListaCodificacion.push_back("IVE_CAM");
+    ListaCodificacion.push_back("ITEC");
+    ListaCodificacion.push_back("FCBP");
+    ListaCodificacion.push_back("ARAGON");
+    ListaCodificacion.push_back("ARCOS");
+    ListaCodificacion.push_back("PRESTO_CENTRO");
+    ListaCodificacion.push_back("EK");
+    ListaCodificacion.push_back("CHILE");
+    ListaCodificacion.push_back("BPCCL");
+    ListaCodificacion.push_back("AGRO");
+    ListaCodificacion.push_back("FITC");
+    ListaCodificacion.push_back("FECE");
+    ListaCodificacion.push_back("EMEDOS");
 }
 
-const std::string AsignadorDeNaturaleza::LeeNombre(int n) const
+const std::string Codificacion::LeeNombre(int n) const
 {
-    auto it=Codificacion.begin();
+    auto it=ListaCodificacion.begin();
     advance(it,n);
     return *it;
 }
 
-int AsignadorDeNaturaleza::LeeTam() const
+int Codificacion::LeeTam() const
 {
-    return Codificacion.size();
+    return ListaCodificacion.size();
 }
 
-void AsignadorDeNaturaleza::CambiarCodificacion(int n)
+void Codificacion::CambiarCodificacion(int n)
 {
     Cuadro=n;
 }
 
-int AsignadorDeNaturaleza::AsignarNaturalezaSegunCuadro (std::string codigo)
+int Codificacion::AsignarNaturalezaSegunCuadro (std::string codigo)
     {
         switch (Cuadro)
             {
@@ -321,7 +321,7 @@ int AsignadorDeNaturaleza::AsignarNaturalezaSegunCuadro (std::string codigo)
         return Nat;
     }
 
-int AsignadorDeNaturaleza::LeeNat()const
+int Codificacion::LeeNat()const
 {
     return Nat;
 }

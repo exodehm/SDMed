@@ -1,7 +1,7 @@
 #include "../include/LineaMedicion.h"
 
 
-LineaMedicion::LineaMedicion(int fase, tipo Tip, std::string com, int uds,float larg, float lat, float alt, std::string form,
+LineaMedicion::LineaMedicion(int fase, tipo Tip, std::string com, float uds, float larg, float lat, float alt, std::string form,
     float parc, float subt,  bool act, int factor, bool sel):nFase(fase), tipoLinea(Tip), comentario(com), n_unidades(uds),
         largo(larg),ancho(lat),alto(alt),formula(form), parcial(parc),subtotal(subt),activa(act),FacRed(factor),seleccionada(sel)
 {
@@ -40,7 +40,7 @@ const std::string& LineaMedicion::LeeComentario() const
     return comentario;
 }
 
-const int LineaMedicion::Lee_N_Uds() const
+const float LineaMedicion::Lee_N_Uds() const
 {
     return n_unidades;
 }
@@ -78,20 +78,20 @@ const float& LineaMedicion::LeeSubtotal() const
 {
     return subtotal;
 }
-
+#include <QDebug>
 QStringList LineaMedicion::LeeLineaMedicion()
 {
     QStringList lineamedicion;
     lineamedicion.append(QString::number(nFase));
     lineamedicion.append(QString::fromStdString(comentario));
-    lineamedicion.append(QString::number(n_unidades));
-    lineamedicion.append(QString::number(largo));
-    lineamedicion.append(QString::number(ancho));
-    lineamedicion.append(QString::number(alto));
-    lineamedicion.append(QString::number(nFase));
+    lineamedicion.append(QString::number(n_unidades,'f',2));
+    lineamedicion.append(QString::number(largo,'f',2));
+    lineamedicion.append(QString::number(ancho,'f',2));
+    lineamedicion.append(QString::number(alto,'f',2));
     lineamedicion.append(QString::fromStdString(formula));
-    lineamedicion.append(QString::number(parcial));
-    lineamedicion.append(QString::number(subtotal));
+    lineamedicion.append(QString::number(parcial,'f',2));
+    lineamedicion.append(QString::number(subtotal,'f',2));
+    lineamedicion.append("");//un espacio para la columna Id...si se acaba eliminando esa columna, borrar este append
     return lineamedicion;
 }
 
@@ -115,7 +115,7 @@ void LineaMedicion::EscribeLargo (float L)
 }
 void LineaMedicion::EscribeAncho (float An)
 {
-    ancho=An;
+    ancho=An;    
     EscribeParcial();
 }
 void LineaMedicion::EscribeAlto (float Al)
@@ -153,8 +153,8 @@ void LineaMedicion::EscribeParcial()
             provisional = n_unidades*((largo==0)?1:largo)*((ancho==0)?1:ancho)*((alto==0)?1:alto);
         }
     //std::cout<<"Provisional= "<<provisional<<std::endl;
-    //std::cout<<"Factor de rendimiento es: "<<FacRed<<std::endl;
-    parcial = ceil(provisional*1000)/1000;
+    //std::cout<<"Factor de rendimiento es: "<<FacRed<<std::endl;    
+    parcial = ceil(provisional*1000.0)/1000.0;
 }
 
 void LineaMedicion::EscribeSubtotal(float Sub)
@@ -166,13 +166,13 @@ float LineaMedicion::CalcularFormula (std::string expresion, float UD, float LON
 {
     //std::cout<<"CalcularFormula() "<<expresion<<"-"<<UD<<"-"<<LONG<<"-"<<LAT<<"-"<<ALT<<std::endl;
     float a,b,c,d;
-    UD==0   ?a=1
+    UD==0   ?a=1.f
                :a=UD;
-    LONG==0 ?b=1
+    LONG==0 ?b=1.f
                :b=LONG;
-    LAT==0  ?c=1
+    LAT==0  ?c=1.f
                :c=LAT;
-    ALT==0  ?d=1
+    ALT==0  ?d=1.f
                :d=ALT;
     //cambio las letras por sus valores en la expresion
     for (size_t i=0; i<expresion.length(); i++)

@@ -31,8 +31,8 @@ int MedicionesModel::rowCount(const QModelIndex& parent) const
 
 int MedicionesModel::columnCount(const QModelIndex& parent) const
 {
-	Q_UNUSED(parent);
-    return 10;//datos.value(0).length();
+	Q_UNUSED(parent);    
+    return LeyendasCabecera.length();
 }
 
 QVariant MedicionesModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -92,16 +92,15 @@ bool MedicionesModel::setData(const QModelIndex & index, const QVariant& value, 
 {
     if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
 	{
-        datos[index.row()][index.column()]=value.toString();
-        emit dataChanged(index, index);
         if (index.column()==tipoColumna::COMENTARIO || index.column()==tipoColumna::FORMULA)
         {            
-            emit EditarCampoLineaMedicion(index.column(),0, value.toString());//mando el string y el valor numerico a 0
+            miobra->EditarLineaMedicion(index.column(),0, value.toString());//mando el string y el valor numerico a 0
         }
         else if (index.column()==tipoColumna::N || index.column()==tipoColumna::LONGITUD || index.column()==tipoColumna::ANCHURA || index.column()==tipoColumna::ALTURA)
         {
-            emit EditarCampoLineaMedicion(index.column(),value.toFloat(),"");//mando el valor numerico y el string vacío           
+            miobra->EditarLineaMedicion(index.column(),value.toFloat(),"");//mando el valor numerico y el string vacío
         }
+        emit dataChanged(index, index);
         return true;
     }
     return false;
@@ -140,16 +139,8 @@ bool MedicionesModel::filaVacia(const QStringList& linea)
 void MedicionesModel::ActualizarDatos()
 {
     datos.clear();
-    //LeyendasCabecera[tipoColumna::PARCIAL].clear();
-    datos = miobra->VerMedCert();
-    QStringList liena;
-    foreach (liena, datos) {
-        QString linea;
-        foreach (linea, liena)
-        {
-            qDebug()<<"linea: "<<linea;
-        }
-    }
-    //QString suma=QString::number(miobra->LeeTotalLineasMedicion(),'f',2);
-    //LeyendasCabecera[tipoColumna::PARCIAL].append("Parcial\n").append(suma);
+    LeyendasCabecera[tipoColumna::PARCIAL].clear();
+    datos = miobra->VerMedCert();    
+    QString suma=QString::number(miobra->LeeTotalMedicion(),'f',2);
+    LeyendasCabecera[tipoColumna::PARCIAL].append("Parcial\n").append(suma);
 }

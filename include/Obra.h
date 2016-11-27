@@ -88,7 +88,8 @@ public:
     void borrarTodaMedicionOCertificacion();
     void borrarTodaMedicion();
     void borrarTodaCertificacion();
-    void EditarLineaMedicion (int tipo, float valor, TEXTO comentario);
+    void EditarLineaMedicion (int columna, float valor, TEXTO comentario);
+    void PosicionarLineaActualMedicion(int fila);
     void avanzarLineaActualMedicion();
     void retrocederLineaActualMedicion();
     void seleccionarLineaMedicion();
@@ -104,6 +105,7 @@ public:
     int CertificacionActiva();
     void SeleccionarCertificacion(int n);
     void cambiarFechaCertificacion(std::string fecha);
+    const float& LeeTotalMedicion() const;
     /**********seleccionar entre medicion y certificacion********/
     void cambiarEntreMedYCert();
     /***************************varias***************************/
@@ -114,6 +116,7 @@ public:
     bool existeHermano(TEXTO codigo);
     bool NivelCero() const;
     bool NivelUno() const;
+    bool EsPartida();
     /************************Codigo y Resumen de la obra*************/
     const TEXTO LeeCodigoObra() const;
     const TEXTO LeeResumenObra() const;
@@ -134,7 +137,7 @@ private:
     pArista aristaActual;
     std::stack <pArista>pilaAristas;
     //objeto usado para asignar la naturaleza del concepto
-    AsignadorDeNaturaleza Codificacion;
+    Codificacion codificacion;
     //lista auxiliar para el copiado de conceptos
     std::list<std::pair<pArista,pNodo>>nodosParaCopiar;
     //elementos auxiliares para el copiapega de mediciones

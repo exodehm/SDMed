@@ -1,5 +1,7 @@
 #include "../include/AbrirGuardar.h"
 
+float tofloat(std::string cadena);
+
 Obra*  AbrirGuardarBC3::Leer(QString nombrefichero)
 {
     Obra* obra = nullptr;//= new Obra;
@@ -153,11 +155,11 @@ void AbrirGuardarBC3::procesarConceptos(Obra* &obra, QStringList &registroC)
             }
             else if (codigo_comp.contains("#"))
             {
-                nat=AsignadorDeNaturaleza::Capitulo;
+                nat=Codificacion::Capitulo;
             }
             else
             {
-                nat=AsignadorDeNaturaleza::Partida;
+                nat=Codificacion::Partida;
             }
             minodo->datonodo.EscribeNaturaleza(nat);
         }
@@ -185,13 +187,14 @@ MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombre
             {
                 for (int j=0;j<6;j++)
                 {
-                    conceptos[j]= medicion.first().toStdString();
+                    conceptos[j]= medicion.first().toStdString();                    
                     medicion.pop_front();
                 }
                 float cantidades[4];
                 for (int i=0; i<4; i++)
                 {
-                    (conceptos[i+2].length()>0 ? cantidades[i]=std::atof(conceptos[i+2].c_str()) : cantidades[i]=0);
+                    conceptos[i+2].length()>0 ? cantidades[i]=tofloat(conceptos[i+2]) : cantidades[i]=0;
+                    //std::cout<<conceptos[i+2]<<" -- "<<cantidades[i]<<std::endl;
                 }
                 int tipo;
                 if (conceptos[0].size()==0)
@@ -200,8 +203,8 @@ MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombre
                 }
                 else
                 {
-                    tipo=std::atoi(conceptos[0].c_str());
-                }
+                    tipo=std::stoi(conceptos[0]);
+                }                
                 eme.Insertar(tipo,conceptos[1],cantidades[0],cantidades[1],cantidades[2],cantidades[3]);
             }
             MedCert MC;
@@ -444,6 +447,28 @@ std::string AbrirGuardarBC3::tostr(const T& t)
     std::ostringstream os;
     os<<t;
     return os.str();
+}
+
+float tofloat(std::string cadena)
+{
+    size_t pos = cadena.find(("."));
+    float valor=0;
+    if (pos<cadena.size())
+    {
+        int num_decimales = cadena.size()-pos-1;
+        int divisor=1;
+        for (int i=0;i<num_decimales;i++)
+        {
+            divisor*=10;
+        }
+        cadena.replace(pos,1,"");
+        valor = std::stof(cadena)/divisor;
+    }
+    else
+    {
+        valor=stof(cadena);
+    }
+    return valor;
 }
 
 

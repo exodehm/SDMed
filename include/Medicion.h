@@ -11,17 +11,19 @@
 #include "LineaMedicion.h"
 #include "GestorEntradaDatosLineasMedicion.h"
 #include "Fecha.h"
+#include "./defs.h"
 
 class Medicion
 {
 private:
     std::list<LineaMedicion> lm;
+    //std::list<LineaMedicion>::iterator actual;
 
     float TotalCantidad;
     LineaMedicion* actual;
     bool todoseleccionado;
     Fecha fecha;
-    enum {COM,UD,LONG,LAT,ALT,FOR} campo;
+    //enum {COM,UD,LONG,LAT,ALT,FOR} campo;
     GestorEntradaDatosLineasMedicion Gestor;
 
 public:
@@ -49,6 +51,7 @@ public:
     void Bloquear(int nColumna, float fValor);
     void Desbloquear(int nColumna);
     void DesbloquearTodo();
+    void PosicionarLineaActual(int pos);
     /*******copia/pega*********************/
     void Copiar(std::list<LineaMedicion*>* l);
     void Pegar(std::list<LineaMedicion*>* l);
@@ -58,7 +61,7 @@ public:
     const LineaMedicion* LeeActual() const;
     const bool hayMedicion() const;
     /***************modificadores************************/
-    void EditarCampo (int campo, float valor, std::string comentario="");
+    void EditarCampo (int columna, float valor, std::string comentario="");
     void EscribeTotal (float cantidad);
     void actualAlComienzo();
 

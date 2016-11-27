@@ -192,7 +192,7 @@ bool PrincipalModel::filaVacia(const QStringList& linea)
 
 void PrincipalModel::ActualizarDatos()
 {
-    qDebug()<<"Filas iniciales: "<<datos.length();
+    //qDebug()<<"Filas iniciales: "<<datos.length();
     datos.clear();
     datos = miobra->VerActual();
 
@@ -200,5 +200,5 @@ void PrincipalModel::ActualizarDatos()
     {
         datos[0][i].prepend(LeyendasCabecera[i]);
     }
-    qDebug()<<"Filas finales: "<<datos.length();
+    //qDebug()<<"Filas finales: "<<datos.length();
 }

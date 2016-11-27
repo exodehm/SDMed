@@ -4,7 +4,7 @@
 InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazObra)
 {
     AbrirGuardar* A = new AbrirGuardarBC3();
-    QString nombrefichero = "/home/david/programacion/cmasmas/PruebasObra/bin/Debug/CENZANO.bc3";
+    QString nombrefichero = "/home/david/programacion/cmasmas/PruebasObra/bin/Debug/SyS_ARMILLA.bc3";
     O = A->Leer(nombrefichero);
     if (O)
     {
@@ -19,6 +19,7 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
 
         ui->tablaPrinc->setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::AnyKeyPressed);
         cabeceraTablaP = ui->tablaPrinc->horizontalHeader();
+        cabeceraTablaP->setSelectionMode(QAbstractItemView::NoSelection);
 
         modeloTablaMC =  new MedicionesModel(O);
         ui->TablaMed->setModel(modeloTablaMC);
@@ -33,13 +34,13 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
         /************signals y slots*****************/
         QObject::connect(ui->tablaPrinc,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
         QObject::connect(ui->tablaPrinc,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
-        //QObject::connect(tablaMC[0],SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
+        QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
+        QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(ActualizarTablaMedicion(QModelIndex,QModelIndex)));
         QObject::connect(cabeceraTablaP,SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
         QObject::connect(ui->comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(MostrarDeSegun(int)));
         //QObject::connect(modeloTablaP,SIGNAL(EditarCampoTexto(int, QString)),this,SLOT(EditarCodigoResumen(int, QString)));
         //QObject::connect(modeloTablaP,SIGNAL(EditarNaturaleza(int)),this,SLOT(EditarNaturaleza(int)));
-        //QObject::connect(modeloTablaP,SIGNAL(EditarCampoNumerico(int,float)),this,SLOT(EditarCantidadPrecio(int,float)));
-        //QObject::connect(modeloTablaM,SIGNAL(EditarCampoLineaMedicion(int,float,QString)),this,SLOT(EditarCampoLineaMedicion(int,float, QString)));
+        //QObject::connect(modeloTablaP,SIGNAL(EditarCampoNumerico(int,float)),this,SLOT(EditarCantidadPrecio(int,float)));        
         //QObject::connect(tabMedCert,SIGNAL(currentChanged(int)),this,SLOT(CambiarMedCert(int)));
 
         QObject::connect(ui->botonAdelante,SIGNAL(clicked(bool)),this,SLOT(Avanzar()));
@@ -83,10 +84,11 @@ void InterfazObra::SubirNivel()
         guardar.recuperar=false;
         O->Actualizar(guardar.Arista->nodo_destino);
     }*/
+    ui->tablaPrinc->clearSelection();
     O->SubirNivel();
     RefrescarVista();
     //O->MostrarHijos();
-    qDebug()<<"Subir nivel";
+    //qDebug()<<"Subir nivel";
 }
 
 void InterfazObra::BajarNivel(QModelIndex indice)
@@ -104,7 +106,7 @@ void InterfazObra::BajarNivel(QModelIndex indice)
         }*/
     RefrescarVista();
     //}
-    qDebug()<<"Bajar nivel";
+    //qDebug()<<"Bajar nivel";
 }
 
 void InterfazObra::Avanzar()
@@ -131,17 +133,25 @@ void InterfazObra::Retroceder()
     RefrescarVista();
 }
 
+void InterfazObra::ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2)
+{
+    Q_UNUSED (indice1);
+    Q_UNUSED (indice2);
+    RefrescarVista();
+}
+
 void InterfazObra::RefrescarVista()
 {
     modeloTablaP->ActualizarDatos();
     modeloTablaMC->ActualizarDatos();
-    O->MostrarHijos();
+    //O->MostrarHijos();
     EscribirTexto();
     //MostrarTexto();
     modeloTablaP->layoutChanged();
     modeloTablaMC->layoutChanged();
     ui->tablaPrinc->resizeColumnsToContents();
     ui->TablaMed->resizeColumnsToContents();
+    ui->TablaMed->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
 
     //AjustarAltura();
     //MostrarTablasMyC();
@@ -154,10 +164,10 @@ void InterfazObra::EscribirTexto()
 
 void InterfazObra::PosicionarTablaP(QModelIndex indice)
 {
-    O->PosicionarAristaActual(indice.row());
-    qDebug()<<"Estoy en: "<<indice.row()<<" :: "<<indice.column();
+    O->PosicionarAristaActual(indice.row());    
 }
 
-
-
-
+void InterfazObra::PosicionarTablaM(QModelIndex indice)
+{
+    O->PosicionarLineaActualMedicion(indice.row());
+}

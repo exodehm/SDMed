@@ -3,7 +3,7 @@
 
 #include <QString>
 #include "Fecha.h"
-#include "AsignadorDeNaturaleza.h"
+#include "Codificacion.h"
 #include "Precio.h"
 #include "Unidades.h"
 
@@ -41,7 +41,7 @@ public:
     const float LeeImportePres() const;
     const float LeeImporteCert() const;
     const TEXTO LeeFecha() const;
-    const int LeeNat() const;
+    const int& LeeNat() const;
     Divisas LeeDivisa() const;
     int LeeDuracion() const;
     int LeeExistencias() const;

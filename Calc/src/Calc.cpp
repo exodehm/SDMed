@@ -265,7 +265,7 @@ Calc::elemento_t* Calc::preparaCadena (const char* cadena, int& t)
             EP[t].semantica=OPERANDO;
             std::stringstream ss(aux);
             ss>>EP[t].OP.operando;
-            std::cout<<"Soy el operando= "<<EP[t].OP.operando<<std::endl;
+            //std::cout<<"Soy el operando= "<<EP[t].OP.operando<<std::endl;
             j=0;
             t++;
             i--;

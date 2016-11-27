@@ -1,20 +1,20 @@
-#ifndef ASIGNADORDENATURALEZA_H
-#define ASIGNADORDENATURALEZA_H
+#ifndef CODIFICACION_H
+#define CODIFICACION_H
 #include <string>
 #include <list>
 
-class AsignadorDeNaturaleza
+class Codificacion
 {
 private:
     int Nat;
     int Cuadro;
-    std::list<std::string>Codificacion;
+    std::list<std::string>ListaCodificacion;
 
 public:
     enum CuadroDePrecios {Nulo, PREOC_EOCE,IVE_CAM, ITEC,FCBP,ARAGON,ARCOS,PRESTO_CENTRO,EK,CHILE,BPCCL,AGRO,EMEDOS,FITC,FECE};
     enum Naturaleza{Sin_clasificar, Mano_de_Obra, Maquinaria, Materiales, Comp_residuo,Clasificacion_residuo, Capitulo, Partida};
     //constructor
-    AsignadorDeNaturaleza(int n=PREOC_EOCE);
+    Codificacion(int n=PREOC_EOCE);
     void CambiarCodificacion(int n);
     int AsignarNaturalezaSegunCuadro (std::string codigo);
     int LeeNat()const;
@@ -22,4 +22,4 @@ public:
     int LeeTam() const;
 };
 
-#endif // ASIGNADORDENATURALEZA_H
+#endif // CODIFICACION_H

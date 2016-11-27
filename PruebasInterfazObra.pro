@@ -19,7 +19,6 @@ SOURCES += main.cpp\
     Calc/src/Calc.cpp \
     src/AbrirGuardar.cpp \
     src/AbrirGuardarBC3.cpp \
-    src/AsignadorDeNaturaleza.cpp \
     src/Certificacion.cpp \
     src/Concepto.cpp \
     src/Datos.cpp \
@@ -33,7 +32,8 @@ SOURCES += main.cpp\
     src/Precio.cpp \
     src/Redondeos.cpp \
     src/Unidades.cpp \
-    Modelos/MedicionesModel.cpp
+    Modelos/MedicionesModel.cpp \
+    src/Codificacion.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -46,7 +46,6 @@ HEADERS  += interfazobra.h \
     Calc/include/pila.h \
     include/AbrirGuardar.h \
     include/arista.h \
-    include/AsignadorDeNaturaleza.h \
     include/Caracteres.h \
     include/Certificacion.h \
     include/Concepto.h \
@@ -64,7 +63,8 @@ HEADERS  += interfazobra.h \
     include/Precio.h \
     include/Redondeos.h \
     include/Unidades.h \
-    Modelos/MedicionesModel.h
+    Modelos/MedicionesModel.h \
+    include/Codificacion.h
 
 FORMS    += interfazobra.ui
 

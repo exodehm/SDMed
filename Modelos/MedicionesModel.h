@@ -37,7 +37,7 @@ public:
     void ActualizarDatos();
 
 signals:
-    void EditarCampoLineaMedicion (int, float, QString);
+    void EditarCampoLineaMedicion (QModelIndex, float, QString);
 
 
 private:

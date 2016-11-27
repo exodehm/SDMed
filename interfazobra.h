@@ -32,10 +32,11 @@ public slots:
     void lineaMenos();
     void PosicionarTablaP();*/
     void PosicionarTablaP(QModelIndex indice);
-    //void PosicionarTablaM(QModelIndex indice);
+    void PosicionarTablaM(QModelIndex indice);
     void MostrarDeSegun(int indice);
     void Avanzar();
     void Retroceder();
+    void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
     /*void InsertarFilaVacia();
     void InsertarDelante();
     void Eliminar(const QList<int> &Lista);

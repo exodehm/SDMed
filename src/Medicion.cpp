@@ -1,7 +1,7 @@
 #include "../include/Medicion.h"
 #include <iomanip>
 
-Medicion::Medicion(float total):lm(),TotalCantidad(total),actual(0),todoseleccionado(false),fecha()
+Medicion::Medicion(float total):lm(),TotalCantidad(total),actual(nullptr),todoseleccionado(false),fecha()
 {
     //std::cout<<"Nueva medición con valor "<<total<<std::endl;
 }
@@ -10,7 +10,7 @@ Medicion::Medicion (const Medicion& origen)
 {
     lm =origen.lm;
     TotalCantidad=origen.TotalCantidad;
-    actual=0;
+    actual=nullptr;
     todoseleccionado=false;
     fecha=origen.fecha;
 }
@@ -27,7 +27,7 @@ Medicion& Medicion::operator=(const Medicion& origen)
     {
         lm=origen.lm;
         TotalCantidad=origen.TotalCantidad;
-        actual=0;
+        actual=nullptr;
         todoseleccionado=false;
         fecha=origen.fecha;
     }
@@ -78,7 +78,7 @@ void Medicion::Insertar (int tipo, std::string ComentarioFormula, float unidades
 
     //inserto cada valor en su campo, excepto el comentario
     buffer.EscribeUds(unidades);
-    buffer.EscribeLargo(longitud);
+    buffer.EscribeLargo(longitud);   
     buffer.EscribeAncho(latitud);
     buffer.EscribeAlto(altura);
 
@@ -208,7 +208,7 @@ void Medicion::SumaMedicion()
     {
         TotalCantidad+=Iterador->LeeParcial();
         Iterador++;
-    }
+    }    
 }
 
 void Medicion::SumaSubParcial()
@@ -296,6 +296,16 @@ void Medicion::RetrocederActual()
     }
 }
 
+void Medicion::PosicionarLineaActual(int pos)
+{
+    auto Iterador = lm.begin();
+    for (int i=0;i<pos;i++)
+    {
+        Iterador++;
+    }
+        actual=&(*Iterador);
+}
+
 void Medicion::SelecDeselecLinea()
 {
     auto Iterador=lm.begin();
@@ -337,37 +347,37 @@ void Medicion::Pegar(std::list<LineaMedicion*>* l)
     }
 }
 
-void Medicion::EditarCampo (int campo, float valor, std::string comentario)
+void Medicion::EditarCampo (int columna, float valor, std::string comentario)
 {
-    if (campo==Medicion::COM)
+    if (columna==tipoColumna::COMENTARIO)
     {
         actual->EscribeComentario (comentario);
     }
     else
     {
-        switch (campo)
+        switch (columna)
         {
-        case Medicion::UD:
+        case tipoColumna::UD:
         {
             actual->EscribeUds (valor);
             break;
         }
-        case Medicion::LONG:
+        case tipoColumna::LONGITUD:
         {
             actual->EscribeLargo (valor);
             break;
         }
-        case Medicion::LAT:
+        case tipoColumna::ANCHURA:
         {
             actual->EscribeAncho (valor);
             break;
         }
-        case Medicion::ALT:
+        case tipoColumna::ALTURA:
         {
             actual->EscribeAlto (valor);
             break;
         }
-        case Medicion::FOR:
+        case tipoColumna::FORMULA:
         {
             actual->EscribeFormula(comentario);
             //actual->EscribeComentario("");

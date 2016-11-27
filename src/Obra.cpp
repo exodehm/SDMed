@@ -2,7 +2,7 @@
 
 Obra::Obra():G(),selectorMedCer(0),Redondeos() {}
 
-Obra::Obra(TEXTO Cod, TEXTO Res, int ud, int CuadroDePrecios):G(),Codificacion(CuadroDePrecios),selectorMedCer(0),Redondeos()
+Obra::Obra(TEXTO Cod, TEXTO Res, int ud, int CuadroDePrecios):G(),codificacion(CuadroDePrecios),selectorMedCer(0),Redondeos()
 {
     Concepto* conceptoRaiz=new Concepto(Cod,ud,Res);
     IniciarObra(*conceptoRaiz);
@@ -84,7 +84,7 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
 {
     /******variables que usaré para crear el concepto*****************/
     pArista nuevaArista;
-    int N=AsignadorDeNaturaleza::Partida;//en principio la inicializo como partida
+    int N=Codificacion::Partida;//en principio la inicializo como partida
     //ahora toca ver si se trata de un porcentaje
 
     pNodo nuevoNodo = existeConcepto(Cod);
@@ -93,7 +93,7 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
         if (Cod.contains("%"))
         {
             ud=Unidad::porcentaje;
-            N=AsignadorDeNaturaleza::Sin_clasificar;
+            N=Codificacion::Sin_clasificar;
             std::cin.ignore(100,'\n');
             precio=padre->datonodo.LeeImportePres()/100;
         }
@@ -102,19 +102,19 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
             /***asignamos la naturaleza***/
             if (NivelCero())
             {
-                N=AsignadorDeNaturaleza::Partida;
+                N=Codificacion::Partida;
             }
             else
             {
-                N=Codificacion.AsignarNaturalezaSegunCuadro(Cod.toStdString());
+                N=codificacion.AsignarNaturalezaSegunCuadro(Cod.toStdString());
             }
             /***si la naturaleza del concepto es maquinaria o mano de obra podemos asignar
             de forma automatica la unidad a la hora**/
-            if (N==AsignadorDeNaturaleza::Mano_de_Obra || N==AsignadorDeNaturaleza::Maquinaria) //mano de obra o maquinaria
+            if (N==Codificacion::Mano_de_Obra || N==Codificacion::Maquinaria) //mano de obra o maquinaria
             {
                 ud=Unidad::hora; //hora h
             }
-            else if(N==AsignadorDeNaturaleza::Partida)
+            else if(N==Codificacion::Partida)
             {
                 ud=Unidad::sinUnidad;
             }
@@ -381,14 +381,13 @@ const QList<QStringList>& Obra::VerActual()
 
 const QList<QStringList>& Obra::VerMedCert()
 {
-    qDebug()<<"Funcion vermedcert!!!";
     std::list<LineaMedicion> lista = aristaPadre->datoarista.LeeMedCer().LeeLista();
     listadoTablaMC.clear();
     for (auto elem : lista)
     {
         listadoTablaMC.append(elem.LeeLineaMedicion());
-        QString dato;
-        /*foreach (dato, elem.LeeLineaMedicion())
+        /*QString dato;
+        foreach (dato, elem.LeeLineaMedicion())
         {
             qDebug()<<dato;
         }*/
@@ -396,7 +395,7 @@ const QList<QStringList>& Obra::VerMedCert()
     return listadoTablaMC;
 }
 
-void Obra::SumarHijos(pNodo n)
+void Obra:: SumarHijos(pNodo n)
 {
     if (n->adyacente)
     {
@@ -404,24 +403,22 @@ void Obra::SumarHijos(pNodo n)
         float sumapres=0, sumacert=0;
         float medicion = 0, certificacion = 0;
         float precio = 0;
-        pArista aux = n->adyacente;
         ListaNodosAristas lista = G.recorrerHijos(n);
         for (auto elem : lista)
         {
-            medicion = aux->datoarista.LeeMedicion().LeeTotal();
-            certificacion = aux->datoarista.LeeCertificacion().LeeTotal();
+            medicion = elem.second->datoarista.LeeMedicion().LeeTotal();
+            certificacion = elem.second->datoarista.LeeCertificacion().LeeTotal();
             precio = elem.first->datonodo.LeeImportePres();
-            std::cout<<"Precio: "<<precio<<" * Cantidad: "<<medicion<<std::endl;;
+            //qDebug()<<"Cantidad: "<<medicion<<"* Precio: "<<precio;
             if (elem.first->datonodo.LeeCodigo().contains("%")) //si es un porcentaje
             {
                 elem.first->datonodo.EscribeImportePres(sumapres/100.0);
             }
             sumapres+=precio * medicion;
             sumacert+=precio * certificacion;
-            aux=aux->siguiente;
         }
         n->datonodo.EscribeImportePres(sumapres);
-        n->datonodo.EscribeImportePres(sumacert);
+        n->datonodo.EscribeImporteCert(sumacert);
     }
 }
 
@@ -461,7 +458,7 @@ void Obra::SuprimirDescomposicion()
 
 void Obra::Medir_O_Certificar()
 {
-    if (aristaPadre->destino->datonodo.LeeNat()==AsignadorDeNaturaleza::Partida)//solo esta permitido que tengan medicion las partidas
+    if (aristaPadre->destino->datonodo.LeeNat()==Codificacion::Partida)//solo esta permitido que tengan medicion las partidas
     {
         /*aristaPadre->datoarista.LeeMedCer(selectorMedCer).Insertar();
         Actualizar(aristaPadre->destino);*/
@@ -502,6 +499,11 @@ void Obra::borrarTodaCertificacion()
         /*aristaActual->datoarista.LeeCertificacion().BorrarMedicion();
         Actualizar(aristaPadre->destino);*/
     }
+}
+
+void Obra::PosicionarLineaActualMedicion(int fila)
+{
+    aristaPadre->datoarista.ModificaMedCer(selectorMedCer).PosicionarLineaActual(fila);
 }
 
 void Obra::avanzarLineaActualMedicion()
@@ -587,12 +589,12 @@ void Obra::pegarMedicion(const std::list<TEXTO> &listaMedicion)
 
 void Obra::EditarCodificacion(int n)
 {
-    Codificacion.CambiarCodificacion(n);
+    codificacion.CambiarCodificacion(n);
 }
 
 void Obra::bloquearColumna(int nColumna, float fValor)
 {
-    /*if (aristaPadre->destino->datonodo.LeeNat()==AsignadorDeNaturaleza::Partida)//solo esta permitido que tengan medicion las partidas
+    /*if (aristaPadre->destino->datonodo.LeeNat()==Codificacion::Partida)//solo esta permitido que tengan medicion las partidas
     {
         if (nColumna>0 && nColumna<6)
         {
@@ -730,16 +732,15 @@ void Obra::Actualizar(pNodo nodoactual)
     /*std::cout<<"Lista original: ";
     for(auto Iterador=lista.begin(); Iterador != lista.end(); Iterador++)
     {
-        std::cout<<(*Iterador)->datonodo.LeeCodigo()<<" - ";
+        qDebug()<<(*Iterador)->datonodo.LeeCodigo()<<" - ";
     }
     std::cout<<"\n";
 
     std::cout<<"Lista reducida: ";
     for(auto Iterador=listaunica.begin(); Iterador != listaunica.end(); Iterador++)
     {
-        std::cout<<(*Iterador)->datonodo.LeeCodigo()<<" - ";
-    }
-    std::cout<<"\n";*/
+        qDebug()<<(*Iterador)->datonodo.LeeCodigo()<<" - ";
+    } */
 }
 
 void Obra::AjustarPrecio(float nuevoprecio)
@@ -854,10 +855,15 @@ void Obra::EditarCertificacionPorc(float porcentaje)
     Actualizar(aristaActual->destino);*/
 }
 
-void Obra::EditarLineaMedicion (int tipo, float valor, TEXTO comentario)
+void Obra::EditarLineaMedicion (int columna, float valor, TEXTO comentario)
 {
-    /*aristaPadre->datoarista.LeeMedCer(selectorMedCer).EditarCampo (tipo, valor, comentario);
-    Actualizar(aristaPadre->destino);*/
+    aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EditarCampo (columna, valor, comentario.toStdString());
+    Actualizar(aristaPadre->destino);
+}
+
+const float& Obra::LeeTotalMedicion() const
+{
+    return aristaPadre->datoarista.LeeMedCer().LeeTotal();
 }
 
 
@@ -953,6 +959,11 @@ bool Obra::NivelUno() const
         }
     }
     return false;
+}
+
+bool Obra::EsPartida()
+{
+    return aristaPadre->destino->datonodo.LeeNat()==Codificacion::Partida;
 }
 
 const TEXTO Obra::LeeCodigoObra() const
