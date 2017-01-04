@@ -4,7 +4,7 @@
 InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazObra)
 {
     AbrirGuardar* A = new AbrirGuardarBC3();
-    QString nombrefichero = "/home/david/programacion/cmasmas/PruebasObra/bin/Debug/SyS_ARMILLA.bc3";
+    QString nombrefichero = "/home/david/programacion/cmasmas/PruebasObra/bin/Debug/CENZANO.bc3";
     O = A->Leer(nombrefichero);
     if (O)
     {
@@ -12,6 +12,7 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
         O->MostrarHijos();
 
         ui->setupUi(this);
+        filter = new Filter;
 
         modeloTablaP = new PrincipalModel(O);
         ui->tablaPrinc->setAlternatingRowColors(true);
@@ -19,13 +20,12 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
 
         ui->tablaPrinc->setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::AnyKeyPressed);
         cabeceraTablaP = ui->tablaPrinc->horizontalHeader();
-        cabeceraTablaP->setSelectionMode(QAbstractItemView::NoSelection);
+        //cabeceraTablaP->setSelectionMode(QAbstractItemView::NoSelection);
 
         modeloTablaMC =  new MedicionesModel(O);
-        ui->TablaMed->setModel(modeloTablaMC);
+        ui->TablaMed->setModel(modeloTablaMC);        
 
         RefrescarVista();
-
         MostrarDeSegun(0);
 
         /**********editor*****************/
@@ -34,7 +34,7 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
         /************signals y slots*****************/
         QObject::connect(ui->tablaPrinc,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
         QObject::connect(ui->tablaPrinc,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
-        QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
+        //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
         QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(ActualizarTablaMedicion(QModelIndex,QModelIndex)));
         QObject::connect(cabeceraTablaP,SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
         QObject::connect(ui->comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(MostrarDeSegun(int)));
@@ -151,7 +151,8 @@ void InterfazObra::RefrescarVista()
     modeloTablaMC->layoutChanged();
     ui->tablaPrinc->resizeColumnsToContents();
     ui->TablaMed->resizeColumnsToContents();
-    ui->TablaMed->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
+    ui->TablaMed->resizeRowsToContents();
+    ui->TablaMed->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)    
 
     //AjustarAltura();
     //MostrarTablasMyC();
@@ -171,3 +172,74 @@ void InterfazObra::PosicionarTablaM(QModelIndex indice)
 {
     O->PosicionarLineaActualMedicion(indice.row());
 }
+
+/*bool InterfazObra::eventFilter(QObject *watched, QEvent *e)
+{
+    if (watched==ui->TablaMed)
+    {
+        if (e->type() == QEvent::KeyPress)
+        {
+            QModelIndex indice = ui->TablaMed->currentIndex();
+            QKeyEvent *ke =static_cast<QKeyEvent*>(e);
+            switch (ke->key())
+            {
+            case (Qt::Key_F5):
+            {
+                qDebug()<<"Insertando en Fila: "<<indice.row()<<" -- "<<" Columna: "<<indice.column();
+                modeloTablaMC->insertRows(indice.row(),1,QModelIndex());
+                modeloTablaMC->ActualizarDatos();
+                modeloTablaMC->layoutChanged();
+                break;
+
+            }
+            case (Qt::Key_Delete):
+            {
+                if (tabla->selectionModel()->isRowSelected(indice.row(),QModelIndex()))
+                {
+                    borrarLineas();
+                }
+                else
+                {
+                    modelo->setData(tabla->currentIndex(),"",Qt::EditRole);
+                }
+                break;
+            }
+            case (Qt::Key_Tab):
+            {
+                if (watched == editor)
+                {
+                    editor->setText(editor->document()->toPlainText()+"[Tab]");
+                }
+                else
+                {
+                    if (indice.row() == modelo->rowCount(QModelIndex())-1
+                            && indice.column() == modelo->columnCount(QModelIndex())-1
+                            && !NombreVacio())
+                    {
+                        modelo->insertRow(modelo->rowCount(QModelIndex()));
+                        QModelIndex ind = modelo->index(indice.row()+1,0);
+                        tabla->setCurrentIndex(ind);
+                    }
+                }
+                break;
+            }
+            case (Qt::Key_Down):
+            {
+                if (indice.row() == modelo->rowCount(QModelIndex())-1 && !NombreVacio())
+                {
+                    modelo->insertRow(modelo->rowCount(QModelIndex()));
+                    QModelIndex ind = modelo->index(indice.row()+1,indice.column(), QModelIndex());
+                    tabla->setCurrentIndex(ind);
+                }
+                break;
+            }
+            default:
+            {
+                break;
+            }
+            }
+            return false;
+        }
+    }
+    return QWidget::eventFilter(watched, e);
+}*/

@@ -17,10 +17,10 @@ class Medicion
 {
 private:
     std::list<LineaMedicion> lm;
-    //std::list<LineaMedicion>::iterator actual;
+    std::list<LineaMedicion>::iterator actual;
 
     float TotalCantidad;
-    LineaMedicion* actual;
+    //LineaMedicion* actual;
     bool todoseleccionado;
     Fecha fecha;
     //enum {COM,UD,LONG,LAT,ALT,FOR} campo;
@@ -36,9 +36,10 @@ public:
     ~Medicion();
     //funciones miembro
     void Insertar();
-    void Insertar (int tipo, std::string Comentario, float unidades, float longitud, float latitud, float altura);
-    void Insertar(LineaMedicion lineamed);
-    void EliminarLinea();
+    void Insertar (int tipo, int fila, std::string Comentario, float unidades, float longitud, float latitud, float altura);
+    void Insertar(int fila, LineaMedicion lineamed);
+    void InsertarLineasVacias(int pos, int num);
+    void EliminarLineas(int pos, int numLineas);
     void BorrarMedicion();
     void MostrarMedicion();
     void SumaMedicion();
@@ -58,10 +59,10 @@ public:
     //consultores
     const std::list<LineaMedicion> &LeeLista() const;
     const float& LeeTotal ()const;
-    const LineaMedicion* LeeActual() const;
+    const LineaMedicion LeeActual() const;
     const bool hayMedicion() const;
     /***************modificadores************************/
-    void EditarCampo (int columna, float valor, std::string comentario="");
+    void EditarCampo (int fila, int columna, float valor, std::string comentario="");
     void EscribeTotal (float cantidad);
     void actualAlComienzo();
 

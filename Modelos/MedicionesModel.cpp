@@ -94,22 +94,27 @@ bool MedicionesModel::setData(const QModelIndex & index, const QVariant& value, 
 	{
         if (index.column()==tipoColumna::COMENTARIO || index.column()==tipoColumna::FORMULA)
         {            
-            miobra->EditarLineaMedicion(index.column(),0, value.toString());//mando el string y el valor numerico a 0
+            qDebug()<<"Actualizando comentario o formula...";
+            miobra->EditarLineaMedicion(index.row(), index.column(),0, value.toString());//mando el string y el valor numerico a 0
         }
         else if (index.column()==tipoColumna::N || index.column()==tipoColumna::LONGITUD || index.column()==tipoColumna::ANCHURA || index.column()==tipoColumna::ALTURA)
         {
-            miobra->EditarLineaMedicion(index.column(),value.toFloat(),"");//mando el valor numerico y el string vacío
+            qDebug()<<"Actualizando el resto...";
+            miobra->EditarLineaMedicion(index.row(), index.column(),value.toFloat(),"");//mando el valor numerico y el string vacío
         }
+        ActualizarDatos();
         emit dataChanged(index, index);
         return true;
     }
     return false;
 }
 
-bool MedicionesModel::insertRows(int row, int count, const QModelIndex & parent)
+bool MedicionesModel::insertRows(int row, int count, const QModelIndex& parent)
 {
 	Q_UNUSED(parent);
-    beginInsertRows(QModelIndex(), row, row+count);
+    beginInsertRows(QModelIndex(), row, row+count-1);
+    miobra->InsertarLineaVaciaMedicion(row, count);
+    ActualizarDatos();
     endInsertRows();
     return true;
 }
@@ -117,7 +122,10 @@ bool MedicionesModel::insertRows(int row, int count, const QModelIndex & parent)
 bool MedicionesModel::removeRows(int filaInicial, int numFilas, const QModelIndex& parent)
 {
 	Q_UNUSED(parent);
+    qDebug()<<"Fila donde se empieza a borrar: "<<filaInicial<<" con numero de filas: "<<numFilas;
     beginRemoveRows(QModelIndex(), filaInicial, filaInicial+numFilas-1);
+    miobra->BorrarLineasMedicion(filaInicial,numFilas);
+    ActualizarDatos();
     endRemoveRows();
 	return true;
 }
@@ -139,8 +147,12 @@ bool MedicionesModel::filaVacia(const QStringList& linea)
 void MedicionesModel::ActualizarDatos()
 {
     datos.clear();
+    if (!miobra->hayMedicion())
+    {
+        miobra->InsertarLineaVaciaMedicion(0,1);
+    }
     LeyendasCabecera[tipoColumna::PARCIAL].clear();
-    datos = miobra->VerMedCert();    
+    datos = miobra->VerMedCert();
     QString suma=QString::number(miobra->LeeTotalMedicion(),'f',2);
     LeyendasCabecera[tipoColumna::PARCIAL].append("Parcial\n").append(suma);
 }

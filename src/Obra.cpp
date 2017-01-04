@@ -386,11 +386,11 @@ const QList<QStringList>& Obra::VerMedCert()
     for (auto elem : lista)
     {
         listadoTablaMC.append(elem.LeeLineaMedicion());
-        /*QString dato;
+        QString dato;
         foreach (dato, elem.LeeLineaMedicion())
         {
             qDebug()<<dato;
-        }*/
+        }
     }
     return listadoTablaMC;
 }
@@ -465,12 +465,12 @@ void Obra::Medir_O_Certificar()
     }
 }
 
-void Obra::BorrarLineasMedicion()
+void Obra::BorrarLineasMedicion(int pos, int numLineas)
 {
-    if (aristaPadre->datoarista.LeeMedicion().hayMedicion())
+    if (aristaPadre->datoarista.LeeMedCer().hayMedicion())
     {
-        /*aristaPadre->datoarista.LeeMedCer(selectorMedCer).EliminarLinea();
-        Actualizar(aristaPadre->destino);*/
+        aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EliminarLineas(pos, numLineas);
+        Actualizar(aristaPadre->destino);
     }
 }
 
@@ -478,8 +478,8 @@ void Obra::borrarTodaMedicionOCertificacion()
 {
     if (hayMedicion())
     {
-        /*aristaActual->datoarista.LeeMedCer(selectorMedCer).BorrarMedicion();
-        Actualizar(aristaPadre->destino);*/
+        aristaActual->datoarista.ModificaMedCer(selectorMedCer).BorrarMedicion();
+        Actualizar(aristaPadre->destino);
     }
 }
 
@@ -555,6 +555,18 @@ std::list<TEXTO> Obra::copiarMedicion()
         listaMediciones.push_back(aux);
     }*/
     //return listaMediciones;
+}
+
+void Obra::InsertarLineaVaciaMedicion(int pos, int num)
+{
+    qDebug()<<"Anado linea vacia";
+    //aristaPadre->datoarista.ModificaMedCer().Insertar(0,pos,"",0,0,0,0);
+    aristaPadre->datoarista.ModificaMedCer().InsertarLineasVacias(pos,num);
+}
+
+void Obra::InsertarLineasVaciasMedicion(int pos, int num)
+{
+    aristaPadre->datoarista.ModificaMedCer().InsertarLineasVacias(pos,num);
 }
 
 void Obra::inicializarActual()
@@ -855,9 +867,9 @@ void Obra::EditarCertificacionPorc(float porcentaje)
     Actualizar(aristaActual->destino);*/
 }
 
-void Obra::EditarLineaMedicion (int columna, float valor, TEXTO comentario)
+void Obra::EditarLineaMedicion (int fila, int columna, float valor, TEXTO comentario)
 {
-    aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EditarCampo (columna, valor, comentario.toStdString());
+    aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EditarCampo (fila, columna, valor, comentario.toStdString());
     Actualizar(aristaPadre->destino);
 }
 
@@ -910,7 +922,7 @@ bool Obra::hayMedicion() const
 {
     if (aristaActual)
     {
-        return aristaActual->datoarista.LeeMedicion().hayMedicion();
+        return aristaPadre->datoarista.LeeMedicion().hayMedicion();
     }
     else
     {

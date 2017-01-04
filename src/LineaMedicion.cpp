@@ -84,13 +84,13 @@ QStringList LineaMedicion::LeeLineaMedicion()
     QStringList lineamedicion;
     lineamedicion.append(QString::number(nFase));
     lineamedicion.append(QString::fromStdString(comentario));
-    lineamedicion.append(QString::number(n_unidades,'f',2));
-    lineamedicion.append(QString::number(largo,'f',2));
-    lineamedicion.append(QString::number(ancho,'f',2));
-    lineamedicion.append(QString::number(alto,'f',2));
+    lineamedicion.append(QString::number(n_unidades));
+    lineamedicion.append(QString::number(largo));
+    lineamedicion.append(QString::number(ancho));
+    lineamedicion.append(QString::number(alto));
     lineamedicion.append(QString::fromStdString(formula));
-    lineamedicion.append(QString::number(parcial,'f',2));
-    lineamedicion.append(QString::number(subtotal,'f',2));
+    lineamedicion.append(QString::number(parcial));
+    lineamedicion.append(QString::number(subtotal));
     lineamedicion.append("");//un espacio para la columna Id...si se acaba eliminando esa columna, borrar este append
     return lineamedicion;
 }

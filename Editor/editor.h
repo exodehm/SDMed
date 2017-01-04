@@ -17,7 +17,7 @@ class Editor : 	public QMainWindow, private Ui::Editor
 {
 	Q_OBJECT
 	public:
-	Editor (QWidget* parent=0);	
+    Editor (QWidget* parent=nullptr);
 	//~MainWindow();
     QTextEdit &LeeTexto();
     void EscribeTexto(const QString& texto);

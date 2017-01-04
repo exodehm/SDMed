@@ -9,8 +9,7 @@ Medicion::Medicion(float total):lm(),TotalCantidad(total),actual(nullptr),todose
 Medicion::Medicion (const Medicion& origen)
 {
     lm =origen.lm;
-    TotalCantidad=origen.TotalCantidad;
-    actual=nullptr;
+    TotalCantidad=origen.TotalCantidad;    
     todoseleccionado=false;
     fecha=origen.fecha;
 }
@@ -26,17 +25,16 @@ Medicion& Medicion::operator=(const Medicion& origen)
     if (this!=&origen)
     {
         lm=origen.lm;
-        TotalCantidad=origen.TotalCantidad;
-        actual=nullptr;
+        TotalCantidad=origen.TotalCantidad;        
         todoseleccionado=false;
         fecha=origen.fecha;
     }
     return *this;
 }
 
-void Medicion::Insertar ()
+void Medicion::Insertar()
 {
-    std::string entrada;
+    /*std::string entrada;
     std::string comentario;
     int tipo=0;
     char respuesta='S';
@@ -68,10 +66,10 @@ void Medicion::Insertar ()
         std::cin>>respuesta;
     }
 
-    while (respuesta=='s' || respuesta=='S');
+    while (respuesta=='s' || respuesta=='S');*/
 }
 
-void Medicion::Insertar (int tipo, std::string ComentarioFormula, float unidades, float longitud, float latitud, float altura)
+void Medicion::Insertar (int tipo, int fila, std::string ComentarioFormula, float unidades, float longitud, float latitud, float altura)
 {
     //creo una linea de medicion para rellenarla y meterla en la lista
     LineaMedicion buffer;
@@ -108,17 +106,16 @@ void Medicion::Insertar (int tipo, std::string ComentarioFormula, float unidades
     /*std::cout<<"Tipo: "<<buffer.LeeTipo()<<std::endl;
     std::cout<<"Total: "<<buffer.LeeParcial()<<std::endl;
     std::cout<<"SubTotal: "<<buffer.LeeSubtotal()<<std::endl;*/
-    Insertar(buffer);
+    Insertar(fila, buffer);
 }
 
-void Medicion::Insertar(LineaMedicion lineamed)
+void Medicion::Insertar(int fila, LineaMedicion lineamed)
 {
-    std::cout<<"Insertando medicion"<<std::endl;
+    /*std::cout<<"Insertando medicion"<<std::endl;
     //si hay una cantidad introducida de forma manual la anulo y la sustituyo por el resultado de la medicion
     if (lm.empty())
     {
-        TotalCantidad=0;
-        actual=nullptr;
+        TotalCantidad=0;        
         std::cout<<"Lista vacia"<<std::endl;
     }
     //primer elemento
@@ -126,7 +123,7 @@ void Medicion::Insertar(LineaMedicion lineamed)
     {
         std::cout<<"primera linea: "<<std::endl;
         lm.push_back(lineamed);
-        actual=&lm.front();
+        actual=lm.begin();
         //int c;std::cin>>c;
     }
     else
@@ -140,38 +137,38 @@ void Medicion::Insertar(LineaMedicion lineamed)
         lm.insert(++Iterador, lineamed);
         --Iterador;
         actual=&(*Iterador);
-    }
+    }*/
+    actual=lm.begin();
+    std::advance(actual, fila);
+    lm.insert(actual,lineamed);
     TotalCantidad+=lineamed.LeeParcial();
     SumaSubParcial();
     SumaSubTotal();
     std::cout<<"Total Cantidad: "<<TotalCantidad<<std::endl;
+    for (actual=lm.begin();actual!=lm.end();++actual)
+    {
+        std::cout<<actual->LeeComentario()<<"-"<<actual->Lee_N_Uds()<<std::endl;
+    }
 }
 
-void Medicion::EliminarLinea()
+void Medicion::InsertarLineasVacias(int pos, int num)
 {
-    auto it=lm.begin();
-    while (it!=lm.end())
-    {
-        if (it->esSeleccionada())
-        {
-            TotalCantidad-=it->LeeParcial();
-            lm.erase (it++);
-        }
-        else
-        {
-            ++it;
-        }
-    }
-    if (lm.empty())
-    {
-        actual=0;
-        TotalCantidad=0;
-    }
-    else
-    {
-        actual=&lm.front();
-    }
-    std::cout<<std::endl;
+    LineaMedicion lineavacia;
+    actual=lm.begin();
+    std::advance(actual,pos);
+    lm.insert(actual, num,lineavacia);
+}
+
+void Medicion::EliminarLineas(int pos, int numLineas)
+{
+    std::list<LineaMedicion>::iterator it1,it2;
+    it1 = it2 = lm.begin();
+    std::advance(it1,pos);
+    std::advance(it2,pos+numLineas);
+    std::list<LineaMedicion>::iterator it3=it1;
+    lm.erase(it1,it2);
+    //actualizo el total y los subparciales
+    SumaMedicion();
     SumaSubParcial();
     SumaSubTotal();
 }
@@ -179,15 +176,14 @@ void Medicion::EliminarLinea()
 void Medicion::BorrarMedicion()
 {
     lm.clear();
-    TotalCantidad=0;
-    actual=0;
+    TotalCantidad=0;    
     std::cout<<"Borrada la medicion"<<std::endl;
 }
 
 const bool Medicion::hayMedicion() const
 {
     if (lm.empty())
-    {
+    {        
         return false;
     }
     return true;
@@ -203,11 +199,11 @@ void Medicion::SumaMedicion()
 {
     TotalCantidad=0;
     //recorro la lista sumando cada "TotalLinea"
-    std::list<LineaMedicion>::iterator Iterador=lm.begin();
-    while (Iterador!=lm.end())
+    actual=lm.begin();
+    while (actual!=lm.end())
     {
-        TotalCantidad+=Iterador->LeeParcial();
-        Iterador++;
+        TotalCantidad+=actual->LeeParcial();
+        actual++;
     }    
 }
 
@@ -268,7 +264,7 @@ void Medicion::SumaSubTotal()
 
 void Medicion::AvanzarActual()
 {
-    auto Iterador=lm.begin();
+    /*auto Iterador=lm.begin();
     auto final=lm.end();
     final--;
     while (&(*Iterador)!=actual)
@@ -279,12 +275,12 @@ void Medicion::AvanzarActual()
     {
         Iterador++;
         actual=&(*Iterador);
-    }
+    }*/
 }
 
 void Medicion::RetrocederActual()
 {
-    auto Iterador=lm.begin();
+    /*auto Iterador=lm.begin();
     while (&(*Iterador)!=actual)
     {
         Iterador++;
@@ -293,27 +289,23 @@ void Medicion::RetrocederActual()
     {
         Iterador--;
         actual=&(*Iterador);
-    }
+    }*/
 }
 
 void Medicion::PosicionarLineaActual(int pos)
 {
-    auto Iterador = lm.begin();
-    for (int i=0;i<pos;i++)
-    {
-        Iterador++;
-    }
-        actual=&(*Iterador);
+    actual=lm.begin();
+    std::advance(actual,pos);
 }
 
 void Medicion::SelecDeselecLinea()
 {
-    auto Iterador=lm.begin();
+    /*auto Iterador=lm.begin();
     while (&(*Iterador)!=actual)
     {
         Iterador++;
     }
-    Iterador->Seleccionar();
+    Iterador->Seleccionar();*/
 }
 
 void Medicion::SelecDeselecTodo()
@@ -329,26 +321,28 @@ void Medicion::SelecDeselecTodo()
 
 void Medicion::Copiar(std::list<LineaMedicion*>* l)
 {
-    for (auto it=lm.begin(); it!=lm.end(); ++it)
+    /*for (auto it=lm.begin(); it!=lm.end(); ++it)
     {
         if (it->esSeleccionada() || &(*it)==actual)
         {
             l->push_back(&(*it));
             it->Deseleccionar();
         }
-    }
+    }*/
 }
 
 void Medicion::Pegar(std::list<LineaMedicion*>* l)
 {
-    for (auto it=l->begin(); it!=l->end(); it++)
+    /*for (auto it=l->begin(); it!=l->end(); it++)
     {
         Insertar(*(*it));
-    }
+    }*/
 }
 
-void Medicion::EditarCampo (int columna, float valor, std::string comentario)
+void Medicion::EditarCampo (int fila, int columna, float valor, std::string comentario)
 {
+    actual=lm.begin();
+    std::advance(actual, fila);
     if (columna==tipoColumna::COMENTARIO)
     {
         actual->EscribeComentario (comentario);
@@ -406,9 +400,9 @@ const float& Medicion::LeeTotal ()const
     return TotalCantidad;
 }
 
-const LineaMedicion* Medicion::LeeActual() const
+const LineaMedicion Medicion::LeeActual() const
 {
-    return this->actual;
+    return (*actual);
 }
 
 void Medicion::EscribeTotal (float cantidad)
@@ -418,13 +412,9 @@ void Medicion::EscribeTotal (float cantidad)
 
 void Medicion::actualAlComienzo()
 {
-    if (lm.empty())
+    if (!lm.empty())
     {
-        actual=0;
-    }
-    else
-    {
-        actual=&lm.front();
+        actual=lm.begin();
     }
 }
 
@@ -456,5 +446,4 @@ void Medicion::Ver()
         std::setw(10)<<elem.LeeSubtotal()<<"|"<<std::endl;
     }
         std::cout<<std::endl;
-
 }

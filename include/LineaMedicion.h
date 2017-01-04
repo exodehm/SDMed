@@ -24,7 +24,7 @@ struct LineaMedicion
     std::string comentario;
     std::string formula;
     //constructores
-    LineaMedicion(int fase=1, tipo Tip=NORMAL, std::string com="", float uds=1,float larg=0, float lat=0, float alt=0,
+    LineaMedicion(int fase=1, tipo Tip=NORMAL, std::string com="", float uds=0,float larg=0, float lat=0, float alt=0,
         std::string form="", float parc=0, float subt=0,  bool act=true, int factor = 4, bool sel=false);
     LineaMedicion(const LineaMedicion& origen);
 

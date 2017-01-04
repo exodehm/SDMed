@@ -3,11 +3,14 @@
 
 #include <QWidget>
 #include <QHeaderView>
+#include <QKeyEvent>
 
 #include "./include/Obra.h"
 #include "./include/AbrirGuardar.h"
 #include "./Modelos/PrincipalModel.h"
 #include "./Modelos/MedicionesModel.h"
+#include "./Delegados/delegadoeditormediciones.h"
+#include "filter.h"
 
 namespace Ui {
 class InterfazObra;
@@ -54,6 +57,12 @@ private:
     QHeaderView* cabeceraTablaP;
     PrincipalModel* modeloTablaP;
     MedicionesModel* modeloTablaMC;
+    //DelegadoEditorMediciones* dlgEM;
+
+    Filter *filter;
+
+    QModelIndex *indice;
+    //bool eventFilter(QObject * watched, QEvent * e);
 
     Obra* O;
 };

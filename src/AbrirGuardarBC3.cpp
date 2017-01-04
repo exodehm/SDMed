@@ -205,7 +205,7 @@ MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombre
                 {
                     tipo=std::stoi(conceptos[0]);
                 }                
-                eme.Insertar(tipo,conceptos[1],cantidades[0],cantidades[1],cantidades[2],cantidades[3]);
+                eme.Insertar(tipo,i, conceptos[1],cantidades[0],cantidades[1],cantidades[2],cantidades[3]);
             }
             MedCert MC;
             MC.EscribeMedicion(eme);

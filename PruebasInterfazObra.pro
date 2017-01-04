@@ -22,7 +22,6 @@ SOURCES += main.cpp\
     src/Certificacion.cpp \
     src/Concepto.cpp \
     src/Datos.cpp \
-    src/Exportar.cpp \
     src/Fecha.cpp \
     src/GestorEntradaDatosLineasMedicion.cpp \
     src/LineaMedicion.cpp \
@@ -33,7 +32,12 @@ SOURCES += main.cpp\
     src/Redondeos.cpp \
     src/Unidades.cpp \
     Modelos/MedicionesModel.cpp \
-    src/Codificacion.cpp
+    src/Codificacion.cpp \
+    filter.cpp \
+    Tablas/tablamedcert.cpp \
+    Delegados/delegadosparcialessubtotales.cpp \
+    Delegados/delegadoeditormediciones.cpp \
+    Delegados/delegadocolumnasbloqueadas.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -64,7 +68,12 @@ HEADERS  += interfazobra.h \
     include/Redondeos.h \
     include/Unidades.h \
     Modelos/MedicionesModel.h \
-    include/Codificacion.h
+    include/Codificacion.h \
+    filter.h \
+    Tablas/tablamedcert.h \
+    Delegados/delegadosparcialessubtotales.h \
+    Delegados/delegadoeditormediciones.h \
+    Delegados/delegadocolumnasbloqueadas.h
 
 FORMS    += interfazobra.ui
 
