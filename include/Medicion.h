@@ -30,7 +30,7 @@ private:
 
 public:
     //constructores
-    Medicion(float total=1);
+    Medicion(float total=0);
     Medicion (const Medicion& origen);
     //sobrecarga de =
     Medicion& operator=(const Medicion& origen);
