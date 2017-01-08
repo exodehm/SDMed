@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QTextStream>
 #include <QFileDialog>
+#include <QLocale>
 #include <iostream>
 
 #include "./include/Obra.h"

@@ -2,25 +2,27 @@
 
 Filter::Filter(QObject *parent) : QObject(parent) {}
 
-bool Filter::eventFilter(QObject *object, QEvent *event)
+bool Filter::eventFilter(QObject *obj, QEvent* event)
 {
-    QTableView* table = dynamic_cast<QTableView*>(object);
-    if( !table ) return false;
-
-    if (event->type() == QEvent::KeyPress)
+    /*if (event->type()==QEvent::KeyPress)
     {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        if (keyEvent->key() == Qt::Key_Tab)
+        QKeyEvent* key = static_cast<QKeyEvent*>(event);
+        if (key->key()==Qt::Key_Tab || key->key()==Qt::Key_Enter || key->key()==Qt::Key_Return)
         {
-            QModelIndex current = table->currentIndex();
-            if( current.column() != table->model()->columnCount() )
-            {
-                QModelIndex newIndex = table->model()->index(current.row(),current.column()+1);
-                table->setCurrentIndex(newIndex);
-                table->selectionModel()->select(newIndex,QItemSelectionModel::ClearAndSelect);
-                return true;
-            }
+            QLineEdit *editor=qobject_cast<QLineEdit*>(obj);
+            emit commitData(editor);
+            emit closeEditor(editor, QStyledItemDelegate::NoHint);
         }
+        else
+        {
+            return QObject::eventFilter(obj, event);
+        }
+        return false;
     }
+    else
+    {
+        return QObject::eventFilter(obj, event);
+    }*/
     return false;
 }
+

@@ -341,6 +341,7 @@ void Medicion::Pegar(std::list<LineaMedicion*>* l)
 
 void Medicion::EditarCampo (int fila, int columna, float valor, std::string comentario)
 {
+    qDebug()<<"Y por ultimo el valor en Medicion: "<<valor;
     actual=lm.begin();
     std::advance(actual, fila);
     if (columna==tipoColumna::COMENTARIO)

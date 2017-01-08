@@ -22,7 +22,7 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
         cabeceraTablaP = ui->tablaPrinc->horizontalHeader();
         //cabeceraTablaP->setSelectionMode(QAbstractItemView::NoSelection);
 
-        modeloTablaMC =  new MedicionesModel(O);
+        modeloTablaMC = new MedicionesModel(O);
         ui->TablaMed->setModel(modeloTablaMC);        
 
         RefrescarVista();
@@ -151,7 +151,7 @@ void InterfazObra::RefrescarVista()
     modeloTablaMC->layoutChanged();
     ui->tablaPrinc->resizeColumnsToContents();
     ui->TablaMed->resizeColumnsToContents();
-    ui->TablaMed->resizeRowsToContents();
+    //ui->TablaMed->resizeRowsToContents();
     ui->TablaMed->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)    
 
     //AjustarAltura();

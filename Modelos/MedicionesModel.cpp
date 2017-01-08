@@ -99,8 +99,8 @@ bool MedicionesModel::setData(const QModelIndex & index, const QVariant& value, 
         }
         else if (index.column()==tipoColumna::N || index.column()==tipoColumna::LONGITUD || index.column()==tipoColumna::ANCHURA || index.column()==tipoColumna::ALTURA)
         {
-            qDebug()<<"Actualizando el resto...";
-            miobra->EditarLineaMedicion(index.row(), index.column(),value.toFloat(),"");//mando el valor numerico y el string vacío
+            QString valor = value.toString().replace(",",".");
+            miobra->EditarLineaMedicion(index.row(), index.column(),valor.toDouble(),"");//mando el valor numerico y el string vacío
         }
         ActualizarDatos();
         emit dataChanged(index, index);

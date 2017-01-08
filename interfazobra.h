@@ -51,7 +51,6 @@ public slots:
     void GuardarTextoPartida();
     void CambiarMedCert(int indice);*/
 
-
 private:
     Ui::InterfazObra *ui;    
     QHeaderView* cabeceraTablaP;

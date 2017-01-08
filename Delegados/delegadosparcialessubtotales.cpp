@@ -9,7 +9,7 @@ void DelegadosParcialesSubtotales::paint( QPainter *painter,const QStyleOptionVi
 {
     if (index.isValid())
     {
-        qDebug()<<"Columna del delegado: "<<index.column();
+        //qDebug()<<"Columna del delegado: "<<index.column();
         painter->save();
         painter->setPen(Qt::yellow);
         painter->setBrush(Qt::yellow);

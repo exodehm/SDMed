@@ -9,7 +9,7 @@ void DelegadoColumnasBloqueadas::paint( QPainter *painter,const QStyleOptionView
 {
     if (index.isValid())
     {
-        qDebug()<<"Columna del delegado: "<<index.column();
+        //qDebug()<<"Columna del delegado: "<<index.model();
         painter->save();
         painter->setPen(QColor(255,255,170));
         painter->setBrush(QColor(255,255,170));
@@ -25,7 +25,9 @@ void DelegadoColumnasBloqueadas::paint( QPainter *painter,const QStyleOptionView
 
 QSize DelegadoColumnasBloqueadas::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return QSize( 45, 15);
+    Q_UNUSED (index);
+    return option.rect.size();
+
 }
 
 QString DelegadoColumnasBloqueadas::displayText(const QVariant & value, const QLocale & locale) const

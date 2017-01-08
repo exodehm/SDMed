@@ -6,6 +6,8 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QDebug>
+#include <QLineEdit>
+#include <QStyledItemDelegate>
 
 
 class Filter : public QObject

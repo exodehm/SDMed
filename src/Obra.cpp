@@ -387,10 +387,10 @@ const QList<QStringList>& Obra::VerMedCert()
     {
         listadoTablaMC.append(elem.LeeLineaMedicion());
         QString dato;
-        foreach (dato, elem.LeeLineaMedicion())
+        /*foreach (dato, elem.LeeLineaMedicion())
         {
             qDebug()<<dato;
-        }
+        }*/
     }
     return listadoTablaMC;
 }
@@ -869,6 +869,7 @@ void Obra::EditarCertificacionPorc(float porcentaje)
 
 void Obra::EditarLineaMedicion (int fila, int columna, float valor, TEXTO comentario)
 {
+    qDebug()<<"Valor a editar: "<<valor;
     aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EditarCampo (fila, columna, valor, comentario.toStdString());
     Actualizar(aristaPadre->destino);
 }

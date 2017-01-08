@@ -13,6 +13,8 @@
 #include "Fecha.h"
 #include "./defs.h"
 
+#include <QDebug>
+
 class Medicion
 {
 private:
