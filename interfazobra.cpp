@@ -34,6 +34,8 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
         /************signals y slots*****************/
         QObject::connect(ui->tablaPrinc,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
         QObject::connect(ui->tablaPrinc,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
+        QObject::connect(ui->botonCopiar,SIGNAL(clicked(bool)),this,SLOT(CopiarMedicion()));
+        QObject::connect(ui->botonPegar,SIGNAL(clicked(bool)),this,SLOT(PegarMedicion()));
         //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
         QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(ActualizarTablaMedicion(QModelIndex,QModelIndex)));
         QObject::connect(cabeceraTablaP,SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
@@ -173,73 +175,33 @@ void InterfazObra::PosicionarTablaM(QModelIndex indice)
     O->PosicionarLineaActualMedicion(indice.row());
 }
 
-/*bool InterfazObra::eventFilter(QObject *watched, QEvent *e)
+void InterfazObra::CopiarMedicion()
 {
-    if (watched==ui->TablaMed)
+    QItemSelectionModel *selecmodel = ui->TablaMed->selectionModel();
+    QModelIndexList list = selecmodel->selectedIndexes();
+    QString textoACopiar;
+    for(int i = 0; i < list.size(); i++)
     {
-        if (e->type() == QEvent::KeyPress)
+        if (i!=0 && (i-10)%10!=0 && (i-9)%9!=0) //excluyo de los datos a copiar la primera y ultima columna (Fase e Id)
         {
-            QModelIndex indice = ui->TablaMed->currentIndex();
-            QKeyEvent *ke =static_cast<QKeyEvent*>(e);
-            switch (ke->key())
-            {
-            case (Qt::Key_F5):
-            {
-                qDebug()<<"Insertando en Fila: "<<indice.row()<<" -- "<<" Columna: "<<indice.column();
-                modeloTablaMC->insertRows(indice.row(),1,QModelIndex());
-                modeloTablaMC->ActualizarDatos();
-                modeloTablaMC->layoutChanged();
-                break;
-
-            }
-            case (Qt::Key_Delete):
-            {
-                if (tabla->selectionModel()->isRowSelected(indice.row(),QModelIndex()))
-                {
-                    borrarLineas();
-                }
-                else
-                {
-                    modelo->setData(tabla->currentIndex(),"",Qt::EditRole);
-                }
-                break;
-            }
-            case (Qt::Key_Tab):
-            {
-                if (watched == editor)
-                {
-                    editor->setText(editor->document()->toPlainText()+"[Tab]");
-                }
-                else
-                {
-                    if (indice.row() == modelo->rowCount(QModelIndex())-1
-                            && indice.column() == modelo->columnCount(QModelIndex())-1
-                            && !NombreVacio())
-                    {
-                        modelo->insertRow(modelo->rowCount(QModelIndex()));
-                        QModelIndex ind = modelo->index(indice.row()+1,0);
-                        tabla->setCurrentIndex(ind);
-                    }
-                }
-                break;
-            }
-            case (Qt::Key_Down):
-            {
-                if (indice.row() == modelo->rowCount(QModelIndex())-1 && !NombreVacio())
-                {
-                    modelo->insertRow(modelo->rowCount(QModelIndex()));
-                    QModelIndex ind = modelo->index(indice.row()+1,indice.column(), QModelIndex());
-                    tabla->setCurrentIndex(ind);
-                }
-                break;
-            }
-            default:
-            {
-                break;
-            }
-            }
-            return false;
+            QModelIndex index = list.at(i);
+            textoACopiar.append(modeloTablaMC->data(index).toString());
+            textoACopiar.append(";");            
         }
     }
-    return QWidget::eventFilter(watched, e);
-}*/
+    textoACopiar.replace(",",".");
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(textoACopiar);
+    ui->TablaMed->clearSelection();    
+}
+
+void InterfazObra::PegarMedicion()
+{
+    const QClipboard *clipboard = QApplication::clipboard();
+    const QMimeData *mimeData = clipboard->mimeData();
+    if (mimeData->hasText())
+    {
+        O->pegarMedicion(ui->TablaMed->currentIndex().row(),mimeData->text());
+        RefrescarVista();
+    }
+}

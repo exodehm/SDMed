@@ -578,25 +578,35 @@ void Obra::inicializarActual()
 }
 
 
-void Obra::pegarMedicion(const std::list<TEXTO> &listaMedicion)
+void Obra::pegarMedicion(int fila, const TEXTO& listaMedicion)
 {
-    /* if (aristaPadre->destino->datonodo.LeeNat()==7)//solo esta permitido que tengan medicion las partidas
-     {
-         std::string campos[10];//para albergar a los 10 campos que exporto, aunque para el pegado sólamente uso 6
-         for (auto it=listaMedicion.begin(); it!=listaMedicion.end(); it++)
-         {
-             std::istringstream iss(*it);
-             for (int i=0; i<10; i++)
-             {
-                 std::getline(iss,campos[i],'\t');
-             }
-             //campos[9]==tipo;
-             //campos[1]==comentario;
-             //campos[2-5]==uds-largo-ancho-alto
-             aristaPadre->datoarista.LeeMedCer(selectorMedCer).Insertar(std::stoi(campos[9]),campos[1],std::stof(campos[2]),std::stof(campos[3]),std::stof(campos[4]),std::stof(campos[5]));
-         }
-         Actualizar(aristaPadre->destino);
-     }*/
+    if (aristaPadre->destino->datonodo.LeeNat()==Codificacion::Partida)//solo esta permitido que tengan medicion las partidas
+    {
+        QStringList lineamedicion;
+        int numLineas = listaMedicion.count(";")/8;
+        QStringList aux =listaMedicion.split(";");
+        int k=0;
+        for (int i=0;i<numLineas;i++)
+        {
+            for (int j=0;j<8;j++)
+            {
+                lineamedicion.append(aux.at(j+k));
+            }
+            aristaPadre->datoarista.ModificaMedCer(selectorMedCer).Insertar(LineaMedicion::tipo::NORMAL,
+                                                                            fila,
+                                                                            lineamedicion.at(0),
+                                                                            lineamedicion.at(1).toFloat(),
+                                                                            lineamedicion.at(2).toFloat(),
+                                                                            lineamedicion.at(3).toFloat(),
+                                                                            lineamedicion.at(4).toFloat()
+                                                                            );
+            k+=8;
+            fila++;
+            lineamedicion.clear();
+        }
+        //qDebug()<<"Insertando en la fila "<<fila<<" los valores: "<<listaMedicion;
+        Actualizar(aristaPadre->destino);
+    }
 }
 
 void Obra::EditarCodificacion(int n)
@@ -869,8 +879,7 @@ void Obra::EditarCertificacionPorc(float porcentaje)
 
 void Obra::EditarLineaMedicion (int fila, int columna, float valor, TEXTO comentario)
 {
-    qDebug()<<"Valor a editar: "<<valor;
-    aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EditarCampo (fila, columna, valor, comentario.toStdString());
+    aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EditarCampo (fila, columna, valor, comentario);
     Actualizar(aristaPadre->destino);
 }
 

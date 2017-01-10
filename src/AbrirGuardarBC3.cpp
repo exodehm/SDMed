@@ -187,7 +187,7 @@ MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombre
             {
                 for (int j=0;j<6;j++)
                 {
-                    conceptos[j]= medicion.first().toStdString();                    
+                    conceptos[j]= medicion.first().toStdString();
                     medicion.pop_front();
                 }
                 float cantidades[4];
@@ -204,8 +204,8 @@ MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombre
                 else
                 {
                     tipo=std::stoi(conceptos[0]);
-                }                
-                eme.Insertar(tipo,i, conceptos[1],cantidades[0],cantidades[1],cantidades[2],cantidades[3]);
+                }
+                eme.Insertar(tipo,i, QString::fromStdString(conceptos[1]),cantidades[0],cantidades[1],cantidades[2],cantidades[3]);
             }
             MedCert MC;
             MC.EscribeMedicion(eme);

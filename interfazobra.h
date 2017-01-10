@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QHeaderView>
 #include <QKeyEvent>
+#include <QClipboard>
+#include <QMimeData>
 
 #include "./include/Obra.h"
 #include "./include/AbrirGuardar.h"
@@ -40,6 +42,8 @@ public slots:
     void Avanzar();
     void Retroceder();
     void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
+    void CopiarMedicion();
+    void PegarMedicion();
     /*void InsertarFilaVacia();
     void InsertarDelante();
     void Eliminar(const QList<int> &Lista);
@@ -60,8 +64,7 @@ private:
 
     Filter *filter;
 
-    QModelIndex *indice;
-    //bool eventFilter(QObject * watched, QEvent * e);
+    QModelIndex *indice;    
 
     Obra* O;
 };

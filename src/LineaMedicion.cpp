@@ -1,16 +1,24 @@
 #include "../include/LineaMedicion.h"
 
 
-LineaMedicion::LineaMedicion(int fase, tipo Tip, std::string com, float uds, float larg, float lat, float alt, std::string form,
+LineaMedicion::LineaMedicion(int fase, tipo Tip, TEXTO com, float uds, float larg, float lat, float alt, TEXTO form,
     float parc, float subt,  bool act, int factor, bool sel):nFase(fase), tipoLinea(Tip), comentario(com), n_unidades(uds),
         largo(larg),ancho(lat),alto(alt),formula(form), parcial(parc),subtotal(subt),activa(act),FacRed(factor),seleccionada(sel)
 {
     //FacRed=pow (10, FacRed);
-    if (!formula.empty())
+    if (!formula.isEmpty())
     {
         tipoLinea = tipo::FORMULA;
     }
-    //std::cout<<"Creada nueva linea de medicion"<<std::endl;
+    else if (parcial!=0)
+    {
+        tipoLinea = tipo::SUBPARC;
+    }
+    else if (subtotal!=0)
+    {
+        tipoLinea = tipo::SUBTOTAL;
+    }
+    std::cout<<"Creada nueva linea de medicion"<<std::endl;
 }
 
 LineaMedicion::LineaMedicion(const LineaMedicion& origen)
@@ -35,7 +43,7 @@ const int& LineaMedicion::LeeFase() const
     return nFase;
 }
 
-const std::string& LineaMedicion::LeeComentario() const
+const TEXTO &LineaMedicion::LeeComentario() const
 {
     return comentario;
 }
@@ -64,7 +72,7 @@ const LineaMedicion::tipo& LineaMedicion::LeeTipo() const
 {
     return tipoLinea;
 }
-const std::string& LineaMedicion::LeeFormula() const
+const TEXTO& LineaMedicion::LeeFormula() const
 {
     return formula;
 }
@@ -78,17 +86,17 @@ const float& LineaMedicion::LeeSubtotal() const
 {
     return subtotal;
 }
-#include <QDebug>
+
 QStringList LineaMedicion::LeeLineaMedicion()
 {
     QStringList lineamedicion;
     lineamedicion.append(QString::number(nFase));
-    lineamedicion.append(QString::fromStdString(comentario));
+    lineamedicion.append(comentario);
     lineamedicion.append(QString::number(n_unidades));
     lineamedicion.append(QString::number(largo));
     lineamedicion.append(QString::number(ancho));
     lineamedicion.append(QString::number(alto));
-    lineamedicion.append(QString::fromStdString(formula));
+    lineamedicion.append(formula);
     lineamedicion.append(QString::number(parcial));
     lineamedicion.append(QString::number(subtotal));
     lineamedicion.append("");//un espacio para la columna Id...si se acaba eliminando esa columna, borrar este append
@@ -99,7 +107,7 @@ void LineaMedicion::EscribeFase (int F)
 {
     nFase=F;
 }
-void LineaMedicion::EscribeComentario (std::string C)
+void LineaMedicion::EscribeComentario (TEXTO C)
 {
     comentario=C;
 }
@@ -123,10 +131,10 @@ void LineaMedicion::EscribeAlto (float Al)
     alto=Al;
     EscribeParcial();
 }
-void LineaMedicion::EscribeFormula (std::string F)
+void LineaMedicion::EscribeFormula (TEXTO F)
 {
     formula=F;
-    if (!formula.empty())
+    if (!formula.isEmpty())
     {
         tipoLinea=tipo::FORMULA;
     }
@@ -146,7 +154,7 @@ void LineaMedicion::EscribeParcial()
     float provisional=0;
     if (tipoLinea==FORMULA)
         {
-            provisional = CalcularFormula(LeeFormula(),Lee_N_Uds(),LeeLargo(),LeeAncho(),LeeAlto());
+            provisional = CalcularFormula(LeeFormula().toStdString(),Lee_N_Uds(),LeeLargo(),LeeAncho(),LeeAlto());
         }
     else
         {

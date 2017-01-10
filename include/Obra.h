@@ -97,7 +97,7 @@ public:
     void seleccionarLineaMedicion();
     void selecDeselecTodo();
     std::list<TEXTO> copiarMedicion();
-    void pegarMedicion(const std::list<TEXTO>&listaMedicion);
+    void pegarMedicion(int fila, const TEXTO& listaMedicion);
     void bloquearColumna(int nColumna, float fValor);
     void Desbloquear();
     void Certificar();

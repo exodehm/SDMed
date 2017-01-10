@@ -69,12 +69,12 @@ void Medicion::Insertar()
     while (respuesta=='s' || respuesta=='S');*/
 }
 
-void Medicion::Insertar (int tipo, int fila, std::string ComentarioFormula, float unidades, float longitud, float latitud, float altura)
+void Medicion::Insertar (int tipo, int fila, TEXTO comentario, float unidades, float longitud, float latitud, float altura)
 {
     //creo una linea de medicion para rellenarla y meterla en la lista
     LineaMedicion buffer;
 
-    //inserto cada valor en su campo, excepto el comentario
+    //inserto cada valor en su campo, excepto el comentario y la formula
     buffer.EscribeUds(unidades);
     buffer.EscribeLargo(longitud);   
     buffer.EscribeAncho(latitud);
@@ -84,23 +84,23 @@ void Medicion::Insertar (int tipo, int fila, std::string ComentarioFormula, floa
     if (tipo==LineaMedicion::tipo::NORMAL)
     {
         buffer.EscribeTipo(LineaMedicion::tipo::NORMAL);
-        buffer.EscribeComentario(ComentarioFormula);
+        buffer.EscribeComentario(comentario);
     }
     else if (tipo==LineaMedicion::tipo::SUBPARC)
     {
         buffer.EscribeTipo(LineaMedicion::tipo::SUBPARC);
-        buffer.EscribeComentario(ComentarioFormula);
+        buffer.EscribeComentario(comentario);
     }
     else if (tipo==LineaMedicion::tipo::SUBTOTAL)
     {
         buffer.EscribeTipo(LineaMedicion::tipo::SUBTOTAL);
-        buffer.EscribeComentario(ComentarioFormula);
+        buffer.EscribeComentario(comentario);
     }
     //si es tipo formula el comentario se pasa al campo de formula
     else if (tipo==LineaMedicion::tipo::FORMULA)
     {
         buffer.EscribeTipo(LineaMedicion::tipo::FORMULA);
-        buffer.EscribeFormula(ComentarioFormula);
+        buffer.EscribeFormula(comentario);
     }
     buffer.EscribeParcial();
     /*std::cout<<"Tipo: "<<buffer.LeeTipo()<<std::endl;
@@ -110,34 +110,7 @@ void Medicion::Insertar (int tipo, int fila, std::string ComentarioFormula, floa
 }
 
 void Medicion::Insertar(int fila, LineaMedicion lineamed)
-{
-    /*std::cout<<"Insertando medicion"<<std::endl;
-    //si hay una cantidad introducida de forma manual la anulo y la sustituyo por el resultado de la medicion
-    if (lm.empty())
-    {
-        TotalCantidad=0;        
-        std::cout<<"Lista vacia"<<std::endl;
-    }
-    //primer elemento
-    if (!actual)
-    {
-        std::cout<<"primera linea: "<<std::endl;
-        lm.push_back(lineamed);
-        actual=lm.begin();
-        //int c;std::cin>>c;
-    }
-    else
-    {
-        std::cout<<"NO primera linea: "<<std::endl;
-        auto Iterador=lm.begin();
-        while (&(*Iterador)!=actual)
-        {
-            Iterador++;
-        }
-        lm.insert(++Iterador, lineamed);
-        --Iterador;
-        actual=&(*Iterador);
-    }*/
+{    
     actual=lm.begin();
     std::advance(actual, fila);
     lm.insert(actual,lineamed);
@@ -147,7 +120,7 @@ void Medicion::Insertar(int fila, LineaMedicion lineamed)
     std::cout<<"Total Cantidad: "<<TotalCantidad<<std::endl;
     for (actual=lm.begin();actual!=lm.end();++actual)
     {
-        std::cout<<actual->LeeComentario()<<"-"<<actual->Lee_N_Uds()<<std::endl;
+        std::cout<<actual->LeeComentario().toStdString()<<"-"<<actual->Lee_N_Uds()<<std::endl;
     }
 }
 
@@ -166,7 +139,7 @@ void Medicion::EliminarLineas(int pos, int numLineas)
     std::advance(it1,pos);
     std::advance(it2,pos+numLineas);
     std::list<LineaMedicion>::iterator it3=it1;
-    lm.erase(it1,it2);
+    lm.erase(it1,it2);    
     //actualizo el total y los subparciales
     SumaMedicion();
     SumaSubParcial();
@@ -217,13 +190,13 @@ void Medicion::SumaSubParcial()
     {
         if (rIterador->LeeTipo()==LineaMedicion::tipo::SUBPARC)
         {
-            std::cout<<"comentario del Subparcial: "<<rIterador->LeeComentario()<<std::endl;
+            std::cout<<"comentario del Subparcial: "<<rIterador->LeeComentario().toStdString()<<std::endl;
             Apuntador=rIterador;//posiciono el apuntador en el primer subtotal
             rIterador++;//voy a la siguiente linea
             while ((rIterador->LeeTipo()==LineaMedicion::tipo::NORMAL || rIterador ->LeeTipo()==LineaMedicion::tipo::FORMULA) && rIterador!=lm.rend())
             {
                 subparcial+=rIterador->LeeParcial();
-                std::cout<<"Linea: "<<rIterador->LeeComentario()<<std::endl;
+                std::cout<<"Linea: "<<rIterador->LeeComentario().toStdString()<<std::endl;
                 rIterador++;
 
             }
@@ -339,14 +312,13 @@ void Medicion::Pegar(std::list<LineaMedicion*>* l)
     }*/
 }
 
-void Medicion::EditarCampo (int fila, int columna, float valor, std::string comentario)
+void Medicion::EditarCampo (int fila, int columna, float valor, TEXTO comentario)
 {
-    qDebug()<<"Y por ultimo el valor en Medicion: "<<valor;
     actual=lm.begin();
     std::advance(actual, fila);
     if (columna==tipoColumna::COMENTARIO)
     {
-        actual->EscribeComentario (comentario);
+        actual->EscribeComentario(comentario);
     }
     else
     {
@@ -438,11 +410,11 @@ void Medicion::Ver()
 {
     for (auto elem:lm)
     {
-        std::cout<<"|"<<std::setw(20)<<elem.LeeComentario()<<"|"<<std::setw(1)<<elem.Lee_N_Uds()<<"|"<<
+        std::cout<<"|"<<std::setw(20)<<elem.LeeComentario().toStdString()<<"|"<<std::setw(1)<<elem.Lee_N_Uds()<<"|"<<
         std::setw(3)<<elem.LeeLargo()<<"|"<<
         std::setw(3)<<elem.LeeAncho()<<"|"<<
         std::setw(3)<<elem.LeeAlto()<<"|"<<
-        std::setw(10)<<elem.LeeFormula()<<"|"<<
+        std::setw(10)<<elem.LeeFormula().toStdString()<<"|"<<
         std::setw(8)<<elem.LeeParcial()<<"|"<<
         std::setw(10)<<elem.LeeSubtotal()<<"|"<<std::endl;
     }

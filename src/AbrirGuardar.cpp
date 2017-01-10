@@ -241,8 +241,8 @@ void AbrirGuardarNormal::guardarLineaMedicion(LineaMedicion& lm, std::ofstream& 
     int tamanno=2*sizeof(int)+6*sizeof(float)+2*sizeof(bool)+sizeof(LineaMedicion::tipo);
     std::cout<<"Tamaño es: "<<tamanno<<std::endl;
     ofs.write(reinterpret_cast<char*>(&lm),tamanno);
-    std::cout<<"Contenido es: "<<lm.LeeComentario()<<std::endl;
-    guardarString(lm.LeeComentario(),ofs);
+    std::cout<<"Contenido es: "<<lm.LeeComentario().toStdString()<<std::endl;
+    guardarString(lm.LeeComentario().toStdString(),ofs);
     std::cout<<"Salgo de la funcion2: "<<std::endl;
 }
 

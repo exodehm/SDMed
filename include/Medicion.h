@@ -13,15 +13,14 @@
 #include "Fecha.h"
 #include "./defs.h"
 
-#include <QDebug>
-
 class Medicion
 {
 private:
+    float TotalCantidad;
     std::list<LineaMedicion> lm;
     std::list<LineaMedicion>::iterator actual;
 
-    float TotalCantidad;
+
     //LineaMedicion* actual;
     bool todoseleccionado;
     Fecha fecha;
@@ -38,7 +37,7 @@ public:
     ~Medicion();
     //funciones miembro
     void Insertar();
-    void Insertar (int tipo, int fila, std::string Comentario, float unidades, float longitud, float latitud, float altura);
+    void Insertar (int tipo, int fila, TEXTO comentario, float unidades, float longitud, float latitud, float altura);
     void Insertar(int fila, LineaMedicion lineamed);
     void InsertarLineasVacias(int pos, int num);
     void EliminarLineas(int pos, int numLineas);
@@ -64,7 +63,7 @@ public:
     const LineaMedicion LeeActual() const;
     const bool hayMedicion() const;
     /***************modificadores************************/
-    void EditarCampo (int fila, int columna, float valor, std::string comentario="");
+    void EditarCampo (int fila, int columna, float valor, TEXTO comentario="");
     void EscribeTotal (float cantidad);
     void actualAlComienzo();
 

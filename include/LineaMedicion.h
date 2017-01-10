@@ -8,6 +8,9 @@
 #include <QString>
 #include <QStringList>
 
+typedef QString TEXTO;
+
+
 struct LineaMedicion
 {
     int nFase;
@@ -21,18 +24,18 @@ struct LineaMedicion
     bool activa;
     int FacRed; //factor de redondeo
     bool seleccionada;
-    std::string comentario;
-    std::string formula;
+    TEXTO comentario;
+    TEXTO formula;
     //constructores
-    LineaMedicion(int fase=1, tipo Tip=NORMAL, std::string com="", float uds=0,float larg=0, float lat=0, float alt=0,
-        std::string form="", float parc=0, float subt=0,  bool act=true, int factor = 4, bool sel=false);
+    LineaMedicion(int fase=1, tipo Tip=NORMAL, TEXTO com="", float uds=0,float larg=0, float lat=0, float alt=0,
+        TEXTO form="", float parc=0, float subt=0,  bool act=true, int factor = 4, bool sel=false);
     LineaMedicion(const LineaMedicion& origen);
 
     //destructor
     //~LineaMedicion();
     //metodos consultores
     const int& LeeFase() const;
-    const std::string& LeeComentario() const;
+    const TEXTO& LeeComentario() const;
     const float Lee_N_Uds() const;
     const float& LeeLargo() const;
     const float& LeeAncho() const;
@@ -40,16 +43,16 @@ struct LineaMedicion
     const float& LeeParcial() const;
     const float& LeeSubtotal() const;
     const tipo& LeeTipo() const;
-    const std::string& LeeFormula() const;
+    const TEXTO &LeeFormula() const;
     QStringList LeeLineaMedicion();
     //metodos modificadores
     void EscribeFase (int F);
-    void EscribeComentario (std::string C);
+    void EscribeComentario (TEXTO C);
     void EscribeUds (float N);
     void EscribeLargo (float L);
     void EscribeAncho (float An);
     void EscribeAlto (float Al);
-    void EscribeFormula (std::string F);
+    void EscribeFormula (TEXTO F);
     void EscribeTipo (tipo T);
     void EscribeParcial();
     void EscribeSubtotal(float Sub);
