@@ -37,7 +37,7 @@ public:
     ~Medicion();
     //funciones miembro
     void Insertar();
-    void Insertar (int tipo, int fila, TEXTO comentario, float unidades, float longitud, float latitud, float altura);
+    void Insertar (int fila, TEXTO comentario="", float unidades=0, float longitud=0, float latitud=0, float altura=0, TEXTO formula="", TipoLinea tipo = TipoLinea::NORMAL);
     void Insertar(int fila, LineaMedicion lineamed);
     void InsertarLineasVacias(int pos, int num);
     void EliminarLineas(int pos, int numLineas);
@@ -46,17 +46,7 @@ public:
     void SumaMedicion();
     void SumaSubParcial();
     void SumaSubTotal();
-    void AvanzarActual();
-    void RetrocederActual();
-    void SelecDeselecLinea();
-    void SelecDeselecTodo();
-    void Bloquear(int nColumna, float fValor);
-    void Desbloquear(int nColumna);
-    void DesbloquearTodo();
     void PosicionarLineaActual(int pos);
-    /*******copia/pega*********************/
-    void Copiar(std::list<LineaMedicion*>* l);
-    void Pegar(std::list<LineaMedicion*>* l);
     //consultores
     const std::list<LineaMedicion> &LeeLista() const;
     const float& LeeTotal ()const;

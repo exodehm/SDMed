@@ -237,13 +237,13 @@ void AbrirGuardarNormal::guardarMedicion(pArista a, std::ofstream& ofs, int i)
 
 void AbrirGuardarNormal::guardarLineaMedicion(LineaMedicion& lm, std::ofstream& ofs)
 {
-    std::cout<<"Guardando linea de medicion: "<<std::endl;
+    /*std::cout<<"Guardando linea de medicion: "<<std::endl;
     int tamanno=2*sizeof(int)+6*sizeof(float)+2*sizeof(bool)+sizeof(LineaMedicion::tipo);
     std::cout<<"Tamaño es: "<<tamanno<<std::endl;
     ofs.write(reinterpret_cast<char*>(&lm),tamanno);
     std::cout<<"Contenido es: "<<lm.LeeComentario().toStdString()<<std::endl;
     guardarString(lm.LeeComentario().toStdString(),ofs);
-    std::cout<<"Salgo de la funcion2: "<<std::endl;
+    std::cout<<"Salgo de la funcion2: "<<std::endl;*/
 }
 
 bool AbrirGuardarNormal::esHoja(pNodo n)

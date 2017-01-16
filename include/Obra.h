@@ -81,7 +81,6 @@ public:
     void Pegar(std::list<std::pair<pArista,pNodo>>listaNodosACopiar);
     void EditarCodificacion(int n);
     /*****funciones relacionadas con la medicion o certificacion de la partida********/
-    void InsertarLineaVaciaMedicion(int pos, int num);
     void InsertarLineasVaciasMedicion(int pos, int num);
     void inicializarActual();
     void Medir_O_Certificar();

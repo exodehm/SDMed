@@ -81,7 +81,7 @@ Qt::ItemFlags MedicionesModel::flags(const QModelIndex &index) const
 	{
         return 0;
 	}
-    if (index.column()!=tipoColumna::PARCIAL && index.column()!=tipoColumna::SUBTOTAL && index.column()!=tipoColumna::FORMULA)
+    if (index.column()!=tipoColumna::PARCIAL && index.column()!=tipoColumna::SUBTOTAL && index.column()!=tipoColumna::ID)
     {
         return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
     }
@@ -113,7 +113,7 @@ bool MedicionesModel::insertRows(int row, int count, const QModelIndex& parent)
 {
 	Q_UNUSED(parent);
     beginInsertRows(QModelIndex(), row, row+count-1);
-    miobra->InsertarLineaVaciaMedicion(row, count);
+    miobra->InsertarLineasVaciasMedicion(row, count);
     ActualizarDatos();
     endInsertRows();
     return true;
@@ -124,7 +124,7 @@ bool MedicionesModel::removeRows(int filaInicial, int numFilas, const QModelInde
 	Q_UNUSED(parent);
     qDebug()<<"Fila donde se empieza a borrar: "<<filaInicial<<" con numero de filas: "<<numFilas;
     beginRemoveRows(QModelIndex(), filaInicial, filaInicial+numFilas-1);
-    miobra->BorrarLineasMedicion(filaInicial,numFilas);
+    miobra->BorrarLineasMedicion(filaInicial,numFilas);    
     ActualizarDatos();
     endRemoveRows();
 	return true;
@@ -149,7 +149,8 @@ void MedicionesModel::ActualizarDatos()
     datos.clear();
     if (!miobra->hayMedicion())
     {
-        miobra->InsertarLineaVaciaMedicion(0,1);
+        qDebug()<<"Ahorita mismo inserto una linea bazia";
+        miobra->InsertarLineasVaciasMedicion(0,1);
     }
     LeyendasCabecera[tipoColumna::PARCIAL].clear();
     datos = miobra->VerMedCert();

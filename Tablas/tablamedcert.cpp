@@ -29,6 +29,7 @@ TablaMedCert::TablaMedCert(QWidget *parent):QTableView(parent)
     setItemDelegateForColumn(tipoColumna::LONGITUD,dlgEM);
     setItemDelegateForColumn(tipoColumna::ANCHURA,dlgEM);
     setItemDelegateForColumn(tipoColumna::ALTURA,dlgEM);    
+    setItemDelegateForColumn(tipoColumna::FORMULA,dlgEM);
     setItemDelegateForColumn(tipoColumna::PARCIAL,dlgPS);
     setItemDelegateForColumn(tipoColumna::SUBTOTAL,dlgPS);
     setItemDelegateForColumn(tipoColumna::FASE,dlgCB);
@@ -70,14 +71,19 @@ bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
         {
         case (Qt::Key_Delete):
         {
-            if (this->selectionModel()->isRowSelected(indice.row(),QModelIndex()))
+            if (this->selectionModel()->isRowSelected(indice.row(),QModelIndex()))//si hay alguna fila seleccionada
             {
                 this->model()->removeRows(selectionModel()->selectedRows().first().row(),selectionModel()->selectedRows().size());
+                if(this->model()->rowCount(QModelIndex())==1)
+                {
+                    this->model()->insertRows(0,1);
+                }
             }
             else
             {
-                this->model()->setData(this->currentIndex(),"",Qt::EditRole);
+                this->model()->setData(this->currentIndex(),"",Qt::EditRole);//solo si hay una celda seleccionada
             }
+            return true;
             break;
         }
         case (Qt::Key_Tab):

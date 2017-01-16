@@ -471,7 +471,7 @@ void Obra::BorrarLineasMedicion(int pos, int numLineas)
     {
         aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EliminarLineas(pos, numLineas);
         Actualizar(aristaPadre->destino);
-    }
+    }  
 }
 
 void Obra::borrarTodaMedicionOCertificacion()
@@ -557,16 +557,9 @@ std::list<TEXTO> Obra::copiarMedicion()
     //return listaMediciones;
 }
 
-void Obra::InsertarLineaVaciaMedicion(int pos, int num)
-{
-    qDebug()<<"Anado linea vacia";
-    //aristaPadre->datoarista.ModificaMedCer().Insertar(0,pos,"",0,0,0,0);
-    aristaPadre->datoarista.ModificaMedCer().InsertarLineasVacias(pos,num);
-}
-
 void Obra::InsertarLineasVaciasMedicion(int pos, int num)
 {
-    aristaPadre->datoarista.ModificaMedCer().InsertarLineasVacias(pos,num);
+    aristaPadre->datoarista.ModificaMedCer().InsertarLineasVacias(pos,num);    
 }
 
 void Obra::inicializarActual()
@@ -592,19 +585,18 @@ void Obra::pegarMedicion(int fila, const TEXTO& listaMedicion)
             {
                 lineamedicion.append(aux.at(j+k));
             }
-            aristaPadre->datoarista.ModificaMedCer(selectorMedCer).Insertar(LineaMedicion::tipo::NORMAL,
-                                                                            fila,
+            aristaPadre->datoarista.ModificaMedCer(selectorMedCer).Insertar(fila,
                                                                             lineamedicion.at(0),
                                                                             lineamedicion.at(1).toFloat(),
                                                                             lineamedicion.at(2).toFloat(),
                                                                             lineamedicion.at(3).toFloat(),
-                                                                            lineamedicion.at(4).toFloat()
+                                                                            lineamedicion.at(4).toFloat(),
+                                                                            lineamedicion.at(5)
                                                                             );
             k+=8;
             fila++;
             lineamedicion.clear();
         }
-        //qDebug()<<"Insertando en la fila "<<fila<<" los valores: "<<listaMedicion;
         Actualizar(aristaPadre->destino);
     }
 }

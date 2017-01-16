@@ -196,16 +196,24 @@ MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombre
                     conceptos[i+2].length()>0 ? cantidades[i]=tofloat(conceptos[i+2]) : cantidades[i]=0;
                     //std::cout<<conceptos[i+2]<<" -- "<<cantidades[i]<<std::endl;
                 }
-                int tipo;
+                TipoLinea tipo;
                 if (conceptos[0].size()==0)
                 {
-                    tipo=0;
+                    tipo=TipoLinea::NORMAL;
                 }
                 else
                 {
-                    tipo=std::stoi(conceptos[0]);
+                    tipo= (TipoLinea)(std::stoi(conceptos[0]));//casting de int a TipoLinea
                 }
-                eme.Insertar(tipo,i, QString::fromStdString(conceptos[1]),cantidades[0],cantidades[1],cantidades[2],cantidades[3]);
+                if (tipo==TipoLinea::FORMULA)
+                {
+                    eme.Insertar(i,"",cantidades[0],cantidades[1],cantidades[2],cantidades[3], QString::fromStdString(conceptos[1]),tipo);
+                }
+                else
+                {
+                    eme.Insertar(i,QString::fromStdString(conceptos[1]),cantidades[0],cantidades[1],cantidades[2],cantidades[3], "",tipo);
+                }
+
             }
             MedCert MC;
             MC.EscribeMedicion(eme);

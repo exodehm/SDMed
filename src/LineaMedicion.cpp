@@ -1,24 +1,16 @@
 #include "../include/LineaMedicion.h"
 
 
-LineaMedicion::LineaMedicion(int fase, tipo Tip, TEXTO com, float uds, float larg, float lat, float alt, TEXTO form,
-    float parc, float subt,  bool act, int factor, bool sel):nFase(fase), tipoLinea(Tip), comentario(com), n_unidades(uds),
-        largo(larg),ancho(lat),alto(alt),formula(form), parcial(parc),subtotal(subt),activa(act),FacRed(factor),seleccionada(sel)
+LineaMedicion::LineaMedicion(int fase, TEXTO com, float uds, float larg, float lat, float alt, TEXTO form, TipoLinea tipo,
+    bool F, int factor):nFase(fase), comentario(com), n_unidades(uds),
+        largo(larg),ancho(lat),alto(alt),formula(form), esFormula(F), Tipo (tipo), FacRed(factor)
 {
-    //FacRed=pow (10, FacRed);
     if (!formula.isEmpty())
     {
-        tipoLinea = tipo::FORMULA;
+        esFormula=true;
     }
-    else if (parcial!=0)
-    {
-        tipoLinea = tipo::SUBPARC;
-    }
-    else if (subtotal!=0)
-    {
-        tipoLinea = tipo::SUBTOTAL;
-    }
-    std::cout<<"Creada nueva linea de medicion"<<std::endl;
+    EscribeParcial();
+    //std::cout<<"Creada nueva linea de medicion"<<std::endl;
 }
 
 LineaMedicion::LineaMedicion(const LineaMedicion& origen)
@@ -32,10 +24,9 @@ LineaMedicion::LineaMedicion(const LineaMedicion& origen)
     parcial=origen.parcial;
     subtotal=origen.subtotal;
     comentario=origen.comentario;
-    tipoLinea=origen.tipoLinea;
-    activa=origen.activa;
     FacRed=origen.FacRed;
-    seleccionada=false;//independientemente del original, la copia va a false
+    esFormula=origen.esFormula;
+    Tipo = origen.Tipo;
 }
 
 const int& LineaMedicion::LeeFase() const
@@ -48,7 +39,7 @@ const TEXTO &LineaMedicion::LeeComentario() const
     return comentario;
 }
 
-const float LineaMedicion::Lee_N_Uds() const
+const float &LineaMedicion::Lee_N_Uds() const
 {
     return n_unidades;
 }
@@ -68,10 +59,6 @@ const float& LineaMedicion::LeeAlto() const
     return alto;
 }
 
-const LineaMedicion::tipo& LineaMedicion::LeeTipo() const
-{
-    return tipoLinea;
-}
 const TEXTO& LineaMedicion::LeeFormula() const
 {
     return formula;
@@ -85,6 +72,11 @@ const float& LineaMedicion::LeeParcial() const
 const float& LineaMedicion::LeeSubtotal() const
 {
     return subtotal;
+}
+
+const TipoLinea& LineaMedicion::LeeTipo() const
+{
+    return Tipo;
 }
 
 QStringList LineaMedicion::LeeLineaMedicion()
@@ -134,25 +126,21 @@ void LineaMedicion::EscribeAlto (float Al)
 void LineaMedicion::EscribeFormula (TEXTO F)
 {
     formula=F;
-    if (!formula.isEmpty())
+    if (formula.isEmpty())
     {
-        tipoLinea=tipo::FORMULA;
+        esFormula=false;
     }
     else
     {
-        tipoLinea=tipo::NORMAL;
+        esFormula=true;
     }
     EscribeParcial();
-}
-void LineaMedicion::EscribeTipo (tipo T)
-{
-    tipoLinea=T;
 }
 
 void LineaMedicion::EscribeParcial()
 {
     float provisional=0;
-    if (tipoLinea==FORMULA)
+    if (esFormula)
         {
             provisional = CalcularFormula(LeeFormula().toStdString(),Lee_N_Uds(),LeeLargo(),LeeAncho(),LeeAlto());
         }
@@ -231,36 +219,12 @@ LineaMedicion& LineaMedicion::operator=(const LineaMedicion& m)
             formula=m.formula;
             parcial=m.parcial;
             subtotal=m.subtotal;
-            tipoLinea=m.tipoLinea;
-            activa=m.activa;
             FacRed=m.FacRed;
-            seleccionada=false;//independientemente del original, la copia va a false
+            esFormula=m.esFormula;
+            Tipo = m.Tipo;
         }
     return *this;
 }
-
-void LineaMedicion::Seleccionar()
-{
-    if (seleccionada==true)
-    {
-        seleccionada=false;
-    }
-    else
-    {
-        seleccionada=true;
-    }
-}
-
-void LineaMedicion::Deseleccionar()
-{
-    seleccionada=false;
-}
-
-bool LineaMedicion::esSeleccionada()
-{
-    return seleccionada;
-}
-
 
 /*std::ostream& LineaMedicion::operator<< (std::ostream& out, const LineaMedicion& m)
 {
