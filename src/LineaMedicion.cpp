@@ -137,6 +137,11 @@ void LineaMedicion::EscribeFormula (TEXTO F)
     EscribeParcial();
 }
 
+void LineaMedicion::EscribeTipo(TipoLinea tipo)
+{
+    Tipo = tipo;
+}
+
 void LineaMedicion::EscribeParcial()
 {
     float provisional=0;
