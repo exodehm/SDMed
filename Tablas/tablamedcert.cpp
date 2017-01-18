@@ -52,7 +52,7 @@ void TablaMedCert::Bloquear(int columna)
         {
             setItemDelegateForColumn(columna,dlgEM);
         }
-        clearSelection();
+        clearSelection();        
     }
 }
 
@@ -89,12 +89,10 @@ bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
         case (Qt::Key_Tab):
         {
             int col=indice.column();
-            qDebug()<<"Columna inicial: "<<col;
             while (columnaBloqueada(col+1))
             {
                 col++;
             }
-            qDebug()<<"Columna final: "<<col;
             col++;
             if (col>tipoColumna::FORMULA)
             {
@@ -102,32 +100,54 @@ bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
                     {
                         this->model()->insertRow(this->model()->rowCount(QModelIndex()));
                         QModelIndex ind = this->model()->index(indice.row()+1,1);
-                        this->setCurrentIndex(ind);
-                        return true;
+                        this->setCurrentIndex(ind);                        
                     }
                 else
                 {
                     QModelIndex ind = this->model()->index(indice.row()+1,1);
+                    this->setCurrentIndex(ind);                    
+                }
+            }
+            else
+            {
+                QModelIndex ind = this->model()->index(indice.row(),col);
+                this->setCurrentIndex(ind);                
+            }
+            return true;
+            break;
+        }
+        case (Qt::Key_Backtab):
+        {
+            int col=indice.column();
+            while (columnaBloqueada(col-1))
+            {
+                col--;
+            }
+            col--;
+            if (col<tipoColumna::COMENTARIO)
+            {
+                if (indice.row()==0)
+                    {
+                        QModelIndex ind = this->model()->index(0,1);
+                        this->setCurrentIndex(ind);
+                    }
+                else
+                {
+                    int columna = this->model()->columnCount(QModelIndex())-4;
+                    while (columnaBloqueada(columna))
+                    {
+                        columna--;
+                    }
+                    QModelIndex ind = this->model()->index(indice.row()-1,columna);
                     this->setCurrentIndex(ind);
-                    return true;
                 }
             }
             else
             {
                 QModelIndex ind = this->model()->index(indice.row(),col);
                 this->setCurrentIndex(ind);
-                return true;
             }
-            break;
-        }
-        case (Qt::Key_Backtab):
-        {
-            if (indice.column()==1 && indice.row()>0)
-            {
-                QModelIndex ind = this->model()->index(indice.row()-1,tipoColumna::FORMULA);
-                this->setCurrentIndex(ind);
-                return true;
-            }
+            return true;
             break;
         }
         case (Qt::Key_Down):
@@ -140,14 +160,48 @@ bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
                 return true;
             }
             break;
-        }        
+        }
+        case (Qt::Key_Right):
+        {
+            int col=indice.column();
+            while (columnaBloqueada(col+1))
+            {
+                col++;
+            }
+            col++;
+            if (col>tipoColumna::FORMULA)
+            {
+                col=tipoColumna::FORMULA;
+            }
+            QModelIndex ind = this->model()->index(indice.row(),col);
+            this->setCurrentIndex(ind);
+            return true;
+            break;
+        }
+        case (Qt::Key_Left):
+        {
+            int col=indice.column();
+            while (columnaBloqueada(col-1))
+            {
+                col--;
+            }
+            col--;
+            if (col<tipoColumna::COMENTARIO)
+            {
+                col=tipoColumna::COMENTARIO;
+            }
+            QModelIndex ind = this->model()->index(indice.row(),col);
+            this->setCurrentIndex(ind);
+            return true;
+            break;
+        }
         case (Qt::Key_F5):
         {
             if (indice.row()>0)
             {
                 qDebug()<<selectionModel()->selectedRows().size();
                 this->model()->insertRows(indice.row(),selectionModel()->selectedRows().size());
-                QModelIndex ind = this->model()->index(indice.row(),indice.column(), QModelIndex());
+                QModelIndex ind = this->model()->index(indice.row(),1);
                 this->setCurrentIndex(ind);
                 return true;
             }

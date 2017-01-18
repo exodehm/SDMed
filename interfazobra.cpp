@@ -192,7 +192,7 @@ void InterfazObra::CopiarMedicion()
     textoACopiar.replace(",",".");
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(textoACopiar);
-    ui->TablaMed->clearSelection();    
+    ui->TablaMed->clearSelection();
 }
 
 void InterfazObra::PegarMedicion()
