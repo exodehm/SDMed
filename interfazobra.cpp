@@ -15,10 +15,8 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
         filter = new Filter;
 
         modeloTablaP = new PrincipalModel(O);
-        ui->tablaPrinc->setAlternatingRowColors(true);
         ui->tablaPrinc->setModel(modeloTablaP);
 
-        ui->tablaPrinc->setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::AnyKeyPressed);
         cabeceraTablaP = ui->tablaPrinc->horizontalHeader();
         //cabeceraTablaP->setSelectionMode(QAbstractItemView::NoSelection);
 

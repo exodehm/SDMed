@@ -126,14 +126,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QTableView" name="tablaPrinc">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>150</height>
-            </size>
-           </property>
-          </widget>
+          <widget class="TablaPrincipal" name="tablaPrinc" native="true"/>
          </item>
         </layout>
        </widget>
@@ -194,6 +187,12 @@
    <class>TablaMedCert</class>
    <extends>QWidget</extends>
    <header>./Tablas/tablamedcert.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TablaPrincipal</class>
+   <extends>QWidget</extends>
+   <header>./Tablas/tablaprincipal.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

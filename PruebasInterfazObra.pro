@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     Delegados/delegadosparcialessubtotales.cpp \
     Delegados/delegadoeditormediciones.cpp \
     Delegados/delegadocolumnasbloqueadas.cpp \
-    Delegados/delegadomedicionesestandar.cpp
+    Delegados/delegadomedicionesestandar.cpp \
+    Tablas/tablaprincipal.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -75,7 +76,8 @@ HEADERS  += interfazobra.h \
     Delegados/delegadosparcialessubtotales.h \
     Delegados/delegadoeditormediciones.h \
     Delegados/delegadocolumnasbloqueadas.h \
-    Delegados/delegadomedicionesestandar.h
+    Delegados/delegadomedicionesestandar.h \
+    Tablas/tablaprincipal.h
 
 FORMS    += interfazobra.ui
 
