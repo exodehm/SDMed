@@ -12,7 +12,7 @@
 #include "./include/Obra.h"
 
 
-//#include "iconos.h"
+#include "../iconos.h"
 #include "./defs.h"
 
 

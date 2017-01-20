@@ -39,7 +39,9 @@ SOURCES += main.cpp\
     Delegados/delegadoeditormediciones.cpp \
     Delegados/delegadocolumnasbloqueadas.cpp \
     Delegados/delegadomedicionesestandar.cpp \
-    Tablas/tablaprincipal.cpp
+    Tablas/tablaprincipal.cpp \
+    iconos.cpp \
+    Delegados/delegadoiconos.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -77,11 +79,14 @@ HEADERS  += interfazobra.h \
     Delegados/delegadoeditormediciones.h \
     Delegados/delegadocolumnasbloqueadas.h \
     Delegados/delegadomedicionesestandar.h \
-    Tablas/tablaprincipal.h
+    Tablas/tablaprincipal.h \
+    iconos.h \
+    Delegados/delegadoiconos.h
 
 FORMS    += interfazobra.ui
 
 RESOURCES += \
-    Editor/iconosEditor.qrc
+    Editor/iconosEditor.qrc \
+    iconos.qrc
 
 CONFIG +=C++14

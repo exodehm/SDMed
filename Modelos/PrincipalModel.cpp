@@ -60,8 +60,7 @@ QVariant PrincipalModel::data(const QModelIndex& indice,int role) const
             indice.column()==tipoColumna::PRPRES ||
             indice.column()==tipoColumna::PRCERT ||
             indice.column()==tipoColumna::IMPPRES ||
-            indice.column()==tipoColumna:: IMPCERT ||
-            indice.column()==tipoColumna::NATURALEZA )
+            indice.column()==tipoColumna:: IMPCERT)
     {
         if (role==Qt::DisplayRole || role == Qt::EditRole)
         {
@@ -72,7 +71,6 @@ QVariant PrincipalModel::data(const QModelIndex& indice,int role) const
             return QString( "%L1" ).arg(fila.at(indice.column()).toFloat());
         }
     }
-
     if (indice.column()==tipoColumna::CODIGO || indice.column()==tipoColumna::UD ||indice.column()==tipoColumna::RESUMEN)
     {
         if (role == Qt::DisplayRole || role == Qt::EditRole)
@@ -81,28 +79,24 @@ QVariant PrincipalModel::data(const QModelIndex& indice,int role) const
         }
     }
 
-    /*if (indice.column()==tipoColumna::NATURALEZA)
+    if (indice.column()==tipoColumna::NATURALEZA)
     {
-
-        int valor=fila.at(indice.column()).toInt()-1;
-
-        if (role==Qt::DecorationRole)
+        if (role == Qt::DecorationRole)
         {
-            //return I.Icon_Nat[valor].second;//iconosNat[valor];
+            return RepoIconos::GetIcon((Naturaleza)fila.at(indice.column()).toInt());
         }
-        if (role==PrincipalModel::IconIndexRole )
+        if (role == DatosIconos::ImageIndexRole)
         {
-            qDebug()<<"Valor personalizado: "<<valor;
-            return valor;
+            return fila.at(indice.column());
         }
         if (role == Qt::ToolTipRole)
         {
             QString tip;
             tip = "<b>";
-            //tip += QString("%1</b>").arg(I.Icon_Nat[valor].first);
+            tip += QString("%1</b>").arg(fila.at(indice.column()));
             return tip;
         }
-    }*/
+    }
     return QVariant();
 }
 

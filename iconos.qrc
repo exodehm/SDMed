@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Iconos/trucking.png</file>
+        <file>Iconos/engineer.png</file>
+		<file>Iconos/brick.png</file>
+		<file>Iconos/delete.png</file>
+		<file>Iconos/file.png</file>
+		<file>Iconos/folder.png</file>
+		<file>Iconos/sinclasificar.png</file>
+    </qresource>
+</RCC>

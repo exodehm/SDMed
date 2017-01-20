@@ -478,5 +478,3 @@ float tofloat(std::string cadena)
     }
     return valor;
 }
-
-
