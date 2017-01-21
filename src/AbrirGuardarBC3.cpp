@@ -2,7 +2,7 @@
 
 float tofloat(std::string cadena);
 
-Obra*  AbrirGuardarBC3::Leer(QString nombrefichero)
+Obra*  AbrirGuardarBC3::Leer(TEXTO nombrefichero)
 {
     Obra* obra = nullptr;//= new Obra;
     QFile fichero(nombrefichero);
@@ -243,143 +243,154 @@ void AbrirGuardarBC3::procesarTexto(Obra *&obra,const QStringList &registroT)
 
 /*********************GUARDAR****************************************/
 
-void AbrirGuardarBC3::Escribir(std::ofstream &ofs )
+void AbrirGuardarBC3::Escribir(QFile &fichero, const Obra *obra)
 {
-    EscribirRegistroV(ofs);
-    EscribirRegistroK(ofs);
+    TEXTO cadenabc3;
+    EscribirRegistroV(cadenabc3);
+    EscribirRegistroK(cadenabc3);    
     /********Registros C y D**************/
-    /*pNodo indice=obra->G.Raiz;
+    pNodo indice=obra->G.LeeRaiz();
+    int ii=0;
     for (int i=0; i<obra->G.LeeNumNodos(); i++)
-    {
-        EscribirRegistroC(indice,ofs,obra);
+    {        
+        EscribirRegistroC(indice,cadenabc3,obra);
         if (indice->adyacente)
         {
-            EscribirRegistroD(indice,ofs,obra);
+            EscribirRegistroD(indice,cadenabc3,obra);
+        }
+        qDebug()<<ii;
+        ii++;
+        indice=indice->siguiente;
+    }
+    /*******Registro M y N************/
+    /**vuelvo al inicio**/
+    indice=obra->G.LeeRaiz();
+    while(indice)
+    {
+        if (indice->adyacente)
+        {
+            pArista A = indice->adyacente;
+            while (A)
+            {
+                EscribirRegistroM(indice, A, cadenabc3,obra);
+                A=A->siguiente;
+            }
         }
         indice=indice->siguiente;
-    }*/
-    /*******Registro M y N************/
-    /*std::pair<pArista,int>P;
-    P.first=obra->G.LeeRaiz()->adyacente;
-    P.second=0;
-    std::list<pArista>lista;
-    TratarAristaConNiveles *tratamiento = new VerAlgo(P,lista);
-    obra->G.recorrerGrafoConNiveles(obra->G.LeeRaiz(),*tratamiento,0);
-    for (auto it=lista.begin();it!=lista.end();it++)
-    {
-        EscribirRegistroM ((*it),ofs,obra);
-    }*/
-    /**vuelvo al inicio para agrupar todos los textos**/
-
+    }
     /******************Registro T*************/
-    /*indice=obra->G.LeeRaiz();
+    indice=obra->G.LeeRaiz();
     for (int i=0; i<obra->G.LeeNumNodos(); i++)
     {
-        if (!indice->datonodo.LeeTexto().empty())
+        if (!indice->datonodo.LeeTexto().isEmpty())
         {
-            EscribirRegistroT(indice,ofs);
+            EscribirRegistroT(indice,cadenabc3);
         }
         indice=indice->siguiente;
-    }*/
-    ofs<<FinDeArchivo;
+    }
+    QTextStream texto(&fichero);
+    texto.setCodec("Windows-1252");
+    texto<<cadenabc3;
+    //ofs<<FinDeArchivo;
 }
 
-void AbrirGuardarBC3::EscribirRegistroV(std::ofstream &ofs)
+void AbrirGuardarBC3::EscribirRegistroV(TEXTO &cadena)
 {
-    std::string registroV="~V|EGSOFT S.A.|FIEBDC-3/2012|SDMed 1.0||ANSI||||||";
-    /*ofs.write(registroV.c_str(),registroV.size());*/
-    ofs<<registroV;
-    ofs<<NuevaLinea;
-    ofs<<RetornoCarro;
+    cadena.append("~V|EGSOFT S.A.|FIEBDC-3/2012|SDMed 0.1||ANSI||||||");
+    cadena.append("\n");
 }
 
-void AbrirGuardarBC3::EscribirRegistroK(std::ofstream &ofs)
+void AbrirGuardarBC3::EscribirRegistroK(TEXTO &cadena)
 {
-    std::string registroK="~K|\\2\\2\\3\\2\\2\\2\\2\\EUR\\|0|";
-    ofs<<registroK;
-    ofs<<NuevaLinea;
-    ofs<<RetornoCarro;
+    cadena.append("~K|\\2\\2\\3\\2\\2\\2\\2\\EUR\\|0|");
+    cadena.append("\r\n");
 }
 
-void AbrirGuardarBC3::EscribirRegistroC(const pNodo concepto, std::ofstream &ofs, const Obra* obra)
+void AbrirGuardarBC3::EscribirRegistroC(const pNodo concepto, TEXTO& cadena, const Obra* obra)
 {
-    /*std::string registroC="~C|";
-    registroC.append(concepto->datonodo.LeeCodigo());
-    escribirAlmohadilla(concepto,obra,registroC);
-    registroC.append("|");
-    registroC.append(concepto->datonodo.LeeUd());
-    registroC.append("|");
-    registroC.append(concepto->datonodo.LeeResumen());
-    registroC.append("|");
-    registroC.append(tostr(concepto->datonodo.LeeImportePres()));
-    registroC.append("|");
-    registroC.append(concepto->datonodo.LeeFecha());
-    registroC.append("|");
-    registroC.append(tostr(concepto->datonodo.LeeNat()));
-    registroC.append("|");
-    ofs<<registroC;
-    ofs<<"\r\n";*/
+    cadena.append("~C|");
+    cadena.append(concepto->datonodo.LeeCodigo());
+    escribirAlmohadilla(concepto,obra,cadena);
+    cadena.append("|");
+    cadena.append(concepto->datonodo.LeeUd());
+    cadena.append("|");
+    cadena.append(concepto->datonodo.LeeResumen());
+    cadena.append("|");
+    cadena.append(QString::number(concepto->datonodo.LeeImportePres()));
+    cadena.append("|");
+    cadena.append(concepto->datonodo.LeeFecha());
+    cadena.append("|");
+    cadena.append(QString::number(concepto->datonodo.LeeNat()));
+    cadena.append("|");
+    cadena.append("\r\n");
 }
 
-void AbrirGuardarBC3::EscribirRegistroD(const pNodo concepto, std::ofstream &ofs, const Obra* obra)
+void AbrirGuardarBC3::EscribirRegistroD(const pNodo concepto, TEXTO& cadena, const Obra* obra)
 {
-    /*std::string factor="1";//por ahora factor vale 1...en el futuro puede tener un valor
-    std::string registroD="~D|";
-    registroD.append(concepto->datonodo.LeeCodigo());
-    escribirAlmohadilla(concepto,obra,registroD);
-    registroD.append("|");
+    TEXTO factor="1";//por ahora factor vale 1...en el futuro puede tener un valor
+    cadena.append("~D|");
+    cadena.append(concepto->datonodo.LeeCodigo());
+    escribirAlmohadilla(concepto,obra,cadena);
+    cadena.append("|");
     if (concepto->adyacente)
     {
         pArista A=concepto->adyacente;
         while (A)
         {
-            registroD.append(A->destino->datonodo.LeeCodigo());
-            registroD.append("\\");
-            registroD.append(factor);
-            registroD.append("\\");
-            registroD.append(tostr(A->datoarista.LeeMedicion().LeeTotal()));
-            registroD.append("\\");
+            cadena.append(A->destino->datonodo.LeeCodigo());
+            cadena.append("\\");
+            cadena.append(factor);
+            cadena.append("\\");
+            cadena.append(QString::number(A->datoarista.LeeMedicion().LeeTotal()));
+            cadena.append("\\");
             A=A->siguiente;
         }
     }
-    registroD.append("|");
-    ofs<<registroD;
-    ofs<<"\r\n";*/
+    cadena.append("|");
+    cadena.append("\r\n");
 }
 
-void AbrirGuardarBC3::EscribirRegistroM(pArista A, std::ofstream &ofs, const Obra* obra)
+void AbrirGuardarBC3::EscribirRegistroM(pNodo padre, pArista A, TEXTO& cadena, const Obra* obra)
 {
-    /*std::string registroM="~M|";
-
-    pNodo padre = buscarPadre (A,obra);
-    registroM.append(padre->datonodo.LeeCodigo());
-    escribirAlmohadilla(padre,obra,registroM);
-    registroM.append("\\");
-    registroM.append(A->destino->datonodo.LeeCodigo());
-    registroM.append("||");//por ahora obvio el campo de POSICION
-    registroM.append(tostr(A->datoarista.LeeMedicion().LeeTotal()));
-    registroM.append("|");
-    ofs<<registroM;
-
+    cadena.append("~M|");
+    //pNodo padre = buscarPadre (A,obra);
+    cadena.append(padre->datonodo.LeeCodigo());
+    escribirAlmohadilla(padre,obra,cadena);
+    cadena.append("\\");
+    cadena.append(A->destino->datonodo.LeeCodigo());
+    cadena.append("||");//por ahora obvio el campo de POSICION
+    cadena.append(QString::number(A->datoarista.LeeMedicion().LeeTotal()));
+    cadena.append("|");
     /********empezamos con las lineas de medicion******************/
-    /*for (auto it=A->datoarista.LeeMedicion().LeeLista().begin(); it!=A->datoarista.LeeMedicion().LeeLista().end(); ++it)
+    for (auto it=A->datoarista.LeeMedicion().LeeLista().begin(); it!=A->datoarista.LeeMedicion().LeeLista().end(); ++it)
     {
-        ofs<<(*it).LeeTipo()<<"\\"<<(*it).LeeComentario()<<"\\"<<(*it).Lee_N_Uds()<<"\\"<<(*it).LeeLargo()<<"\\"
-           <<(*it).LeeAncho()<<"\\"<<(*it).LeeAlto()<<"\\";
+        /*ofs<<(*it).LeeTipo()<<"\\"<<(*it).LeeComentario()<<"\\"<<(*it).Lee_N_Uds()<<"\\"<<(*it).LeeLargo()<<"\\"
+           <<(*it).LeeAncho()<<"\\"<<(*it).LeeAlto()<<"\\";*/
+        cadena.append(QString::number((int)(it->LeeTipo())));
+        cadena.append("\\");
+        cadena.append(it->LeeComentario());
+        cadena.append("\\");
+        cadena.append(QString::number(it->Lee_N_Uds()));
+        cadena.append("\\");
+        cadena.append(QString::number(it->LeeLargo()));
+        cadena.append("\\");
+        cadena.append(QString::number(it->LeeAncho()));
+        cadena.append("\\");
+        cadena.append(QString::number(it->LeeAlto()));
+        cadena.append("\\");
     }
-    ofs<<"|";
-    ofs<<"\r\n";*/
+    cadena.append("|");
+    cadena.append("\r\n");
 }
 
-void AbrirGuardarBC3::EscribirRegistroT(const pNodo concepto, std::ofstream &ofs)
+void AbrirGuardarBC3::EscribirRegistroT(const pNodo concepto, TEXTO& cadena)
 {
-    /* std::string registroT="~T|";
-    registroT.append(concepto->datonodo.LeeCodigo());
-    registroT.append("|");
-    registroT.append(concepto->datonodo.LeeTexto());
-    registroT.append("|");
-    ofs<<registroT;
-    ofs<<"\r\n";*/
+    cadena.append("~T|");
+    cadena.append(concepto->datonodo.LeeCodigo());
+    cadena.append("|");
+    cadena.append(concepto->datonodo.LeeTexto());
+    cadena.append("|");
+    cadena.append("\r\n");
 }
 
 /*********************VARIOS**************************/
@@ -407,9 +418,9 @@ void AbrirGuardarBC3::quitarSimbolos (TEXTO &codigo)
     }
 }
 
-void AbrirGuardarBC3::escribirAlmohadilla(const pNodo concepto, const Obra* obra, std::string &cadena)
+void AbrirGuardarBC3::escribirAlmohadilla(const pNodo concepto, const Obra* obra, TEXTO &cadena)
 {
-    /*if (concepto==obra->G.LeeRaiz())
+    if (concepto==obra->G.LeeRaiz())
     {
         cadena.append("##");
     }
@@ -424,29 +435,7 @@ void AbrirGuardarBC3::escribirAlmohadilla(const pNodo concepto, const Obra* obra
             }
             A=A->siguiente;
         }
-    }*/
-}
-
-AbrirGuardarBC3::pNodo AbrirGuardarBC3::buscarPadre(const pArista A, const Obra* obra)
-{
-    /*pNodo indice=obra->G.LeeRaiz();
-    while (indice)
-    {
-        if (indice->adyacente)
-        {
-            pArista aux=indice->adyacente;
-            while (aux)
-            {
-                if(aux==A)
-                {
-                    return indice;
-                }
-                aux=aux->siguiente;
-            }
-        }
-        indice=indice->siguiente;
-    }*/
-    return 0;
+    }
 }
 
 template <typename T>

@@ -45,6 +45,8 @@ InterfazObra::InterfazObra(QWidget *parent):QWidget(parent),ui(new Ui::InterfazO
 
         QObject::connect(ui->botonAdelante,SIGNAL(clicked(bool)),this,SLOT(Avanzar()));
         QObject::connect(ui->botonAtras,SIGNAL(clicked(bool)),this,SLOT(Retroceder()));
+
+        QObject::connect(ui->botonGuardar,SIGNAL(clicked(bool)),this,SLOT(GuardarBC3()));
     }
 }
 
@@ -201,5 +203,21 @@ void InterfazObra::PegarMedicion()
     {
         O->pegarMedicion(ui->TablaMed->currentIndex().row(),mimeData->text());
         RefrescarVista();
+    }
+}
+
+void InterfazObra::GuardarBC3()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Guardar fichero"),
+                               "/home/david/noname.bc3",
+                               tr("FIEBDC-12 (*.bc3)"));
+
+    QFile ficheroBC3(fileName);
+    if (ficheroBC3.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        AbrirGuardarBC3* bc3 =  new AbrirGuardarBC3;
+        bc3->Escribir(ficheroBC3,O);
+        ficheroBC3.close();
+        delete bc3;
     }
 }

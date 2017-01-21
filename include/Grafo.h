@@ -71,7 +71,15 @@ public:
     /***********consultoras*************************/
     int LeeNumNodos()const
     {
-        return nNodos;
+        //return nNodos;
+        int i=0;
+        pNodo indice = Raiz;
+        while (indice->siguiente)
+        {
+            ++i;
+            indice=indice->siguiente;
+        }
+        return i;
     }
     int NivelNodoPadre(pNodo& padre) const;
     const pNodo& LeeRaiz() const

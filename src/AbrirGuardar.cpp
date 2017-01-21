@@ -133,7 +133,7 @@ void AbrirGuardarNormal::InsertarLineaMedicion(pArista& a, int MedCer, std::ifst
 
 /*********************GUARDAR****************************************/
 
-void AbrirGuardarNormal::Escribir(std::ofstream &ofs )
+void AbrirGuardarNormal::Escribir(QFile &fichero, const Obra *obra)
 {
 //    int numeronodos=obra->G.LeeNumNodos();
 

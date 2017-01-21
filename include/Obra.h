@@ -152,6 +152,8 @@ private:
     QList<QStringList> listadoTablaP;
     QList<QStringList> listadoTablaMC;
 
+    friend class AbrirGuardarBC3;
+
 };
 
 #endif // OBRA_H
