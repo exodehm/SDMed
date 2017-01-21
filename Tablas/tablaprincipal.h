@@ -18,15 +18,19 @@ class TablaPrincipal : public QTableView
     Q_OBJECT
 public:
     explicit TablaPrincipal(QWidget *parent = nullptr);
+    bool eventFilter(QObject * watched, QEvent * e);
+    bool columnaBloqueada(int columna);
 
-public slots:
+private slots:
+    void Bloquear(int columna);
 
 private:
     QHeaderView* cabecera;
     QHeaderView* alturaFilas;
     DelegadoColumnasBloqueadas* dlgCB;
+    DelegadoEditorMediciones* dlgEM;
     DelegadoIconos* dlgIco;
-    bool celdaBloqueada[10];
+    bool celdaBloqueada[11];
 };
 
 #endif // TABLAPRINCIPAL_H
