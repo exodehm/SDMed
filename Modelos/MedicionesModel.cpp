@@ -149,7 +149,6 @@ void MedicionesModel::ActualizarDatos()
     datos.clear();
     if (!miobra->hayMedicion())
     {
-        qDebug()<<"Ahorita mismo inserto una linea bazia";
         miobra->InsertarLineasVaciasMedicion(0,1);
     }
     LeyendasCabecera[tipoColumna::PARCIAL].clear();

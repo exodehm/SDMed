@@ -76,7 +76,7 @@ bool MedCert::hayMedCert(int n)
 
 void MedCert::EscribeMedicion()
 {
-    MC[MEDICION].Insertar();
+    //MC[MEDICION].Insertar();
 }
 
 void MedCert::EscribeMedicion(const Medicion& m)
@@ -86,7 +86,7 @@ void MedCert::EscribeMedicion(const Medicion& m)
 
 void MedCert::EscribeCertificacion()
 {
-    MC[CERTIFICACION].Insertar();
+    //MC[CERTIFICACION].Insertar();
 }
 
 void MedCert::EscribeCertificacion(const Medicion& c)
@@ -96,7 +96,7 @@ void MedCert::EscribeCertificacion(const Medicion& c)
 
 void MedCert::EscribeMedCer(int i)
 {
-    MC[i].Insertar();
+    //MC[i].Insertar();
 }
 
 void MedCert::escribeTotalMedCer(int i, float cantidad)

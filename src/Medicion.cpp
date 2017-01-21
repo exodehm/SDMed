@@ -32,43 +32,6 @@ Medicion& Medicion::operator=(const Medicion& origen)
     return *this;
 }
 
-void Medicion::Insertar()
-{
-    /*std::string entrada;
-    std::string comentario;
-    int tipo=0;
-    char respuesta='S';
-    std::string subopcion="0";
-    do
-    {
-        std::cout<<"(Enter) o (1) Suma parcial - (2) Suma total - (3)Formula"<<std::endl;
-        std::cin.ignore(100,'\n');
-        getline (std::cin,subopcion);
-
-        if (subopcion=="1" || subopcion=="2")//suma parcial o suma total
-        {
-            std::cout<<"Insertar comentario "<<std::endl;
-            getline (std::cin,comentario);
-            std::cout<<"El comentario es: "<<comentario<<std::endl;
-            if (subopcion=="1") tipo=1;
-            if (subopcion=="2") tipo=2;
-            Insertar(tipo,comentario,0,0,0,0);
-        }
-        else
-        {
-            std::istringstream str(subopcion);
-            str>>tipo;
-            Gestor.GestionarEntrada(tipo);
-            Insertar(tipo,Gestor.D.comentario,Gestor.D.fUd,Gestor.D.fLong,Gestor.D.fAncho,Gestor.D.fAlto);
-        }
-        std::cout<<"¿Quieres introducir otra linea de medición?"<<std::endl;
-        std::cout << "(S) para introducir (N) para salir" << std::endl;
-        std::cin>>respuesta;
-    }
-
-    while (respuesta=='s' || respuesta=='S');*/
-}
-
 void Medicion::Insertar(int fila, TEXTO comentario, float unidades, float longitud, float latitud, float altura, TEXTO formula, TipoLinea tipo)
 {
     //creo una linea de medicion para rellenarla y meterla en la lista
