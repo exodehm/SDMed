@@ -12,13 +12,20 @@
 #include "../Delegados/delegadocolumnasbloqueadas.h"
 #include "../Delegados/delegadomedicionesestandar.h"
 
+#include "./filter.h"
+
+class Filter;
+
 class TablaMedCert : public QTableView
 {
     Q_OBJECT
 public:
     TablaMedCert(QWidget *parent=nullptr);
-    bool eventFilter(QObject * watched, QEvent * e);    
+    //bool eventFilter(QObject * watched, QEvent * e);
     bool columnaBloqueada(int columna);
+
+    int limiteIzquierdo;
+    int limiteDerecho;
 
 private slots:
     void Bloquear(int columna);
@@ -31,6 +38,10 @@ private:
     DelegadoColumnasBloqueadas* dlgCB;
     DelegadoMedicionesEstandar* dlgME;
     bool celdaBloqueada[10];
+
+    Filter* filter;
+
+
 };
 
 #endif // TABLAMEDCERT_H

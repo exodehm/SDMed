@@ -13,6 +13,8 @@
 #include "../Delegados/delegadomedicionesestandar.h"
 #include "../Delegados/delegadoiconos.h"
 
+#include "./filter.h"
+
 class TablaPrincipal : public QTableView
 {
     Q_OBJECT

@@ -35,7 +35,10 @@ TablaMedCert::TablaMedCert(QWidget *parent):QTableView(parent)
     setItemDelegateForColumn(tipoColumna::FASE,dlgCB);
     setItemDelegateForColumn(tipoColumna::ID,dlgCB);
 
-    installEventFilter(this);
+    limiteIzquierdo = tipoColumna::COMENTARIO;
+    limiteDerecho = tipoColumna::FORMULA;
+    filter = new Filter;
+    installEventFilter(filter);
     QObject::connect(cabecera, SIGNAL(sectionClicked(int)), this,SLOT(Bloquear(int)));
 }
 
@@ -61,7 +64,7 @@ bool TablaMedCert::columnaBloqueada(int columna)
     return celdaBloqueada[columna];
 }
 
-bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
+/*bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
 {
     if (e->type() == QEvent::KeyPress)
     {
@@ -94,7 +97,7 @@ bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
                 col++;
             }
             col++;
-            if (col>tipoColumna::FORMULA)
+            if (col>limiteDerecho)
             {
                 if (indice.row()==this->model()->rowCount(QModelIndex())-1)
                     {
@@ -124,7 +127,7 @@ bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
                 col--;
             }
             col--;
-            if (col<tipoColumna::COMENTARIO)
+            if (col<limiteIzquierdo)
             {
                 if (indice.row()==0)
                     {
@@ -169,9 +172,9 @@ bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
                 col++;
             }
             col++;
-            if (col>tipoColumna::FORMULA)
+            if (col>limiteDerecho)
             {
-                col=tipoColumna::FORMULA;
+                col=limiteDerecho;
             }
             QModelIndex ind = this->model()->index(indice.row(),col);
             this->setCurrentIndex(ind);
@@ -186,9 +189,9 @@ bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
                 col--;
             }
             col--;
-            if (col<tipoColumna::COMENTARIO)
+            if (col<limiteIzquierdo)
             {
-                col=tipoColumna::COMENTARIO;
+                col=limiteIzquierdo;
             }
             QModelIndex ind = this->model()->index(indice.row(),col);
             this->setCurrentIndex(ind);
@@ -215,4 +218,4 @@ bool TablaMedCert::eventFilter(QObject *watched, QEvent *e)
         return false;
     }
     return QWidget::eventFilter(watched, e);
-}
+}*/

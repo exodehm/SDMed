@@ -2,12 +2,14 @@
 #define FILTER_H
 
 #include <QObject>
-#include <QTableView>
+//#include <QTableView>
 #include <QEvent>
 #include <QKeyEvent>
 #include <QDebug>
-#include <QLineEdit>
-#include <QStyledItemDelegate>
+//#include <QLineEdit>
+//#include <QStyledItemDelegate>
+
+#include "./Tablas/tablamedcert.h"
 
 
 class Filter : public QObject
