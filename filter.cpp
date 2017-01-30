@@ -4,7 +4,7 @@ Filter::Filter(QObject *parent) : QObject(parent) {}
 
 bool Filter::eventFilter(QObject *obj, QEvent* event)
 {
-    TablaMedCert* table = dynamic_cast<TablaMedCert*>(obj);
+    TablaBase* table = dynamic_cast<TablaBase*>(obj);
     if( !table ) return false;
     if (event->type() == QEvent::KeyPress)
     {
@@ -32,9 +32,10 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
         case (Qt::Key_Tab):
         {
             int col=indice.column();
-            while (table->columnaBloqueada(col+1))
+            while (table->columnaBloqueada(col+1) || table->isColumnHidden(col))
             {
                 col++;
+                qDebug()<<"Columna: "<<col;
             }
             col++;
             if (col>table->limiteDerecho)
@@ -71,7 +72,13 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             {
                 if (indice.row()==0)
                 {
-                    QModelIndex ind = table->model()->index(0,1);
+                    while (table->columnaBloqueada(col+1))
+                    {
+                        col++;
+                    }
+                    col++;
+                    //QModelIndex ind = table->model()->index(0,1);
+                    QModelIndex ind = table->model()->index(0,col);
                     table->setCurrentIndex(ind);
                 }
                 else
@@ -114,7 +121,11 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             col++;
             if (col>table->limiteDerecho)
             {
-                col=table->limiteDerecho;
+                while (table->columnaBloqueada(col-1))
+                {
+                    col--;
+                }
+                col--;
             }
             QModelIndex ind = table->model()->index(indice.row(),col);
             table->setCurrentIndex(ind);
@@ -131,7 +142,11 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             col--;
             if (col<table->limiteIzquierdo)
             {
-                col=table->limiteIzquierdo;
+                while (table->columnaBloqueada(col+1))
+                {
+                    col++;
+                }
+                col++;
             }
             QModelIndex ind = table->model()->index(indice.row(),col);
             table->setCurrentIndex(ind);

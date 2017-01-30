@@ -115,9 +115,9 @@ Qt::ItemFlags PrincipalModel::flags(const QModelIndex &index) const
 
 bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, int role)
 {
-    /*if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
+    if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
     {
-        if (index.column()==tipoColumna::CODIGO || index.column()==tipoColumna::RESUMEN)
+        /*if (index.column()==tipoColumna::CODIGO || index.column()==tipoColumna::RESUMEN)
         {
             datos[index.row()+1][index.column()]=value.toString();
             emit dataChanged(index, index);
@@ -137,8 +137,8 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
             emit dataChanged(index, index);
             emit EditarNaturaleza(value.toInt());
             return true;
-        }
-    }*/
+        }*/
+    }
     return false;
 }
 

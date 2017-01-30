@@ -1,38 +1,14 @@
 #ifndef TABLAPRINCIPAL_H
 #define TABLAPRINCIPAL_H
 
-#include <QTableView>
-#include <QKeyEvent>
-#include <QHeaderView>
-#include <QDebug>
-
 #include "../defs.h"
-#include "../Delegados/delegadoeditormediciones.h"
-#include "../Delegados/delegadosparcialessubtotales.h"
-#include "../Delegados/delegadocolumnasbloqueadas.h"
-#include "../Delegados/delegadomedicionesestandar.h"
-#include "../Delegados/delegadoiconos.h"
+#include "./Tablas/tablabase.h"
 
-#include "./filter.h"
-
-class TablaPrincipal : public QTableView
+class TablaPrincipal : public TablaBase
 {
-    Q_OBJECT
 public:
-    explicit TablaPrincipal(QWidget *parent = nullptr);
-    bool eventFilter(QObject * watched, QEvent * e);
-    bool columnaBloqueada(int columna);
-
-private slots:
-    void Bloquear(int columna);
-
-private:
-    QHeaderView* cabecera;
-    QHeaderView* alturaFilas;
-    DelegadoColumnasBloqueadas* dlgCB;
-    DelegadoEditorMediciones* dlgEM;
-    DelegadoIconos* dlgIco;
-    bool celdaBloqueada[11];
+    explicit TablaPrincipal(int nColumnas, QWidget *parent=nullptr);
+    void MostrarMenu(QPoint pos);
 };
 
 #endif // TABLAPRINCIPAL_H

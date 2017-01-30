@@ -1,62 +1,37 @@
 #include "tablaprincipal.h"
 
-TablaPrincipal::TablaPrincipal(QWidget *parent) : QTableView(parent)
+TablaPrincipal::TablaPrincipal(int nColumnas, QWidget *parent): TablaBase(nColumnas, parent)
 {
-    for (int i=0;i<9;i++)
-    {
-        celdaBloqueada[0]=false;
-    }
-    celdaBloqueada[9]=true;
-    celdaBloqueada[10]=true;
+    limiteIzquierdo=tipoColumna::NATURALEZA;
+    limiteDerecho=tipoColumna::PRCERT;
 
+    celdaBloqueada[tipoColumna::CODIGO]=true;
+    celdaBloqueada[tipoColumna::PORCERTPRES]=true;
+    celdaBloqueada[tipoColumna::IMPPRES]=true;
+    celdaBloqueada[tipoColumna::IMPCERT]=true;
+    setItemDelegateForColumn(tipoColumna::CODIGO,dlgCB);
+    setItemDelegateForColumn(tipoColumna::PORCERTPRES,dlgCB);
+    setItemDelegateForColumn(tipoColumna::IMPPRES,dlgCB);
+    setItemDelegateForColumn(tipoColumna::IMPCERT,dlgCB);
 
-    setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::AnyKeyPressed);
-
-    cabecera = this->horizontalHeader();
-    alturaFilas = this->verticalHeader();
-
-    resizeColumnsToContents();
-    resizeRowsToContents();
-
-    alturaFilas->setSectionResizeMode(QHeaderView::Fixed);
-    alturaFilas->setDefaultSectionSize(24);
-
-    dlgIco =  new DelegadoIconos;
+    dlgIco= new DelegadoIconos;
     setItemDelegateForColumn(tipoColumna::NATURALEZA,dlgIco);
-
-    dlgCB = new DelegadoColumnasBloqueadas;
-    dlgEM = new DelegadoEditorMediciones;
-    setItemDelegateForColumn(tipoColumna::IMPPRES, dlgCB);
-    setItemDelegateForColumn(tipoColumna::IMPCERT, dlgCB);
-
-    installEventFilter(this);
-    //QObject::connect(cabecera, SIGNAL(sectionClicked(int)), this,SLOT(Bloquear(int)));
+    cabecera->setSelectionMode(QAbstractItemView::NoSelection);
 }
 
-void TablaPrincipal::Bloquear(int columna)
+void TablaPrincipal::MostrarMenu(QPoint pos)
 {
-    if (columna>tipoColumna::FASE && columna<tipoColumna::PARCIAL)
-    {
-        celdaBloqueada[columna]=!celdaBloqueada[columna];
-        if (columnaBloqueada(columna))
-        {
-            setItemDelegateForColumn(columna,dlgCB);
-        }
-        else
-        {
-            setItemDelegateForColumn(columna,dlgEM);
-        }
-        clearSelection();
-    }
-}
+    int column=this->horizontalHeader()->logicalIndexAt(pos);
+    qDebug()<<"Columna: "<<column;
 
-bool TablaPrincipal::columnaBloqueada(int columna)
-{
-    return celdaBloqueada[columna];
-}
+    QMenu *menu=new QMenu(this);
+    QAction *AccionBloquearColumna = new QAction("Bloquear columna", this);
+    menu->addAction(AccionBloquearColumna);
+    mapper->setMapping(AccionBloquearColumna,column);
+    QObject::connect(AccionBloquearColumna, SIGNAL(triggered()), mapper, SLOT(map()));
+    QObject::connect(mapper, SIGNAL(mapped(int)), this, SLOT(Bloquear(int)));
 
-bool TablaPrincipal::eventFilter(QObject *watched, QEvent *e)
-{
-    return QWidget::eventFilter(watched, e);
+    menu->popup(this->horizontalHeader()->viewport()->mapToGlobal(pos));
+
 }
 

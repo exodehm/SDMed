@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     Delegados/delegadomedicionesestandar.cpp \
     Tablas/tablaprincipal.cpp \
     iconos.cpp \
-    Delegados/delegadoiconos.cpp
+    Delegados/delegadoiconos.cpp \
+    Tablas/tablabase.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -81,9 +82,10 @@ HEADERS  += interfazobra.h \
     Delegados/delegadomedicionesestandar.h \
     Tablas/tablaprincipal.h \
     iconos.h \
-    Delegados/delegadoiconos.h
+    Delegados/delegadoiconos.h \
+    Tablas/tablabase.h
 
-FORMS    += interfazobra.ui
+FORMS    +=
 
 RESOURCES += \
     Editor/iconosEditor.qrc \

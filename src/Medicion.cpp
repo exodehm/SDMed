@@ -60,6 +60,8 @@ void Medicion::InsertarLineasVacias(int pos, int num)
     actual=lm.begin();
     std::advance(actual,pos);
     lm.insert(actual, num,lineavacia);
+    SumaMedicion();
+    SumaSubParcial();
 }
 
 void Medicion::EliminarLineas(int pos, int numLineas)

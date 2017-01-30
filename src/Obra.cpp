@@ -559,7 +559,7 @@ std::list<TEXTO> Obra::copiarMedicion()
 
 void Obra::InsertarLineasVaciasMedicion(int pos, int num)
 {
-    aristaPadre->datoarista.ModificaMedCer().InsertarLineasVacias(pos,num);    
+    aristaPadre->datoarista.ModificaMedCer().InsertarLineasVacias(pos,num);
 }
 
 void Obra::inicializarActual()

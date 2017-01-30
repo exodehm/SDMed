@@ -47,8 +47,7 @@ private:
     QList <QStringList> datos;
     QStringList cabecera;
     QString LeyendasCabecera[11];
-    Obra* miobra;
-    //IconosNat I;
+    Obra* miobra;    
 };
 
 #endif // PRINCIPALMODEL_H

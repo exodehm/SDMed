@@ -7,17 +7,17 @@
 #include <QClipboard>
 #include <QMimeData>
 #include <QTextStream>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 #include "./include/Obra.h"
 #include "./include/AbrirGuardar.h"
 #include "./Modelos/PrincipalModel.h"
 #include "./Modelos/MedicionesModel.h"
-#include "./Delegados/delegadoeditormediciones.h"
-#include "filter.h"
-
-namespace Ui {
-class InterfazObra;
-}
+//#include "./Tablas/tablabase.h"
+#include "./Tablas/tablaprincipal.h"
+#include "./Tablas/tablamedcert.h"
+#include "./Editor/editor.h"
 
 class InterfazObra : public QWidget
 {
@@ -27,6 +27,7 @@ public:
     explicit InterfazObra(QWidget *parent = 0);
     ~InterfazObra();
 
+    void GenerarUI();
     void RefrescarVista();
     void EscribirTexto();
 
@@ -58,13 +59,24 @@ public slots:
     void CambiarMedCert(int indice);*/
 
 private:
-    Ui::InterfazObra *ui;    
     QHeaderView* cabeceraTablaP;
     PrincipalModel* modeloTablaP;
     MedicionesModel* modeloTablaMC;
-    //DelegadoEditorMediciones* dlgEM;
 
-    Filter *filter;
+
+
+    QVBoxLayout* lienzoGlobal;
+    QHBoxLayout* botonera;
+    QHBoxLayout* lienzoSuperior;
+    QHBoxLayout* lienzoIntermedio;
+    QHBoxLayout* lienzoInferior;
+    QPushButton* botonAvanzar;
+    QPushButton* botonRetroceder;
+    TablaBase* tablaPrincipal;
+    TablaBase* tablaMediciones;
+    QComboBox* comboMedCert;
+
+    Editor* editor;
 
     QModelIndex *indice;    
 
