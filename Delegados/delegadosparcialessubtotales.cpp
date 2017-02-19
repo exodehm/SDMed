@@ -1,6 +1,6 @@
 #include "delegadosparcialessubtotales.h"
 
-DelegadosParcialesSubtotales::DelegadosParcialesSubtotales(QObject *parent):QStyledItemDelegate(parent)
+DelegadosParcialesSubtotales::DelegadosParcialesSubtotales(QObject *parent):DelegadoEditorNumeros(parent)
 {
 
 }
@@ -16,7 +16,8 @@ void DelegadosParcialesSubtotales::paint( QPainter *painter,const QStyleOptionVi
         //painter->fillRect(option.rect, brush);
         painter->drawRect(option.rect);
         painter->setPen(Qt::magenta);
-        painter->drawText(option.rect, Qt::AlignCenter, index.data().toString());
+        //painter->drawText(option.rect, Qt::AlignCenter, QString::number(index.data().toDouble(),'f',2));
+        QStyledItemDelegate::paint(painter, option, index);
         painter->restore();
     }
     else
@@ -27,5 +28,3 @@ QSize DelegadosParcialesSubtotales::sizeHint(const QStyleOptionViewItem &option,
 {
     return QSize( 45, 15);
 }
-
-

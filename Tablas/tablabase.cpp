@@ -9,8 +9,9 @@ TablaBase::TablaBase(int nColumnas, QWidget *parent): QTableView(parent)
     }
     cabecera = this->horizontalHeader();
     alturaFilas = this->verticalHeader();
+    dlgBA = new DelegadoBase;
     dlgCB = new DelegadoColumnasBloqueadas;
-    dlgEM = new DelegadoEditorMediciones;
+    dlgEN = new DelegadoEditorNumeros;
     filtro = new Filter;
     installEventFilter(filtro);
     cabecera->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -47,7 +48,7 @@ void TablaBase::Bloquear(int columna)
         }
         else
         {
-            setItemDelegateForColumn(columna,dlgEM);
+            setItemDelegateForColumn(columna,dlgEN);
         }
         clearSelection();
     }

@@ -38,13 +38,13 @@ int MedicionesModel::columnCount(const QModelIndex& parent) const
 QVariant MedicionesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal)
-	{
+    {
         if (role == Qt::DisplayRole)
-		{
+        {
             return LeyendasCabecera.value(section);
-		}
+        }
     }
-	return QAbstractTableModel::headerData(section, orientation, role);
+    return QAbstractTableModel::headerData(section, orientation, role);
 }
 
 QVariant MedicionesModel::data(const QModelIndex& indice,int role) const
@@ -63,8 +63,7 @@ QVariant MedicionesModel::data(const QModelIndex& indice,int role) const
             }
             else
             {
-                QLocale::setDefault(QLocale( QLocale::Spanish, QLocale::Spain ));
-                return QString( "%L1" ).arg(fila.at(indice.column()).toFloat());
+                return fila.at(indice.column());
             }
         }
         else
@@ -100,7 +99,7 @@ bool MedicionesModel::setData(const QModelIndex & index, const QVariant& value, 
         else if (index.column()==tipoColumna::N || index.column()==tipoColumna::LONGITUD || index.column()==tipoColumna::ANCHURA || index.column()==tipoColumna::ALTURA)
         {
             QString valor = value.toString().replace(",",".");
-            miobra->EditarLineaMedicion(index.row(), index.column(),valor.toDouble(),"");//mando el valor numerico y el string vacío
+            miobra->EditarLineaMedicion(index.row(), index.column(),value.toDouble(),"");//mando el valor numerico y el string vacío
         }
         ActualizarDatos();
         emit dataChanged(index, index);
@@ -147,7 +146,8 @@ bool MedicionesModel::filaVacia(const QStringList& linea)
 void MedicionesModel::ActualizarDatos()
 {
     datos.clear();
-    if (!miobra->hayMedicion())
+    qDebug()<<"Total medicion: "<<miobra->LeeTotalMedicion();
+    if (!miobra->hayMedicion() && miobra->EsPartida())
     {
         miobra->InsertarLineasVaciasMedicion(0,1);
     }

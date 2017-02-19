@@ -54,6 +54,7 @@ public:
     std::list<pNodo>& lista_recorrerGrafo(pNodo& inicio);
     std::list<std::pair<pNodo,int>>& recorrerGrafoConNiveles(const pNodo& inicio, int nivel=0);
     std::list<std::pair<pNodo,int>>& lista_recorrerGrafoConNiveles(const pNodo& inicio, int nivel=0);
+    std::list<pNodo>& recorrerAncestrosOrdenado(pNodo& nodoAInvestigar);
     std::list<pNodo>& recorrerAncestros(pNodo& nodoAInvestigar);
     std::list<pNodo>& lista_recorrerAncestros(pNodo& nodoAInvestigar);
     /**********comprobaciones necesarias****************/
@@ -61,6 +62,7 @@ public:
     bool existeHermano (pNodo& padre, pNodo& hijo);
     bool existeNodo (const pNodo& n);
     bool existeNodoConMismoContenido (const pNodo& nodoAComparar);
+    bool esPadre(const pNodo& padre, const pNodo& hijo);
     /***********otras*******************************/
     void guardaAristas (pNodo& n);
     void guardaAristasParaCopia (pNodo& n);
@@ -765,6 +767,59 @@ std::list<std::pair<nodo<datonodo_t,datoarista_t>*,int>>&Grafo<datonodo_t,datoar
 //***************************************************//
 
 template <typename datonodo_t, typename datoarista_t>
+std::list<nodo<datonodo_t,datoarista_t>*>&Grafo<datonodo_t,datoarista_t>::recorrerAncestrosOrdenado(pNodo& nodoAInvestigar)
+{
+    std::list<pNodo> lista = recorrerAncestros(nodoAInvestigar);
+    /*elimino nodos duplicados*/
+    nodos.clear();
+    bool existe=false;
+    for (auto it1 = lista.crbegin(); it1!=lista.crend(); ++it1)
+    {
+       existe = false;
+        for(auto it2 = nodos.begin(); it2!=nodos.end(); it2++)
+        {
+            if ((*it2)==(*it1))
+            {
+                existe=true;
+            }
+        }
+        if (!existe)
+        {
+            nodos.push_front(*it1);
+        }
+    }
+    /*ordeno los nodos en funcion de si alguno es padre de otros*/
+    for (int i=0;i<2;i++)
+    {nodos.sort([](const pNodo& hijo, const pNodo& padre)
+        {
+            if (padre->adyacente)
+            {
+                pArista A = padre->adyacente;
+                while (A)
+                {
+                    if (A->destino==hijo)
+                    {
+                        std::cout<<padre<<" mayor que "<<"-"<<A->destino<<std::endl;
+                        return true;
+                    }
+                    else
+                    {
+                        A=A->siguiente;
+                    }
+                }
+            }
+            return false;
+        }
+        );
+    }
+    for (auto elem:nodos)
+    {
+        std::cout<<"Nodo: "<<elem<<std::endl;
+    }
+    return nodos;
+}
+
+template <typename datonodo_t, typename datoarista_t>
 std::list<nodo<datonodo_t,datoarista_t>*>&Grafo<datonodo_t,datoarista_t>::recorrerAncestros(pNodo& nodoAInvestigar)
 {
     nodos.clear();
@@ -796,7 +851,8 @@ std::list<nodo<datonodo_t,datoarista_t>*>&Grafo<datonodo_t,datoarista_t>::lista_
         }
         indice=indice->siguiente;
     }
-    while (!pilaNodos.empty() && pilaNodos.top()!=Raiz)
+    //while (!pilaNodos.empty() && pilaNodos.top()!=Raiz)
+    while (!pilaNodos.empty())
     {
 
         pNodo N = pilaNodos.top();
@@ -914,6 +970,30 @@ bool Grafo<datonodo_t,datoarista_t>::existeNodoConMismoContenido (const pNodo& n
     }
     return false;
 
+}
+
+//**************************************************//
+//comprueba si un nodo es padre directo de otro nodo//
+//**************************************************//
+template <typename datonodo_t, typename datoarista_t>
+bool Grafo<datonodo_t,datoarista_t>::esPadre(const pNodo& padre, const pNodo& hijo)
+{
+    if (padre->adyacente)
+    {
+        pArista A = padre->adyacente;
+        while (A)
+        {
+            if (A->destino==hijo)
+            {
+                return true;
+            }
+            else
+            {
+                A=A->siguiente;
+            }
+        }
+    }
+    return false;
 }
 
 //***************************************************//

@@ -5,6 +5,7 @@
 #include <list>
 #include <string>
 #include <sstream>
+#include <QDebug>
 
 #include <iomanip>
 
@@ -50,7 +51,7 @@ public:
     const std::list<LineaMedicion> &LeeLista() const;
     const float& LeeTotal ()const;
     const LineaMedicion LeeActual() const;
-    const bool hayMedicion() const;
+    bool hayMedicion() const;
     /***************modificadores************************/
     void EditarCampo (int fila, int columna, float valor, TEXTO comentario="");
     void EscribeTotal (float cantidad);

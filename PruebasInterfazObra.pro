@@ -42,7 +42,11 @@ SOURCES += main.cpp\
     Tablas/tablaprincipal.cpp \
     iconos.cpp \
     Delegados/delegadoiconos.cpp \
-    Tablas/tablabase.cpp
+    Tablas/tablabase.cpp \
+    Dialogos/dialogosuprimirmedicion.cpp \
+    Dialogos/dialogoprecio.cpp \
+    Delegados/delegadobase.cpp \
+    Delegados/delegadoeditornumeros.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -83,9 +87,15 @@ HEADERS  += interfazobra.h \
     Tablas/tablaprincipal.h \
     iconos.h \
     Delegados/delegadoiconos.h \
-    Tablas/tablabase.h
+    Tablas/tablabase.h \
+    Dialogos/dialogosuprimirmedicion.h \
+    Dialogos/dialogoprecio.h \
+    Delegados/delegadobase.h \
+    Delegados/delegadoeditornumeros.h
 
-FORMS    +=
+FORMS    += \
+    Dialogos/dialogosuprimirmedicion.ui \
+    Dialogos/dialogoprecio.ui
 
 RESOURCES += \
     Editor/iconosEditor.qrc \

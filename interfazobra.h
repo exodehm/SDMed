@@ -9,6 +9,7 @@
 #include <QTextStream>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QSplitter>
 
 #include "./include/Obra.h"
 #include "./include/AbrirGuardar.h"
@@ -28,8 +29,8 @@ public:
     ~InterfazObra();
 
     void GenerarUI();
-    void RefrescarVista();
     void EscribirTexto();
+    void GuardarTextoPartida();
 
 public slots:
 
@@ -43,7 +44,8 @@ public slots:
     void MostrarDeSegun(int indice);
     void Avanzar();
     void Retroceder();
-    void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
+    void RefrescarVista(QModelIndex indice1, QModelIndex indice2);
+    //void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
     void CopiarMedicion();
     void PegarMedicion();
     void GuardarBC3();
@@ -63,13 +65,13 @@ private:
     PrincipalModel* modeloTablaP;
     MedicionesModel* modeloTablaMC;
 
-
-
     QVBoxLayout* lienzoGlobal;
+    QVBoxLayout* lienzoSuperior;
     QHBoxLayout* botonera;
-    QHBoxLayout* lienzoSuperior;
-    QHBoxLayout* lienzoIntermedio;
-    QHBoxLayout* lienzoInferior;
+    QWidget* widgetSuperior;
+
+    QSplitter* separador;
+
     QPushButton* botonAvanzar;
     QPushButton* botonRetroceder;
     TablaBase* tablaPrincipal;

@@ -10,6 +10,8 @@
 #include <QTextStream>
 
 #include "./include/Obra.h"
+#include "./Dialogos/dialogosuprimirmedicion.h"
+#include "./Dialogos/dialogoprecio.h"
 
 
 #include "../iconos.h"

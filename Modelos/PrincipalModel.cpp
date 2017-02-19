@@ -64,11 +64,7 @@ QVariant PrincipalModel::data(const QModelIndex& indice,int role) const
     {
         if (role==Qt::DisplayRole || role == Qt::EditRole)
         {
-            //qDebug()<<"El valor String es: "<<QString::number(fila.at(indice.column()).toFloat(),'f',3);
-            //qDebug()<<"El valor Float es: "<<fila.at(indice.column()).toFloat();
-
-            QLocale::setDefault(QLocale( QLocale::Spanish, QLocale::Spain ));
-            return QString( "%L1" ).arg(fila.at(indice.column()).toFloat());
+            return fila.at(indice.column()).toFloat();
         }
     }
     if (indice.column()==tipoColumna::CODIGO || indice.column()==tipoColumna::UD ||indice.column()==tipoColumna::RESUMEN)
@@ -138,6 +134,75 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
             emit EditarNaturaleza(value.toInt());
             return true;
         }*/
+        if (index.column()==tipoColumna::RESUMEN)
+        {
+            miobra->EditarResumen(value.toString());
+            emit dataChanged(index, index);
+            return true;
+        }
+        else if (index.column()==tipoColumna::CANPRES)
+        {
+            if (miobra->hayMedicionPartidaActual())
+            {
+                DialogoSuprimirMedicion* d = new DialogoSuprimirMedicion(miobra->LeeCodigoObra());
+                if (d->exec()==QDialog::Accepted && d->Suprimir())
+                {
+                    miobra->EditarCantidad(value.toFloat());
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                miobra->EditarCantidad(value.toFloat());
+            }
+            emit dataChanged(index, index);
+            return true;
+        }
+        else if (index.column()==tipoColumna::PRPRES)
+        {
+            if (miobra->hayDescomposicion())
+            {
+                DialogoPrecio* d = new DialogoPrecio(miobra->LeeCodigoObra());
+                if (d->exec()==QDialog::Accepted)
+                {
+                    switch (d->Respuesta())
+                    {
+                    case 1:
+                    {
+                        qDebug()<<"Suprimir descomposicion";
+                        miobra->SuprimirDescomposicion();
+                        miobra->EditarPrecio(value.toFloat());
+                        break;
+                    }
+                    case 2:
+                    {
+                        qDebug()<<"Bloquear precio";
+                        miobra->BloquearPrecio(value.toFloat());
+                        break;
+                    }
+                    case 3:
+                    {
+                        qDebug()<<"Ajustar";
+                        break;
+                    }
+                    default:
+                        miobra->EditarPrecio(value.toFloat());
+                        break;
+                    }
+                    emit dataChanged(index, index);
+                    return true;
+                }
+            }
+            else
+            {
+                miobra->EditarPrecio(value.toFloat());
+                emit dataChanged(index, index);
+                return true;
+            }
+        }
     }
     return false;
 }

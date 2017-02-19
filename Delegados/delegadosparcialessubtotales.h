@@ -1,13 +1,14 @@
 #ifndef DELEGADOSPARCIALESSUBTOTALES_H
 #define DELEGADOSPARCIALESSUBTOTALES_H
 
-#include <QStyledItemDelegate>
 #include <QPainter>
 #include <QDebug>
 #include <QPen>
 #include<QBrush>
 
-class DelegadosParcialesSubtotales : public QStyledItemDelegate
+#include "./Delegados/delegadoeditornumeros.h"
+
+class DelegadosParcialesSubtotales : public DelegadoEditorNumeros
 {
     Q_OBJECT
 public:

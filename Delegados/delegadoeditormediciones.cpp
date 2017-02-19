@@ -1,6 +1,6 @@
 #include "delegadoeditormediciones.h"
 
-DelegadoEditorMediciones::DelegadoEditorMediciones(QObject *parent):QStyledItemDelegate(parent)
+DelegadoEditorMediciones::DelegadoEditorMediciones(QObject *parent):DelegadoBase(parent)
 {
 
 }
@@ -35,31 +35,6 @@ void DelegadoEditorMediciones::setModelData(QWidget * editor, QAbstractItemModel
     {
         return QStyledItemDelegate::setModelData(editor, model, index);
     }
-    qDebug()<<"Actualizando al modelo: "<<model->columnCount(QModelIndex())<<" con el indice: "<<index.row()<<" - "<<index.column()<<" y el dato: "<<mieditor->text();
     model->setData(index,mieditor->text(),Qt::DisplayRole);
     model->setData(index,mieditor->text(),Qt::EditRole);
-}
-
-bool DelegadoEditorMediciones::eventFilter(QObject *obj, QEvent* event)
-{
-    if (event->type()==QEvent::KeyPress)
-    {
-        QKeyEvent* key = static_cast<QKeyEvent*>(event);
-        if (key->key()==Qt::Key_Tab || key->key()==Qt::Key_Enter || key->key()==Qt::Key_Return)
-        {
-            QLineEdit *editor=qobject_cast<QLineEdit*>(obj);
-            emit commitData(editor);
-            emit closeEditor(editor, QStyledItemDelegate::NoHint);
-        }
-        else
-        {
-            return QObject::eventFilter(obj, event);
-        }
-        return false;
-    }
-    else
-    {
-        return QObject::eventFilter(obj, event);
-    }
-    return false;
 }

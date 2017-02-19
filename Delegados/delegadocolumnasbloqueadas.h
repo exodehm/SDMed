@@ -1,13 +1,14 @@
 #ifndef DELEGADOCOLUMNASBLOQUEADAS_H
 #define DELEGADOCOLUMNASBLOQUEADAS_H
 
-#include <QStyledItemDelegate>
 #include <QPainter>
 #include <QDebug>
 #include <QPen>
 #include<QBrush>
 
-class DelegadoColumnasBloqueadas : public QStyledItemDelegate
+#include "./Delegados/delegadobase.h"
+
+class DelegadoColumnasBloqueadas : public DelegadoBase
 {
     Q_OBJECT
 public:

@@ -1,6 +1,6 @@
 #include "delegadocolumnasbloqueadas.h"
 
-DelegadoColumnasBloqueadas::DelegadoColumnasBloqueadas(QObject *parent):QStyledItemDelegate(parent)
+DelegadoColumnasBloqueadas::DelegadoColumnasBloqueadas(QObject *parent):DelegadoBase(parent)
 {
 
 }

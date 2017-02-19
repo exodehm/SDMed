@@ -159,3 +159,8 @@ void Editor::updateStats()
 	QString output = tr("Letras:	%1, Palabras: %2").arg(chars).arg(words);
 	mStatLabel->setText(output);
 }
+
+bool Editor:: HayCambios()
+{
+    //return textEdit->
+}

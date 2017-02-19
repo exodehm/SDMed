@@ -15,42 +15,43 @@ class QLabel;
 
 class Editor : 	public QMainWindow, private Ui::Editor
 {
-	Q_OBJECT
-	public:
+    Q_OBJECT
+public:
     Editor (QWidget* parent=nullptr);
-	//~MainWindow();
+    //~MainWindow();
     QTextEdit &LeeTexto();
     void EscribeTexto(const QString& texto);
+    bool HayCambios();
 
-	protected:
-	void setupActions();	
+protected:
+    void setupActions();
 
-	protected slots:
+protected slots:
 
-	void negritas();
-	void cursiva();
-	void undo();
-	void redo();
-	void copy();
-	void cut();
-	void paste();
-	void definirFuente();
-	void definirColorLetra();
-	void definirColorFondo();
-	void Justificar();
-	void AlinearDerecha();
-	void AlinearIzquierda();
-	void Centrar();
-	void updateStats();
-	
-	private:
-	
-	QLabel *mStatLabel;
-	QFont fuenteActual;
-	QColor colorFondo;
-	QColor colorLetra;
-	bool cursivas;
-	bool negrita;
+    void negritas();
+    void cursiva();
+    void undo();
+    void redo();
+    void copy();
+    void cut();
+    void paste();
+    void definirFuente();
+    void definirColorLetra();
+    void definirColorFondo();
+    void Justificar();
+    void AlinearDerecha();
+    void AlinearIzquierda();
+    void Centrar();
+    void updateStats();
+
+private:
+
+    QLabel *mStatLabel;
+    QFont fuenteActual;
+    QColor colorFondo;
+    QColor colorLetra;
+    bool cursivas;
+    bool negrita;
 };
 
 #endif

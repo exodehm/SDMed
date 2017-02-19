@@ -10,7 +10,9 @@ TablaPrincipal::TablaPrincipal(int nColumnas, QWidget *parent): TablaBase(nColum
     celdaBloqueada[tipoColumna::IMPPRES]=true;
     celdaBloqueada[tipoColumna::IMPCERT]=true;
     setItemDelegateForColumn(tipoColumna::CODIGO,dlgCB);
-    setItemDelegateForColumn(tipoColumna::PORCERTPRES,dlgCB);
+    setItemDelegateForColumn(tipoColumna::CANPRES,dlgEN);
+    setItemDelegateForColumn(tipoColumna::PRPRES,dlgEN);
+    setItemDelegateForColumn(tipoColumna::PORCERTPRES,dlgEN);
     setItemDelegateForColumn(tipoColumna::IMPPRES,dlgCB);
     setItemDelegateForColumn(tipoColumna::IMPCERT,dlgCB);
 

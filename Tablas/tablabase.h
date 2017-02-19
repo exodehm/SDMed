@@ -2,15 +2,18 @@
 #define TABLABASE_H
 
 #include <QTableView>
+#include <QStyledItemDelegate>
 #include <QMenu>
 #include <QSignalMapper>
 #include <QHeaderView>
 
+#include "../Delegados/delegadobase.h"
 #include "../Delegados/delegadoeditormediciones.h"
 #include "../Delegados/delegadosparcialessubtotales.h"
 #include "../Delegados/delegadocolumnasbloqueadas.h"
 #include "../Delegados/delegadomedicionesestandar.h"
 #include "../Delegados/delegadoiconos.h"
+#include "../Delegados/delegadoeditornumeros.h"
 #include "../filter.h"
 
 class Filter;
@@ -38,7 +41,8 @@ public slots:
 protected:
     QHeaderView* cabecera;
     QHeaderView* alturaFilas;
-    DelegadoEditorMediciones* dlgEM;
+    DelegadoBase* dlgBA;
+    DelegadoEditorNumeros* dlgEN;
     DelegadoColumnasBloqueadas* dlgCB;
     DelegadoIconos* dlgIco;
     bool* celdaBloqueada;

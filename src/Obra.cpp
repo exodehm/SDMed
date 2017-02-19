@@ -386,8 +386,8 @@ const QList<QStringList>& Obra::VerMedCert()
     for (auto elem : lista)
     {
         listadoTablaMC.append(elem.LeeLineaMedicion());
-        QString dato;
-        /*foreach (dato, elem.LeeLineaMedicion())
+        /*QString dato;
+        foreach (dato, elem.LeeLineaMedicion())
         {
             qDebug()<<dato;
         }*/
@@ -409,7 +409,7 @@ void Obra:: SumarHijos(pNodo n)
             medicion = elem.second->datoarista.LeeMedicion().LeeTotal();
             certificacion = elem.second->datoarista.LeeCertificacion().LeeTotal();
             precio = elem.first->datonodo.LeeImportePres();
-            //qDebug()<<"Cantidad: "<<medicion<<"* Precio: "<<precio;
+            qDebug()<<"Cantidad: "<<medicion<<"* Precio: "<<precio;
             if (elem.first->datonodo.LeeCodigo().contains("%")) //si es un porcentaje
             {
                 elem.first->datonodo.EscribeImportePres(sumapres/100.0);
@@ -485,19 +485,19 @@ void Obra::borrarTodaMedicionOCertificacion()
 
 void Obra::borrarTodaMedicion()
 {
-    if (hayMedicion())
+    //if (hayMedicion())
     {
-        /*aristaActual->datoarista.LeeMedicion().BorrarMedicion();
-        Actualizar(aristaPadre->destino);*/
+        aristaActual->datoarista.ModificaMedCer().BorrarMedicion();
+        Actualizar(aristaPadre->destino);
     }
 }
 
 void Obra::borrarTodaCertificacion()
 {
-    if (hayMedicion())
+    //if (hayMedicion())
     {
-        /*aristaActual->datoarista.LeeCertificacion().BorrarMedicion();
-        Actualizar(aristaPadre->destino);*/
+        aristaActual->datoarista.ModificaMedCer().BorrarMedicion();
+        Actualizar(aristaPadre->destino);
     }
 }
 
@@ -714,47 +714,17 @@ void Obra::Actualizar(pNodo nodoactual)
         padre->datonodo.EscribeImportePres(0);
         nodoactual=padre;
     }
-
-    //std::cout<<"Actualizando desde el nodo: "<<nodoactual->datonodo.LeeCodigo()<<std::endl;
-    std::list<pNodo>lista =  G.recorrerAncestros(nodoactual);
-
-    std::list<pNodo> listaunica;
-    bool existe=false;
-    TEXTO codigo_a_comparar;
-    //crear lista unica
-    for (auto it = lista.crbegin(); it!=lista.crend(); ++it)
+    qDebug()<<"Actualizando desde el nodo: "<<nodoactual->datonodo.LeeCodigo();
+    std::list<pNodo>lista = G.recorrerAncestrosOrdenado(nodoactual);
+    for (auto elem:lista)
     {
-        codigo_a_comparar == (*it)->datonodo.LeeCodigo();
-        existe= false;
-        for(auto it2 = listaunica.begin(); it2!=listaunica.end(); it2++)
-        {
-            if ((*it2)->datonodo.LeeCodigo()==codigo_a_comparar)
-            {
-                existe=true;
-            }
-        }
-        if (!existe)
-        {
-            listaunica.push_front(*it);
-        }
+        qDebug()<<"Lista a actualizar: "<<elem->datonodo.LeeCodigo()<<"-"<<elem;
     }
-    //recorro la lista de nodos efectuando la suma de sus hijos...la actualizacion propiamente dicha
-    for(auto it =listaunica.begin(); it != listaunica.end(); it ++)
+    //recorro la lista de nodos efectuando la suma de sus hijos
+    for(auto it =lista.begin(); it != lista.end(); it ++)
     {
         SumarHijos((*it));
-    }
-    /*std::cout<<"Lista original: ";
-    for(auto Iterador=lista.begin(); Iterador != lista.end(); Iterador++)
-    {
-        qDebug()<<(*Iterador)->datonodo.LeeCodigo()<<" - ";
-    }
-    std::cout<<"\n";
-
-    std::cout<<"Lista reducida: ";
-    for(auto Iterador=listaunica.begin(); Iterador != listaunica.end(); Iterador++)
-    {
-        qDebug()<<(*Iterador)->datonodo.LeeCodigo()<<" - ";
-    } */
+    }  
 }
 
 void Obra::AjustarPrecio(float nuevoprecio)
@@ -794,7 +764,7 @@ bool Obra::esPrecioBloqueado()
     return aristaActual->destino->datonodo.esPrecioBloqueado();
 }
 
-void Obra::escribirPrecio(float precio)
+void Obra::EditarPrecio(float precio)
 {
     //std::cout<<"Poniendo al nodo: "<<aristaActual->destino->datonodo.LeeCodigo()<<" el precio de "<<precio<<std::endl;
     aristaActual->destino->datonodo.EscribePrecio(precio);
@@ -832,20 +802,20 @@ void Obra::BloquearPrecio (float precio)
 
 void Obra::EditarCantidad (float cantidad)
 {
-    /*std::cout<<"aRISTA ACTUAL: "<<aristaActual<<std::endl;
+    //qDebug()<<"aRISTA ACTUAL: "<<aristaActual->datoarista.LeeMedicion().LeeTotal();
     if (aristaActual)
     {
         if (NivelUno())
         {
-            aristaActual->datoarista.LeeMedicion().EscribeTotal(cantidad);
+            aristaActual->datoarista.ModificaMedCer().EscribeTotal(cantidad);
         }
         else
         {
-            aristaActual->datoarista.LeeMedicion().EscribeTotal(cantidad);
-            aristaActual->datoarista.LeeCertificacion().EscribeTotal(cantidad);
-        }
+            aristaActual->datoarista.ModificaMedCer(MedCert::MEDICION).EscribeTotal(cantidad);
+            aristaActual->datoarista.ModificaMedCer(MedCert::CERTIFICACION).EscribeTotal(cantidad);
+        }        
         Actualizar(aristaActual->destino);
-    }*/
+    }
 }
 
 void Obra::EditarUnidad(int ud)
@@ -922,19 +892,29 @@ bool Obra::hayDescomposicion()
 
 bool Obra::hayMedicion() const
 {
-    if (aristaActual)
-    {
+    //if (aristaActual)
+    {            
         return aristaPadre->datoarista.LeeMedicion().hayMedicion();
     }
-    else
+    /*else
     {
         return false;
+    }*/
+}
+
+bool Obra::hayMedicionPartidaActual() const
+{
+    if (aristaActual)
+    {
+        return aristaActual->datoarista.LeeMedicion().hayMedicion();
     }
+    return false;
 }
 
 bool Obra::hayCertificacion() const
 {
-    return aristaActual->datoarista.LeeCertificacion().hayMedicion();
+    //return aristaActual->datoarista.LeeCertificacion().hayMedicion();
+    return aristaPadre->datoarista.LeeCertificacion().hayMedicion();
 }
 
 pNodo Obra::existeConcepto(const TEXTO &codigo)
@@ -1023,17 +1003,17 @@ QStringList Obra::RellenaLinea(pNodo nodo,pArista arista)
     linea.append(QString::number(nodo->datonodo.LeeNat()));      //naturaleza
     linea.append(nodo->datonodo.LeeUd());                        //ud
     linea.append((nodo->datonodo.LeeResumen()));                   //resumen
-    linea.append(QString::number(arista->datoarista.LeeMedicion().LeeTotal(),'f',2));     //Cantidad presupuestada(medida)
-    linea.append(QString::number(arista->datoarista.LeeCertificacion().LeeTotal(),'f',2));//Cantidad certificada
+    linea.append(QString::number(arista->datoarista.LeeMedicion().LeeTotal(),'f',3));     //Cantidad presupuestada(medida)
+    linea.append(QString::number(arista->datoarista.LeeCertificacion().LeeTotal(),'f',3));//Cantidad certificada
     linea.append(QString::number((arista->datoarista.LeeCertificacion().LeeTotal()/arista->datoarista.LeeMedicion().LeeTotal())*100,'f',2));//porcentaje certificado
-    linea.append(QString::number(nodo->datonodo.LeeImportePres(),'f',2));               //precio de la medicion
-    linea.append(QString::number(nodo->datonodo.LeeImporteCert(),'f',2));               //precio de la certificacion
+    linea.append(QString::number(nodo->datonodo.LeeImportePres(),'f',3));               //precio de la medicion
+    linea.append(QString::number(nodo->datonodo.LeeImporteCert(),'f',3));               //precio de la certificacion
     linea.append(nodo->datonodo.LeeImportePres()==0
-                ? QString::number(nodo->datonodo.LeeImportePres()*1,'f',2)
-                : QString::number(nodo->datonodo.LeeImportePres()*arista->datoarista.LeeMedicion().LeeTotal(),'f',2));
+                ? QString::number(nodo->datonodo.LeeImportePres()*1,'f',3)
+                : QString::number(nodo->datonodo.LeeImportePres()*arista->datoarista.LeeMedicion().LeeTotal(),'f',3));
     linea.append(nodo->datonodo.LeeImporteCert()==0
-                ? QString::number(nodo->datonodo.LeeImporteCert()*1,'f',2)
-                : QString::number(nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal(),'f',2));
+                ? QString::number(nodo->datonodo.LeeImporteCert()*1,'f',3)
+                : QString::number(nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal(),'f',3));
 
     return linea;
 }

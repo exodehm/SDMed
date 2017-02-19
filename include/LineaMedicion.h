@@ -49,6 +49,7 @@ struct LineaMedicion
     const TipoLinea& LeeTipo() const;
     const bool& EsSubTotal() const;
     bool EsNormal() const;
+    const bool EsLineaVacia() const;
     QStringList LeeLineaMedicion();
 
     //metodos modificadores

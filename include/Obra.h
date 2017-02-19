@@ -69,7 +69,7 @@ public:
     void BloquearPrecio (float precio); //escribe un precio bloqueado y no considera el descompuesto
     void DesbloquearPrecio();           //anula el bloqueo y suma el descompuesto
     bool esPrecioBloqueado();           //consulta para saber si un precio esta bloqueado
-    void escribirPrecio(float precio);  //escribe un precio si no hay descompuesto
+    void EditarPrecio(float precio);  //escribe un precio si no hay descompuesto
     /*********funciones de edicion***********/
     void EditarCodigo (TEXTO codigo);
     void EditarResumen (TEXTO resumen);
@@ -112,6 +112,7 @@ public:
     /***************************varias***************************/
     bool hayDescomposicion();
     bool hayMedicion() const;
+    bool hayMedicionPartidaActual() const;
     bool hayCertificacion() const;
     pNodo existeConcepto(const TEXTO& codigo);
     bool existeHermano(TEXTO codigo);

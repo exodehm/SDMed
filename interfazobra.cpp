@@ -21,15 +21,25 @@ InterfazObra::~InterfazObra()
 
 void InterfazObra::GenerarUI()
 {
+    lienzoGlobal = new QVBoxLayout(this);
+    separador = new QSplitter(Qt::Vertical);
+    widgetSuperior = new QWidget(separador);
+    separador->addWidget(widgetSuperior);
+    lienzoSuperior = new QVBoxLayout(widgetSuperior);
+
+
     modeloTablaP = new PrincipalModel(O);
-    tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()));
+    tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()), separador);
     tablaPrincipal->setModel(modeloTablaP);
 
+
     modeloTablaMC = new MedicionesModel(O);
-    tablaMediciones =  new TablaMedCert(modeloTablaMC->columnCount(QModelIndex()));
+    tablaMediciones =  new TablaMedCert(modeloTablaMC->columnCount(QModelIndex()), separador);
     tablaMediciones->setModel(modeloTablaMC);
+    separador->addWidget(tablaMediciones);
     //editor
-    editor = new Editor;
+    editor = new Editor(separador);
+    separador->addWidget(editor);
     //zona de botones
     botonAvanzar = new QPushButton("->");
     botonRetroceder = new QPushButton("<-");
@@ -43,19 +53,13 @@ void InterfazObra::GenerarUI()
     botonera->addWidget(botonRetroceder);
     botonera->addWidget(botonAvanzar);
     botonera->addStretch();
-    lienzoSuperior = new QHBoxLayout();
-    lienzoIntermedio = new QHBoxLayout();
-    lienzoInferior = new QHBoxLayout();
-    lienzoSuperior->addWidget(tablaPrincipal);
-    lienzoIntermedio->addWidget(tablaMediciones);
-    lienzoInferior->addWidget(editor);
-    lienzoGlobal =  new QVBoxLayout(this);
-    lienzoGlobal->addLayout(botonera);
-    lienzoGlobal->addLayout(lienzoSuperior);
-    lienzoGlobal->addLayout(lienzoIntermedio);
-    lienzoGlobal->addLayout(lienzoInferior);
 
-    RefrescarVista();
+    lienzoSuperior->addLayout(botonera);
+    lienzoSuperior->addWidget(tablaPrincipal);
+
+    lienzoGlobal->addWidget(separador);
+
+    RefrescarVista(QModelIndex(),QModelIndex());
     MostrarDeSegun(0);
 
     /**********editor*****************/
@@ -64,12 +68,13 @@ void InterfazObra::GenerarUI()
     /************signals y slots*****************/
     QObject::connect(tablaPrincipal,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
     QObject::connect(tablaPrincipal->CabeceraDeTabla(),SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
-    //QObject::connect(ui->tablaPrinc,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
+    QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     //QObject::connect(tabla,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     //QObject::connect(ui->botonCopiar,SIGNAL(clicked(bool)),this,SLOT(CopiarMedicion()));
     //QObject::connect(ui->botonPegar,SIGNAL(clicked(bool)),this,SLOT(PegarMedicion()));
     //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
-    QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(ActualizarTablaMedicion(QModelIndex,QModelIndex)));
+    QObject::connect(modeloTablaP, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
+    QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
 
     QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(MostrarDeSegun(int)));
     //QObject::connect(modeloTablaP,SIGNAL(EditarCampoTexto(int, QString)),this,SLOT(EditarCodigoResumen(int, QString)));
@@ -115,7 +120,7 @@ void InterfazObra::SubirNivel()
     }*/
     tablaPrincipal->clearSelection();
     O->SubirNivel();
-    RefrescarVista();
+    RefrescarVista(QModelIndex(),QModelIndex());
     //O->MostrarHijos();
     //qDebug()<<"Subir nivel";
 }
@@ -123,6 +128,7 @@ void InterfazObra::SubirNivel()
 void InterfazObra::BajarNivel(QModelIndex indice)
 {
     Q_UNUSED (indice);
+    GuardarTextoPartida();
     /*if (!O->EsPartidaDummy())
     {
         GuardarTextoPartida();*/
@@ -133,7 +139,7 @@ void InterfazObra::BajarNivel(QModelIndex indice)
             QModelIndex posicionActual = modeloTablaP->index(0, 0, QModelIndex());
             tablaP->setCurrentIndex(posicionActual);
         }*/
-    RefrescarVista();
+    RefrescarVista(QModelIndex(),QModelIndex());
     //}
     //qDebug()<<"Bajar nivel";
 }
@@ -147,7 +153,7 @@ void InterfazObra::Avanzar()
     {
         InsertarFilaVacia();
     }*/
-    RefrescarVista();
+    RefrescarVista(QModelIndex(),QModelIndex());
 }
 
 void InterfazObra::Retroceder()
@@ -159,18 +165,13 @@ void InterfazObra::Retroceder()
     {
         InsertarFilaVacia();
     }*/
-    RefrescarVista();
+    RefrescarVista(QModelIndex(),QModelIndex());
 }
 
-void InterfazObra::ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2)
+void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
 {
     Q_UNUSED (indice1);
     Q_UNUSED (indice2);
-    RefrescarVista();
-}
-
-void InterfazObra::RefrescarVista()
-{
     modeloTablaP->ActualizarDatos();
     modeloTablaMC->ActualizarDatos();
     //O->MostrarHijos();
@@ -180,7 +181,6 @@ void InterfazObra::RefrescarVista()
     modeloTablaMC->layoutChanged();
     tablaPrincipal->resizeColumnsToContents();
     tablaMediciones->resizeColumnsToContents();
-    //tablaMediciones->resizeRowsToContents();
     tablaMediciones->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
 
     //AjustarAltura();
@@ -194,12 +194,17 @@ void InterfazObra::EscribirTexto()
 
 void InterfazObra::PosicionarTablaP(QModelIndex indice)
 {
-    O->PosicionarAristaActual(indice.row());
+    O->PosicionarAristaActual(indice.row());    
 }
 
 void InterfazObra::PosicionarTablaM(QModelIndex indice)
 {
     O->PosicionarLineaActualMedicion(indice.row());
+}
+
+void InterfazObra::GuardarTextoPartida()
+{
+
 }
 
 void InterfazObra::CopiarMedicion()
@@ -229,7 +234,7 @@ void InterfazObra::PegarMedicion()
     if (mimeData->hasText())
     {
         O->pegarMedicion(tablaMediciones->currentIndex().row(),mimeData->text());
-        RefrescarVista();
+        RefrescarVista(QModelIndex(),QModelIndex());
     }
 }
 

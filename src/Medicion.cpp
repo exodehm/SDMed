@@ -1,8 +1,7 @@
 #include "../include/Medicion.h"
-#include <iomanip>
 
 Medicion::Medicion(float total):lm(),TotalCantidad(total),actual(nullptr),todoseleccionado(false),fecha()
-{
+{    
     //std::cout<<"Nueva medición con valor "<<total<<std::endl;
 }
 
@@ -60,8 +59,8 @@ void Medicion::InsertarLineasVacias(int pos, int num)
     actual=lm.begin();
     std::advance(actual,pos);
     lm.insert(actual, num,lineavacia);
-    SumaMedicion();
-    SumaSubParcial();
+    //SumaMedicion();
+    //SumaSubParcial();
 }
 
 void Medicion::EliminarLineas(int pos, int numLineas)
@@ -84,13 +83,22 @@ void Medicion::BorrarMedicion()
     std::cout<<"Borrada la medicion"<<std::endl;
 }
 
-const bool Medicion::hayMedicion() const
+bool Medicion::hayMedicion() const
 {
     if (lm.empty())
     {        
+        //qDebug()<<"No hay elementos en la lista";
         return false;
     }
-    return true;
+    for (auto linea:lm)
+    {
+        if (!linea.EsLineaVacia())
+        {
+            //qDebug()<<"Hay lineas pero alguna vacia";
+            return true;
+        }
+    }
+    return false;
 }
 
 void Medicion::MostrarMedicion()
@@ -101,19 +109,25 @@ void Medicion::MostrarMedicion()
 
 void Medicion::SumaMedicion()
 {
-    TotalCantidad=0;
-    //recorro la lista sumando cada "TotalLinea"
-    actual=lm.begin();
-    while (actual!=lm.end())
+    if (!lm.empty())
     {
-        TotalCantidad+=actual->LeeParcial();
-        actual++;
-    }    
+        TotalCantidad=0;
+        //recorro la lista sumando cada "TotalLinea"
+        actual=lm.begin();
+        while (actual!=lm.end())
+        {
+            TotalCantidad+=actual->LeeParcial();
+            actual++;
+        }
+    }
+    else
+    {
+        TotalCantidad=1;
+    }
 }
 
 void Medicion::SumaSubParcial()
 {
-    //std::cout<<"Funcion SumaSubParcial()"<<std::endl;
     std::list<LineaMedicion>::reverse_iterator rIterador=lm.rbegin();
     std::list<LineaMedicion>::reverse_iterator Apuntador;
     float subparcial=0;
@@ -238,7 +252,9 @@ const LineaMedicion Medicion::LeeActual() const
 
 void Medicion::EscribeTotal (float cantidad)
 {
+    lm.clear();
     TotalCantidad=cantidad;
+    qDebug()<<"Ahora cantida vale: "<<cantidad<<" y la lista de medición tiene: "<<lm.size()<<" elementos";
 }
 
 void Medicion::actualAlComienzo()
