@@ -235,7 +235,6 @@ bool PrincipalModel::insertRows(int row, int count, const QModelIndex & parent)
         beginInsertRows(QModelIndex(), row, row+count);
         endInsertRows();
     }*/
-
     return true;
 }
 

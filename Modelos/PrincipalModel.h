@@ -8,6 +8,7 @@
 #include <QVariant>
 #include <QDebug>
 #include <QTextStream>
+#include <QMessageBox>
 
 #include "./include/Obra.h"
 #include "./Dialogos/dialogosuprimirmedicion.h"
@@ -39,6 +40,7 @@ public:
     bool removeRows(int filaInicial, int numFilas, const QModelIndex& parent);
     bool filaVacia(const QStringList& linea);
     void ActualizarDatos();
+    bool esColumnaNumerica(int columna) const;
 
 signals:
     void EditarCampoTexto (int, QString);

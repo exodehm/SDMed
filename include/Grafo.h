@@ -63,6 +63,7 @@ public:
     bool existeNodo (const pNodo& n);
     bool existeNodoConMismoContenido (const pNodo& nodoAComparar);
     bool esPadre(const pNodo& padre, const pNodo& hijo);
+    bool existeCodigo(TEXTO codigo) const;
     /***********otras*******************************/
     void guardaAristas (pNodo& n);
     void guardaAristasParaCopia (pNodo& n);

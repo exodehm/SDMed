@@ -938,6 +938,8 @@ bool Obra::existeHermano(TEXTO codigo)
      return G.existeHermano(padre,nAux);*/
 }
 
+//bool Obra::exis
+
 bool Obra::NivelCero() const
 {
     return padre==G.LeeRaiz();

@@ -62,6 +62,6 @@ QString DelegadoEditorNumeros::displayText(const QVariant & value, const QLocale
    }
    else
    {
-    return locale.toString(valor,'f',2);
+       return locale.toString(valor,'f',2);
    }
 }
