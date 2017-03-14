@@ -35,9 +35,10 @@ public:
     Obra& operator=(const Obra& G);
     /*********************/
     void IniciarObra (Concepto conceptoRaiz);
-    void CrearPartida(TEXTO Cod, TEXTO Res="", float cantidad=1, float precio=0,int ud=0);
+    void CrearPartida(TEXTO Cod, TEXTO Res="", float cantidad=1, float precio=0,int ud=0, int nat = Codificacion::Sin_clasificar);
     void CrearPartida (TEXTO CodPadre, float cantidad, TEXTO CodHijo);
     void CrearPartida (TEXTO CodPadre, MedCert med, TEXTO CodHijo);
+    void CrearPartida(TEXTO CodigoHijo, int posicion);
     void CopiarPartida(TEXTO codigo, float cantidad);
     void BorrarPartida();
     void BorrarPartida(pNodo N);
@@ -75,6 +76,7 @@ public:
     void EditarResumen (TEXTO resumen);
     void EditarCantidad (float cantidad);
     void EditarUnidad(int ud);
+    void EditarNaturaleza (int nat);
     void EditarCertificacionCant(float cantidad);
     void EditarCertificacionPorc(float porcentaje);
     void Copiar(const std::pair<pArista,pNodo>& dato);
@@ -114,13 +116,16 @@ public:
     bool hayMedicion() const;
     bool hayMedicionPartidaActual() const;
     bool hayCertificacion() const;
+    bool EsPartidaVacia() const;
     pNodo existeConcepto(const TEXTO& codigo);
-    bool existeHermano(TEXTO codigo);
+    bool existeHermano(const TEXTO& codigo);
     bool NivelCero() const;
     bool NivelUno() const;
     bool EsPartida();
     /************************Codigo y Resumen de la obra*************/
     const TEXTO LeeCodigoObra() const;
+    const TEXTO LeeCodigoPartida() const;
+    const TEXTO LeeCodigoActual() const;
     const TEXTO LeeResumenObra() const;
     const float LeePrecioObra() const;
     const TEXTO LeeFecha() const;

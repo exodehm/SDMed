@@ -1,6 +1,6 @@
 #include "delegadocolumnasbloqueadas.h"
 
-DelegadoColumnasBloqueadas::DelegadoColumnasBloqueadas(QObject *parent):DelegadoBase(parent)
+DelegadoColumnasBloqueadas::DelegadoColumnasBloqueadas(QObject *parent):DelegadoEditorNumeros(parent)
 {
 
 }
@@ -13,10 +13,9 @@ void DelegadoColumnasBloqueadas::paint( QPainter *painter,const QStyleOptionView
         painter->save();
         painter->setPen(QColor(255,255,170));
         painter->setBrush(QColor(255,255,170));
-        //painter->fillRect(option.rect, brush);
         painter->drawRect(option.rect);
         painter->setPen(Qt::gray);
-        painter->drawText(option.rect, Qt::AlignCenter, index.data().toString());
+        painter->drawText(option.rect, Qt::AlignCenter, displayText(index.data(), QLocale::system()));
         painter->restore();
     }
     else
@@ -28,10 +27,4 @@ QSize DelegadoColumnasBloqueadas::sizeHint(const QStyleOptionViewItem &option, c
     Q_UNUSED (index);
     return option.rect.size();
 
-}
-
-QString DelegadoColumnasBloqueadas::displayText(const QVariant & value, const QLocale & locale) const
-{
-    QString str = QString::number(value.toDouble(), 'g', 2);
-    return str;
 }

@@ -3,11 +3,11 @@
 
 #include <QStyledItemDelegate>
 #include <QComboBox>
-
+#include "./Delegados/delegadobase.h"
 #include "../iconos.h"
 
 
-class DelegadoIconos : public QStyledItemDelegate
+class DelegadoIconos : public DelegadoBase
 {
 public:
     DelegadoIconos(QObject* parent=nullptr);

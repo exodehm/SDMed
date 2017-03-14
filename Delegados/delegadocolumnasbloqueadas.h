@@ -6,17 +6,15 @@
 #include <QPen>
 #include<QBrush>
 
-#include "./Delegados/delegadobase.h"
+#include  "./Delegados/delegadoeditornumeros.h"
 
-class DelegadoColumnasBloqueadas : public DelegadoBase
+class DelegadoColumnasBloqueadas : public DelegadoEditorNumeros
 {
     Q_OBJECT
 public:
     explicit DelegadoColumnasBloqueadas(QObject* parent=nullptr);
     void paint( QPainter *painter,const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-
-    QString displayText(const QVariant & value, const QLocale & locale ) const;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;    
 };
 
 #endif // DELEGADOCOLUMNASBLOQUEADAS_H

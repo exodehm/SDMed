@@ -38,6 +38,9 @@ private slots:
 public slots:
     void customMenuRequested(QPoint pos);
 
+signals:
+    void CambiaFila(QModelIndex ind);
+
 protected:
     QHeaderView* cabecera;
     QHeaderView* alturaFilas;

@@ -40,6 +40,7 @@ public:
     pArista hallarArista (pNodo& nodopadre, pNodo& nodohijo);
     /*********insertar,eliminar,copiar elementos del grafo*******************/
     void Insertar (pNodo& padre, pNodo& hijo, pArista& NuevaArista);
+    void Insertar (pNodo& padre, pNodo& hijo, pArista& NuevaArista, int posicion);
     void InsertarHijo(pNodo& padre, pNodo& hijo, pArista& NuevaArista, pArista& precedente=nullptr);
     void InsertarHijo(pNodo& padre, pNodo& hijo, datoarista_t valorArista, pArista precedente=nullptr);
     void borrarNodos(pNodo& padre, pNodo& hijo);
@@ -447,6 +448,10 @@ void Grafo<datonodo_t,datoarista_t>:: borrarNodos(pNodo& padre, pNodo& hijo)
     }
 }
 
+/***********************************/
+/****Insertar nodo al final*********/
+/***********************************/
+
 template <typename datonodo_t, typename datoarista_t>
 void Grafo<datonodo_t,datoarista_t>::Insertar (pNodo& padre, pNodo& hijo, pArista& NuevaArista)
 {
@@ -467,6 +472,29 @@ void Grafo<datonodo_t,datoarista_t>::Insertar (pNodo& padre, pNodo& hijo, pArist
         }
     }
     InsertarHijo(padre, hijo, NuevaArista, A->siguiente);
+}
+
+/***************************************/
+/****Insertar nodo con posicion*********/
+/***************************************/
+
+template <typename datonodo_t, typename datoarista_t>
+void Grafo<datonodo_t,datoarista_t>::Insertar(pNodo& padre, pNodo& hijo, pArista& NuevaArista, int posicion)
+{
+    if (Raiz==nullptr)
+    {
+        Raiz = padre;
+    }
+    if (!existeNodo(padre))
+    {
+        anadirNodo(padre);
+    }
+    pArista A = padre->adyacente;
+    for (int i=0;i<posicion;i++)
+    {
+        A=A->siguiente;
+    }
+    InsertarHijo(padre, hijo, NuevaArista, A);
 }
 
 //**************************//

@@ -69,6 +69,7 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
     QObject::connect(tablaPrincipal->CabeceraDeTabla(),SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
     QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
+    QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     //QObject::connect(tabla,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     //QObject::connect(ui->botonCopiar,SIGNAL(clicked(bool)),this,SLOT(CopiarMedicion()));
     //QObject::connect(ui->botonPegar,SIGNAL(clicked(bool)),this,SLOT(PegarMedicion()));
@@ -76,10 +77,7 @@ void InterfazObra::GenerarUI()
     QObject::connect(modeloTablaP, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
     QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
 
-    QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(MostrarDeSegun(int)));
-    //QObject::connect(modeloTablaP,SIGNAL(EditarCampoTexto(int, QString)),this,SLOT(EditarCodigoResumen(int, QString)));
-    //QObject::connect(modeloTablaP,SIGNAL(EditarNaturaleza(int)),this,SLOT(EditarNaturaleza(int)));
-    //QObject::connect(modeloTablaP,SIGNAL(EditarCampoNumerico(int,float)),this,SLOT(EditarCantidadPrecio(int,float)));
+    QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(MostrarDeSegun(int)));    
     //QObject::connect(tabMedCert,SIGNAL(currentChanged(int)),this,SLOT(CambiarMedCert(int)));
 
     QObject::connect(botonAvanzar,SIGNAL(clicked(bool)),this,SLOT(Avanzar()));
@@ -119,6 +117,7 @@ void InterfazObra::SubirNivel()
         O->Actualizar(guardar.Arista->nodo_destino);
     }*/
     tablaPrincipal->clearSelection();
+    modeloTablaP->QuitarIndicadorFilaVacia();
     O->SubirNivel();
     RefrescarVista(QModelIndex(),QModelIndex());
     //O->MostrarHijos();
@@ -132,6 +131,7 @@ void InterfazObra::BajarNivel(QModelIndex indice)
     /*if (!O->EsPartidaDummy())
     {
         GuardarTextoPartida();*/
+    modeloTablaP->QuitarIndicadorFilaVacia();
     O->BajarNivel();
     /*if (!O->HayHijos() && (O->EsPartida() || O->EsCapitulo()))
         {
@@ -147,7 +147,9 @@ void InterfazObra::BajarNivel(QModelIndex indice)
 void InterfazObra::Avanzar()
 {
     //GuardarTextoPartida();
+    modeloTablaP->QuitarIndicadorFilaVacia();
     O->Siguiente();
+
     //O->MostrarHijos();
     /*if (!O->HayHijos() && (O->EsPartida() || O->EsCapitulo()))
     {
@@ -159,6 +161,7 @@ void InterfazObra::Avanzar()
 void InterfazObra::Retroceder()
 {
     //GuardarTextoPartida();
+    modeloTablaP->QuitarIndicadorFilaVacia();
     O->Anterior();
     //O->MostrarHijos();
     /*if (!O->HayHijos() && (O->EsPartida() || O->EsCapitulo()))
@@ -171,7 +174,7 @@ void InterfazObra::Retroceder()
 void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
 {
     Q_UNUSED (indice1);
-    Q_UNUSED (indice2);
+    Q_UNUSED (indice2);    
     modeloTablaP->ActualizarDatos();
     modeloTablaMC->ActualizarDatos();
     //O->MostrarHijos();
@@ -194,7 +197,15 @@ void InterfazObra::EscribirTexto()
 
 void InterfazObra::PosicionarTablaP(QModelIndex indice)
 {
-    O->PosicionarAristaActual(indice.row());    
+    int linea = indice.row();
+    if (modeloTablaP->HayFilaVacia())
+    {
+        if (linea > modeloTablaP->FilaVacia())
+        {
+            linea = indice.row()-1;
+        }
+    }
+    O->PosicionarAristaActual(linea);
 }
 
 void InterfazObra::PosicionarTablaM(QModelIndex indice)

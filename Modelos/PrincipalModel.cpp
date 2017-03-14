@@ -17,6 +17,7 @@ PrincipalModel::PrincipalModel (Obra *O, QObject* parent):QAbstractTableModel(pa
     miobra = O;
 
     ActualizarDatos();
+    hayFilaVacia=false;
 }
 
 PrincipalModel::~PrincipalModel()
@@ -27,7 +28,14 @@ PrincipalModel::~PrincipalModel()
 int PrincipalModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return miobra->VerActual().size()-1;
+    if (hayFilaVacia)
+    {
+        return miobra->VerActual().size();
+    }
+    else
+    {
+        return miobra->VerActual().size()-1;
+    }
 }
 
 int PrincipalModel::columnCount(const QModelIndex& parent) const
@@ -48,28 +56,37 @@ QVariant PrincipalModel::headerData(int section, Qt::Orientation orientation, in
     return QAbstractTableModel::headerData(section, orientation, role);
 }
 
-QVariant PrincipalModel::data(const QModelIndex& indice,int role) const
+QVariant PrincipalModel::data(const QModelIndex& index, int role) const
 {
-    if (!indice.isValid()) return QVariant();
-
+    if (!index.isValid()) return QVariant();
+    QModelIndex indice = index;
+    if (hayFilaVacia)
+    {
+        if (index.row()>=filavacia)
+        {
+            indice = this->index(index.row()-1,index.column());
+        }
+    }
     QStringList fila = datos.at(indice.row()+1);
 
-    if (esColumnaNumerica(indice.column()))
+    if (hayFilaVacia && index.row()==filavacia)
+    {
+        return QVariant();
+    }
+    else if (esColumnaNumerica(indice.column()))
     {
         if (role==Qt::DisplayRole || role == Qt::EditRole)
         {
             return fila.at(indice.column()).toFloat();
         }
-    }
-    if (indice.column()==tipoColumna::CODIGO || indice.column()==tipoColumna::UD ||indice.column()==tipoColumna::RESUMEN)
+    }else if (indice.column()==tipoColumna::CODIGO || indice.column()==tipoColumna::UD ||indice.column()==tipoColumna::RESUMEN)
     {
         if (role == Qt::DisplayRole || role == Qt::EditRole)
         {
             return fila.at(indice.column());
         }
     }
-
-    if (indice.column()==tipoColumna::NATURALEZA)
+    else if (indice.column()==tipoColumna::NATURALEZA)
     {
         if (role == Qt::DecorationRole)
         {
@@ -83,7 +100,8 @@ QVariant PrincipalModel::data(const QModelIndex& indice,int role) const
         {
             QString tip;
             tip = "<b>";
-            tip += QString("%1</b>").arg(fila.at(indice.column()));
+            //tip += QString("%1</b>").arg(fila.at(indice.column()));
+            tip += QString("%1</b>").arg(naturaleza::leyenda_nat[fila.at(indice.column()).toInt()]);
             return tip;
         }
     }
@@ -96,7 +114,7 @@ Qt::ItemFlags PrincipalModel::flags(const QModelIndex &index) const
     {
         return 0;
     }
-    if (index.column()!=tipoColumna::IMPPRES && index.column()!=tipoColumna::IMPCERT)
+    if (/*index.row()!= filavacia && */index.column()!=tipoColumna::IMPPRES && index.column()!=tipoColumna::IMPCERT)
     {
         return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
     }
@@ -105,36 +123,32 @@ Qt::ItemFlags PrincipalModel::flags(const QModelIndex &index) const
 
 bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, int role)
 {
+    QModelIndex indice = index;
+    /*if (hayFilaVacia)
+    {
+        if (index.row()>=filavacia)
+        {
+            indice = this->index(index.row()-1,index.column());
+        }
+    }*/
     if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
     {
-        /*if (index.column()==tipoColumna::CODIGO || index.column()==tipoColumna::RESUMEN)
+        //insertar partida nueva
+        if (index.column()==tipoColumna::CODIGO && index.row()==filavacia)
         {
-            datos[index.row()+1][index.column()]=value.toString();
+            qDebug()<<"Insertando codigo";
+            miobra->CrearPartida(value.toString(),filavacia);
+            hayFilaVacia=false;
             emit dataChanged(index, index);
-            emit EditarCampoTexto(index.column(),value.toString());
             return true;
         }
-        else if (index.column()==tipoColumna::CANPRES || index.column()==tipoColumna::PRPRES)
-        {
-            datos[index.row()+1][index.column()]=value.toString();
-            emit dataChanged(index, index);
-            emit EditarCampoNumerico(index.column(),value.toFloat());
-            return true;
-        }
-        else if (index.column()==tipoColumna::NATURALEZA)
-        {
-            datos[index.row()+1][index.column()]=value.toString();
-            emit dataChanged(index, index);
-            emit EditarNaturaleza(value.toInt());
-            return true;
-        }*/
-        if (index.column()==tipoColumna::RESUMEN)
+        if (indice.column()==tipoColumna::RESUMEN)
         {
             miobra->EditarResumen(value.toString());
             emit dataChanged(index, index);
             return true;
         }
-        else if (index.column()==tipoColumna::CANPRES)
+        else if (indice.column()==tipoColumna::CANPRES)
         {
             if (miobra->hayMedicionPartidaActual())
             {
@@ -155,11 +169,11 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
             emit dataChanged(index, index);
             return true;
         }
-        else if (index.column()==tipoColumna::PRPRES)
+        else if (indice.column()==tipoColumna::PRPRES)
         {
             if (miobra->hayDescomposicion())
             {
-                DialogoPrecio* d = new DialogoPrecio(miobra->LeeCodigoObra());
+                DialogoPrecio* d = new DialogoPrecio(miobra->LeeCodigoActual());
                 if (d->exec()==QDialog::Accepted)
                 {
                     switch (d->Respuesta())
@@ -189,6 +203,10 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
                     emit dataChanged(index, index);
                     return true;
                 }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
@@ -196,24 +214,12 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
                 emit dataChanged(index, index);
                 return true;
             }            
-        }
-        else if (index.column()==tipoColumna::CODIGO)
+        }       
+        else if (index.column()==tipoColumna::NATURALEZA)
         {
-            if (miobra->existeConcepto(value.toString()))
-            {
-                QString texto = "<b>El código "+value.toString()+" ya existe</b>";
-                QMessageBox msg(QObject::tr("Aviso"), texto,
-                QMessageBox::Information, QMessageBox::Ok|QMessageBox::Default,
-                QMessageBox::NoButton|QMessageBox::NoButton, QMessageBox::NoButton);
-                msg.exec();
-                return false;
-            }
-            else
-            {
-                miobra->EditarCodigo(value.toString());
-                emit dataChanged(index, index);
-                return true;
-            }
+            miobra->EditarNaturaleza(value.toInt());
+            emit dataChanged(index, index);
+            return true;
         }
     }
     return false;
@@ -222,20 +228,13 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
 bool PrincipalModel::insertRows(int row, int count, const QModelIndex & parent)
 {
     Q_UNUSED(parent);
-    qDebug()<<"Rosw: "<<row;
-    // if (row==rowCount(QModelIndex())+1)
+    qDebug()<<"-Row: "<<row<<" -Count: "<<count;
     {
-        qDebug()<<"Caso 1";
-        beginInsertRows(QModelIndex(), row, row+1);
+        beginInsertRows(QModelIndex(), row, row+count-1);
+        hayFilaVacia = true;
+        filavacia = row;
         endInsertRows();
-    }
-    /*else
-    {
-        qDebug()<<"Caso 2";
-        beginInsertRows(QModelIndex(), row, row+count);
-        endInsertRows();
-    }*/
-
+    }  
     return true;
 }
 
@@ -243,27 +242,43 @@ bool PrincipalModel::removeRows(int filaInicial, int numFilas, const QModelIndex
 {
     Q_UNUSED(parent);
     beginRemoveRows(QModelIndex(), filaInicial, filaInicial+numFilas-1);
+    miobra->PosicionarAristaActual(filaInicial);
+    miobra->BorrarPartida();    
+    ActualizarDatos();
     endRemoveRows();
-    return true;
-}
-
-bool PrincipalModel::filaVacia(const QStringList& linea)
-{
-    int i=0;
-    while (i<linea.length())
+    if (miobra->EsPartidaVacia())
     {
-        if (!linea.at(i).isEmpty())
-        {
-            return false;
-        }
-        i++;
+        insertRows(0,1,QModelIndex());
     }
     return true;
 }
 
+bool PrincipalModel::HayFilaVacia()
+{
+    return hayFilaVacia;
+}
+
+int PrincipalModel::FilaVacia()
+{
+    if (hayFilaVacia)
+    {
+        qDebug()<<"Fila vacia en: "<<filavacia;
+        return filavacia;
+    }
+    else
+    {
+        return this->rowCount(QModelIndex());
+    }
+}
+
+void PrincipalModel::QuitarIndicadorFilaVacia()
+{
+    hayFilaVacia=false;
+}
+
 void PrincipalModel::ActualizarDatos()
 {
-    //qDebug()<<"Filas iniciales: "<<datos.length();
+    qDebug()<<"Filas iniciales: "<<datos.length();
     datos.clear();
     datos = miobra->VerActual();
 
@@ -271,7 +286,7 @@ void PrincipalModel::ActualizarDatos()
     {
         datos[0][i].prepend(LeyendasCabecera[i]);
     }
-    //qDebug()<<"Filas finales: "<<datos.length();
+    qDebug()<<"Filas finales: "<<datos.length();
 }
 
 bool PrincipalModel::esColumnaNumerica(int columna) const

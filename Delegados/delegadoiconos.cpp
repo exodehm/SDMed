@@ -1,6 +1,6 @@
 #include "delegadoiconos.h"
 
-DelegadoIconos::DelegadoIconos(QObject *parent):QStyledItemDelegate(parent)
+DelegadoIconos::DelegadoIconos(QObject *parent):DelegadoBase(parent)
 {
     indiceCombo=0;
 }

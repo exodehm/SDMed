@@ -76,6 +76,42 @@ struct nodo
         }
     }
 
+    void InsertarHijo(pNodo& hijo, pArista& nueva, pArista& precedente)
+    {
+        //std::cout<<"INSERTAR NODO"<<std::endl;
+        nueva->origen=this;
+        nueva->destino=hijo;
+
+        if (!adyacente)//primera arista
+        {
+            adyacente = nueva;
+        }
+        else
+        {
+            if (!precedente->anterior)//si quiero colocar la nueva arista en primera posicion
+            {
+                precedente->anterior=nueva;
+                adyacente=nueva;
+                nueva->siguiente=precedente;
+            }
+            else
+            {
+                pArista Aux = adyacente;
+                while (Aux != precedente && Aux->siguiente)
+                {
+                    Aux=Aux->siguiente;
+                }
+                nueva->siguiente=Aux->siguiente;
+                if (Aux->siguiente)
+                {
+                    Aux->siguiente->anterior=nueva;
+                }
+                Aux->siguiente=nueva;
+                nueva->anterior=Aux;
+            }
+        }
+    }
+
     /*void InsertarArista(pNodo& hijo, datoarista_t dato, pArista& precedente)
     {
         pArista nueva =  new t_arista(dato);

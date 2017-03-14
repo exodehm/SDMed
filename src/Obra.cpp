@@ -80,11 +80,12 @@ void Obra::CrearPartida (TEXTO CodPadre, MedCert med, TEXTO CodHijo)
     G.Insertar(padre, hijo, relacion);
 }
 
-void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int ud)
+void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int ud, int nat)
 {
     /******variables que usaré para crear el concepto*****************/
     pArista nuevaArista;
-    int N=Codificacion::Partida;//en principio la inicializo como partida
+    //int N=Codificacion::Partida;//en principio la inicializo como partida
+    int N=nat;
     //ahora toca ver si se trata de un porcentaje
 
     pNodo nuevoNodo = existeConcepto(Cod);
@@ -102,7 +103,7 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
             /***asignamos la naturaleza***/
             if (NivelCero())
             {
-                N=Codificacion::Partida;
+                N=Codificacion::Capitulo;
             }
             else
             {
@@ -132,11 +133,49 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
         nuevaArista->datoarista.escribeTotalMedCer(selectorMedCer,0);
         selectorMedCer=MedCert::MEDICION;
     }
-    G.InsertarHijo(padre, nuevoNodo, cantidad);
+    if (!aristaActual->siguiente)//si es la última arista
+    {
+        G.InsertarHijo(padre, nuevoNodo, cantidad);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
+    }
+    else
+    {
+        G.InsertarHijo(padre, nuevoNodo, cantidad, aristaActual->anterior);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
+    }
+
     //aristaActual=nuevaArista;
     aristaActual = G.hallarArista(padre,nuevoNodo);
     //Y actualizo el grafo partiendo del nodo insertado
     Actualizar(aristaActual->destino);
+}
+
+void Obra::CrearPartida(TEXTO CodigoHijo, int posicion)
+{
+     pNodo nuevoNodo = existeConcepto(CodigoHijo);
+     if (!nuevoNodo)
+     {
+         Concepto* NuevoConcepto= new Concepto(CodigoHijo,1, "",0,0);
+         nuevoNodo = new nodo<Concepto,MedCert>(*NuevoConcepto);
+     }
+    // pArista A = padre->adyacente;
+     qDebug()<<"Posicion de insertado: "<<posicion;
+     /*for (int i=0;i<posicion;i++)
+     {
+         A=A->siguiente;
+         qDebug()<<"i: "<<i<<"A: "<<A;
+     }*/
+     /*if (!A->siguiente)//si es la última arista
+     {
+         G.InsertarHijo(padre, nuevoNodo, 0);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
+         qDebug()<<"Caso A";
+     }
+     else
+     {*/
+         //G.InsertarHijo(padre, nuevoNodo, 0, A->anterior);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
+        //G.Insertar(padre, nuevoNodo, 0, A->anterior);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
+     pArista A = new arista<MedCert,Concepto>(0);
+        G.Insertar(padre, nuevoNodo, A, posicion);
+         qDebug()<<"Caso B";
+     //}
 }
 
 void Obra::CopiarPartida(TEXTO codigo, float cantidad)
@@ -424,6 +463,7 @@ void Obra:: SumarHijos(pNodo n)
 
 void Obra::BorrarPartida()
 {
+    qDebug()<<"Borrar la partida: "<<aristaActual->destino->datonodo.LeeResumen();
     G.borrarNodos(aristaActual);
     if (padre->adyacente)
     {
@@ -782,6 +822,12 @@ void Obra::EditarCodigo (TEXTO codigo)
     if (aristaActual)
     {
         aristaActual->destino->datonodo.EscribeCodigo(codigo);
+        int N =codificacion.AsignarNaturalezaSegunCuadro(codigo.toStdString());
+        aristaActual->destino->datonodo.EscribeNaturaleza(N);
+        if (N==Codificacion::Mano_de_Obra || N==Codificacion::Maquinaria)
+        {
+            aristaActual->destino->datonodo.EscribeUd(Unidad::hora);
+        }
     }
 }
 
@@ -826,6 +872,18 @@ void Obra::EditarUnidad(int ud)
     }
 }
 
+void Obra::EditarNaturaleza (int nat)
+{
+    if (!NivelCero())
+    {
+        aristaActual->destino->datonodo.EscribeNaturaleza(nat);
+        if (nat==Codificacion::Mano_de_Obra || nat==Codificacion::Maquinaria)
+        {
+            aristaActual->destino->datonodo.EscribeUd(Unidad::hora);
+        }
+    }
+}
+
 void Obra::EditarCertificacionCant(float cantidad)
 {
     /*aristaActual->datoarista.LeeCertificacion().EscribeTotal(cantidad);
@@ -849,7 +907,6 @@ const float& Obra::LeeTotalMedicion() const
 {
     return aristaPadre->datoarista.LeeMedCer().LeeTotal();
 }
-
 
 void Obra::Copiar(const std::pair<pArista,pNodo>& dato)
 {
@@ -917,6 +974,15 @@ bool Obra::hayCertificacion() const
     return aristaPadre->datoarista.LeeCertificacion().hayMedicion();
 }
 
+bool Obra::EsPartidaVacia() const
+{
+    if (aristaPadre->destino->adyacente==nullptr)
+    {
+        return true;
+    }
+    return false;
+}
+
 pNodo Obra::existeConcepto(const TEXTO &codigo)
 {
     std::list<pNodo> lista = G.recorrerNodos();
@@ -930,15 +996,19 @@ pNodo Obra::existeConcepto(const TEXTO &codigo)
     return nullptr;
 }
 
-bool Obra::existeHermano(TEXTO codigo)
+bool Obra::existeHermano(const TEXTO &codigo)
 {
-    /* pNodo nAux=0;
-     TratarNodo* tratamiento = new EncontrarNodoPorCodigo (codigo,nAux);
-     G.recorrerNodos(*tratamiento);
-     return G.existeHermano(padre,nAux);*/
+    pNodo hijo=nullptr;
+    std::list<pNodo> lista = G.recorrerNodos();
+    for (auto elem:lista)
+    {
+        if (elem->datonodo.LeeCodigo()==codigo)
+        {
+            hijo=elem;
+        }
+    }
+    return G.existeHermano(padre,hijo);
 }
-
-//bool Obra::exis
 
 bool Obra::NivelCero() const
 {
@@ -965,6 +1035,16 @@ bool Obra::EsPartida()
 const TEXTO Obra::LeeCodigoObra() const
 {
     return G.LeeRaiz()->datonodo.LeeCodigo();
+}
+
+const TEXTO Obra::LeeCodigoPartida() const
+{
+    return aristaPadre->destino->datonodo.LeeCodigo();
+}
+
+const TEXTO Obra::LeeCodigoActual() const
+{
+    return aristaActual->destino->datonodo.LeeCodigo();
 }
 
 const TEXTO Obra::LeeResumenObra() const

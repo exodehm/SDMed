@@ -32,15 +32,17 @@ public:
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    QVariant data(const QModelIndex& indice,int role = Qt::DisplayRole) const;
+    QVariant data(const QModelIndex& index,int role = Qt::DisplayRole) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex & index, const QVariant& value, int role);
 
     bool insertRows(int row, int count, const QModelIndex & parent);
     bool removeRows(int filaInicial, int numFilas, const QModelIndex& parent);
-    bool filaVacia(const QStringList& linea);
+    bool HayFilaVacia();
+    int FilaVacia();
     void ActualizarDatos();
     bool esColumnaNumerica(int columna) const;
+    void QuitarIndicadorFilaVacia();
 
 signals:
     void EditarCampoTexto (int, QString);
@@ -51,7 +53,9 @@ private:
     QList <QStringList> datos;
     QStringList cabecera;
     QString LeyendasCabecera[11];
-    Obra* miobra;    
+    Obra* miobra;
+    bool hayFilaVacia;
+    int filavacia;
 };
 
 #endif // PRINCIPALMODEL_H
