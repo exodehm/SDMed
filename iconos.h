@@ -9,14 +9,13 @@ using IconsMap = std::map<Naturaleza,QIcon>;
 
 class RepoIconos
 {
-
 private:
     static IconsMap _iconos;
     static IconsMap initMap()
     {
         return
         {
-            std::make_pair(Naturaleza::Sin_clasificar, QIcon(QStringLiteral("../PruebasInterfazObra/Iconos/trucking.png"))),
+            std::make_pair(Naturaleza::Sin_clasificar, QIcon(QStringLiteral("../PruebasInterfazObra/Iconos/sinclasificar.png"))),
             std::make_pair(Naturaleza::Mano_de_Obra, QIcon(QStringLiteral("../PruebasInterfazObra/Iconos/engineer.png"))),
             std::make_pair(Naturaleza::Maquinaria, QIcon(QStringLiteral("../PruebasInterfazObra/Iconos/trucking.png"))),
             std::make_pair(Naturaleza::Materiales, QIcon(QStringLiteral("../PruebasInterfazObra/Iconos/brick.png"))),
@@ -26,7 +25,6 @@ private:
             std::make_pair(Naturaleza::Partida, QIcon(QStringLiteral("../PruebasInterfazObra/Iconos/file.png")))
         };
     }
-
 public:
     RepoIconos()=delete;//no debe haber constructor disponible al ser clase estática
     static QIcon GetIcon(Naturaleza type)

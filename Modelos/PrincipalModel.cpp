@@ -125,17 +125,10 @@ Qt::ItemFlags PrincipalModel::flags(const QModelIndex &index) const
 bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, int role)
 {
     QModelIndex indice = index;
-    /*if (hayFilaVacia)
-    {
-        if (index.row()>=filavacia)
-        {
-            indice = this->index(index.row()-1,index.column());
-        }
-    }*/
     if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
     {
         //insertar partida nueva
-        if (index.column()==tipoColumna::CODIGO && index.row()==filavacia)
+        if (index.column()==tipoColumna::CODIGO && index.row()==filavacia && HayFilaVacia())
         {
             qDebug()<<"Insertando codigo en la fila "<<index.row();
             miobra->CrearPartida(value.toString(),filavacia);

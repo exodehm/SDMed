@@ -147,12 +147,15 @@ void MedicionesModel::ActualizarDatos()
 {
     datos.clear();
     qDebug()<<"Total medicion: "<<miobra->LeeTotalMedicion();
-    if (!miobra->hayMedicion() && miobra->EsPartida())
+    LeyendasCabecera[tipoColumna::PARCIAL].clear();
+    datos = miobra->VerMedCert();
+    if (rowCount(QModelIndex())==0 && miobra->EsPartida())
     {
         miobra->InsertarLineasVaciasMedicion(0,1);
     }
-    LeyendasCabecera[tipoColumna::PARCIAL].clear();
+    datos.clear();
     datos = miobra->VerMedCert();
+    qDebug()<<"Num liNEAS: "<<rowCount(QModelIndex());
     QString suma=QString::number(miobra->LeeTotalMedicion(),'f',2);
     LeyendasCabecera[tipoColumna::PARCIAL].append("Parcial\n").append(suma);
 }
