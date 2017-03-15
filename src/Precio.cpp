@@ -23,7 +23,7 @@ Precio::~Precio()
 
 bool Precio::EsBloqueado() const {return bloqueado;}
 
-const float Precio::LeePrecio() const
+float Precio::LeePrecio() const
 {
     if (bloqueado==true)
     {

@@ -39,8 +39,7 @@ public:
     void eliminarArista (pArista& A);
     pArista hallarArista (pNodo& nodopadre, pNodo& nodohijo);
     /*********insertar,eliminar,copiar elementos del grafo*******************/
-    void Insertar (pNodo& padre, pNodo& hijo, pArista& NuevaArista);
-    void Insertar (pNodo& padre, pNodo& hijo, pArista& NuevaArista, int posicion);
+    void Insertar (pNodo& padre, pNodo& hijo, pArista& NuevaArista, int posicion=-1);
     void InsertarHijo(pNodo& padre, pNodo& hijo, pArista& NuevaArista, pArista& precedente=nullptr);
     void InsertarHijo(pNodo& padre, pNodo& hijo, datoarista_t valorArista, pArista precedente=nullptr);
     void borrarNodos(pNodo& padre, pNodo& hijo);
@@ -90,7 +89,7 @@ public:
     {
         return Raiz;
     }
-    const bool esHoja(const pNodo& n)
+    bool esHoja(const pNodo& n)
     {
         if (n->adyacente)
         {
@@ -448,39 +447,14 @@ void Grafo<datonodo_t,datoarista_t>:: borrarNodos(pNodo& padre, pNodo& hijo)
     }
 }
 
-/***********************************/
-/****Insertar nodo al final*********/
-/***********************************/
-
-template <typename datonodo_t, typename datoarista_t>
-void Grafo<datonodo_t,datoarista_t>::Insertar (pNodo& padre, pNodo& hijo, pArista& NuevaArista)
-{
-    if (Raiz==nullptr)
-    {
-        Raiz = padre;
-    }
-    if (!existeNodo(padre))
-    {
-        anadirNodo(padre);
-    }
-    pArista A = padre->adyacente;
-    if (A)
-    {
-        while (A->siguiente)
-        {
-            A=A->siguiente;
-        }
-    }
-    InsertarHijo(padre, hijo, NuevaArista, A->siguiente);
-}
-
-/***************************************/
-/****Insertar nodo con posicion*********/
-/***************************************/
+/***********************/
+/****Insertar nodo *****/
+/***********************/
 
 template <typename datonodo_t, typename datoarista_t>
 void Grafo<datonodo_t,datoarista_t>::Insertar(pNodo& padre, pNodo& hijo, pArista& NuevaArista, int posicion)
 {
+    std::cout<<"POSICION: "<<posicion<<std::endl;
     if (Raiz==nullptr)
     {
         Raiz = padre;
@@ -489,12 +463,41 @@ void Grafo<datonodo_t,datoarista_t>::Insertar(pNodo& padre, pNodo& hijo, pArista
     {
         anadirNodo(padre);
     }
-    pArista A = padre->adyacente;
-    for (int i=0;i<posicion;i++)
+    if (!existeNodo(hijo))
     {
-        A=A->siguiente;
+        anadirNodo(hijo);
+    }
+    pArista A = nullptr;
+    if (posicion==0)
+    {
+        //A=nullptr;
+        //padre->InsertarPrimero(hijo, NuevaArista);//si se ha especificado una posicion y es cero
+    }
+    else if (posicion>0)//si se ha especificado una posicion y es mayor que cero
+    {
+        std::cout<<"INSERTO POR POSICION"<<std::endl;
+        A=padre->adyacente;
+        for (int i=0;i<posicion-1;i++)
+        {
+            std::cout<<"i: "<<i<<std::endl;
+            std::cout<<A->destino->datonodo.LeeCodigo().toStdString()<<std::endl;
+            A=A->siguiente;
+        }        
+    }
+    else//si no se especifica posicion se inserta al final
+    {
+        std::cout<<"INSERTO AL FINAL"<<std::endl;
+        A=padre->adyacente;
+        while(A && A->siguiente)
+        {
+            {
+                std::cout<<"INSERTO AL FINALe"<<std::endl;
+                A=A->siguiente;
+            }
+        }        
     }
     InsertarHijo(padre, hijo, NuevaArista, A);
+    //std::cout<<"Nodo final: "<<A->destino->datonodo.LeeCodigo().toStdString()<<std::endl;
 }
 
 //**************************//
@@ -503,45 +506,7 @@ void Grafo<datonodo_t,datoarista_t>::Insertar(pNodo& padre, pNodo& hijo, pArista
 
 template <typename datonodo_t, typename datoarista_t>
 void Grafo<datonodo_t,datoarista_t>::InsertarHijo(pNodo& padre, pNodo& hijo, pArista& NuevaArista, pArista& precedente)
-{
-    //primer elemento
-    if (Raiz==nullptr)
-    {
-        Raiz=hijo;
-        nNodos++;
-    }
-    else
-    {
-        if (!existeHermano(padre,hijo))
-        {
-            hijo->nPadres++;//añado un padre
-            //solo añado el nodo si es nuevo
-            if (!existeNodo(hijo))
-            {
-                //std::cout<<"Existe el nodo"<<std::endl;
-                //std::cout<<"Annado nuevo nodo V1: "<<padre->datonodo<<"-"<<hijo->datonodo<<std::endl;
-                anadirNodo(hijo);
-            }
-            padre->InsertarHijo(hijo, NuevaArista->datoarista, precedente);
-            //anadirArista(padre, hijo, precedente, NuevaArista);
-        }
-        else std::cout<<"2 nodos iguales no pueden tener el mismo padre"<<std::endl;
-    }
-    /*std::cout<<"Lista de hojas: "<<std::endl;
-        for (auto it=listaHojas.begin();it!=listaHojas.end();it++)
-        {
-            std::cout<<((*it)->datonodo.LeeCodigo())<<" - ";
-        }
-        std::cout<<std::endl;*/
-}
-
-//***************************************//
-//*****insertar version 2****************//
-//***************************************//
-
-template <typename datonodo_t, typename datoarista_t>
-void Grafo<datonodo_t,datoarista_t>::InsertarHijo(pNodo& padre, pNodo& hijo, datoarista_t valorArista, pArista precedente)
-{
+{   
     //primer elemento
     if (Raiz==nullptr)
     {
@@ -554,18 +519,22 @@ void Grafo<datonodo_t,datoarista_t>::InsertarHijo(pNodo& padre, pNodo& hijo, dat
             if (!existeHermano(padre,hijo))
             {
                 hijo->nPadres++;//añado un padre
-                //solo añado el nodo si es nuevo
-                if (!existeNodo(hijo))
-                {
-                    //std::cout<<"Annado nuyevo nodo V2: "<<hijo<<"-"<<hijo->datonodo<<std::endl;
-                    //std::cout<<"Existe el nodo"<<std::endl;
-                    anadirNodo(hijo);
-                }
-                padre->InsertarHijo(hijo, valorArista, precedente);
+                padre->InsertarHijo(hijo, NuevaArista, precedente);
             }
         }
         else std::cout<<"2 nodos iguales no pueden tener el mismo padre"<<std::endl;
     }
+}
+
+//**************************//
+//insertar version con dato //
+//**************************//
+
+template <typename datonodo_t, typename datoarista_t>
+void Grafo<datonodo_t,datoarista_t>::InsertarHijo(pNodo& padre, pNodo& hijo, datoarista_t valorArista, pArista precedente)
+{    
+    pArista nueva = new t_arista(valorArista);
+    InsertarHijo(padre, hijo, nueva, precedente);
 }
 
 //*******************************************//
@@ -1164,9 +1133,9 @@ int Grafo<DATON,DATOA>::NivelNodoPadre(pNodo& padre) const
     return -1; //en caso de error o de que no haya encontrado el nodo padre.....
 }
 
-//*******************************//
-//vaciar la pila dada            //
-//** ****************************//
+//*********************//
+// vaciar la pila dada //
+//*********************//
 
 template <typename DATON, typename DATOA>
 template <typename T>

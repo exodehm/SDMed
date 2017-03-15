@@ -48,96 +48,36 @@ struct nodo
         return *this;
     }
 
-    void InsertarHijo(pNodo& hijo, datoarista_t dato, pArista& precedente)
-    {
-        //std::cout<<"INSERTAR NODO"<<std::endl;
-        pArista nueva =  new t_arista(dato);
-        nueva->origen=this;
-        nueva->destino=hijo;
-
-        if (!adyacente)//primera arista
-        {
-            adyacente = nueva;
-        }
-        else
-        {
-            pArista Aux = adyacente;
-            while (Aux != precedente && Aux->siguiente)
-            {
-                Aux=Aux->siguiente;
-            }
-            nueva->siguiente=Aux->siguiente;
-            if (Aux->siguiente)
-            {
-                Aux->siguiente->anterior=nueva;
-            }
-            Aux->siguiente=nueva;
-            nueva->anterior=Aux;
-        }
-    }
-
     void InsertarHijo(pNodo& hijo, pArista& nueva, pArista& precedente)
     {
-        //std::cout<<"INSERTAR NODO"<<std::endl;
+        std::cout<<"INSERTAR NODO2"<<std::endl;
         nueva->origen=this;
         nueva->destino=hijo;
 
         if (!adyacente)//primera arista
         {
+            std::cout<<"primer NODO"<<std::endl;
             adyacente = nueva;
+        }
+        else if (!precedente)//insertar en primera posicion
+        {
+            std::cout<<"primerita posicion"<<std::endl;
+            nueva->siguiente=adyacente;
+            adyacente->anterior=nueva;
+            adyacente=nueva;
         }
         else
         {
-            if (!precedente->anterior)//si quiero colocar la nueva arista en primera posicion
+            nueva->siguiente = precedente->siguiente;
+            nueva->anterior=precedente;
+            if (precedente->siguiente)
             {
-                precedente->anterior=nueva;
-                adyacente=nueva;
-                nueva->siguiente=precedente;
+                precedente->siguiente->anterior=nueva;
             }
-            else
-            {
-                pArista Aux = adyacente;
-                while (Aux != precedente && Aux->siguiente)
-                {
-                    Aux=Aux->siguiente;
-                }
-                nueva->siguiente=Aux->siguiente;
-                if (Aux->siguiente)
-                {
-                    Aux->siguiente->anterior=nueva;
-                }
-                Aux->siguiente=nueva;
-                nueva->anterior=Aux;
-            }
+            precedente->siguiente=nueva;
         }
+        std::cout<<"NODO INSERTADO CON EXITO"<<std::endl;
     }
-
-    /*void InsertarArista(pNodo& hijo, datoarista_t dato, pArista& precedente)
-    {
-        pArista nueva =  new t_arista(dato);
-        nueva->origen=this;
-        nueva->destino=hijo;
-
-        if (lista_aristas.empty()//primera arista
-        {
-            adyacente = nueva;
-        }
-        else
-        {
-            pArista Aux = adyacente;
-            while (Aux != precedente && Aux->siguiente)
-            {
-                Aux=Aux->siguiente;
-            }
-            nueva->siguiente=Aux->siguiente;
-            if (Aux->siguiente)
-            {
-                Aux->siguiente->anterior=nueva;
-            }
-            Aux->siguiente=nueva;
-            nueva->anterior=Aux;
-        }
-    }*/
 };
 
 #endif // NODO_H_INCLUDED

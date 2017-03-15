@@ -4,8 +4,9 @@
 InterfazObra::InterfazObra(QWidget *parent):QWidget(parent)
 {
     AbrirGuardar* A = new AbrirGuardarBC3();
-    QString nombrefichero = "/home/david/programacion/cmasmas/PruebasObra/bin/Debug/CENZANO.bc3";
-    O = A->Leer(nombrefichero);
+    //QString nombrefichero = "/home/david/programacion/cmasmas/PruebasObra/bin/Debug/nodos.bc3";
+    //O = A->Leer(nombrefichero);
+    O=new Obra("001 / 14 VDAS","14 Viviendas y garaje");
     if (O)
     {
         O->IrAInicio();
@@ -70,7 +71,6 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal->CabeceraDeTabla(),SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
     QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
-    //QObject::connect(tabla,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     //QObject::connect(ui->botonCopiar,SIGNAL(clicked(bool)),this,SLOT(CopiarMedicion()));
     //QObject::connect(ui->botonPegar,SIGNAL(clicked(bool)),this,SLOT(PegarMedicion()));
     //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
@@ -174,9 +174,13 @@ void InterfazObra::Retroceder()
 void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
 {
     Q_UNUSED (indice1);
-    Q_UNUSED (indice2);    
+    Q_UNUSED (indice2);
+    if (modeloTablaP->rowCount(QModelIndex())==0)
+    {
+        modeloTablaP->insertRow(0);
+    }
     modeloTablaP->ActualizarDatos();
-    modeloTablaMC->ActualizarDatos();
+    modeloTablaMC->ActualizarDatos();    
     //O->MostrarHijos();
     EscribirTexto();
     //MostrarTexto();

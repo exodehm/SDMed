@@ -64,10 +64,10 @@ QVariant PrincipalModel::data(const QModelIndex& index, int role) const
     {
         if (index.row()>=filavacia)
         {
-            indice = this->index(index.row()-1,index.column());
+            indice = this->index(index.row()-1,index.column());            
         }
     }
-    QStringList fila = datos.at(indice.row()+1);
+    QStringList fila = datos.at(indice.row()+1);//+1 porque la primera fila del array es el encabezado
 
     if (hayFilaVacia && index.row()==filavacia)
     {
@@ -79,7 +79,8 @@ QVariant PrincipalModel::data(const QModelIndex& index, int role) const
         {
             return fila.at(indice.column()).toFloat();
         }
-    }else if (indice.column()==tipoColumna::CODIGO || indice.column()==tipoColumna::UD ||indice.column()==tipoColumna::RESUMEN)
+    }
+    else if (indice.column()==tipoColumna::CODIGO || indice.column()==tipoColumna::UD ||indice.column()==tipoColumna::RESUMEN)
     {
         if (role == Qt::DisplayRole || role == Qt::EditRole)
         {
@@ -136,10 +137,10 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
         //insertar partida nueva
         if (index.column()==tipoColumna::CODIGO && index.row()==filavacia)
         {
-            qDebug()<<"Insertando codigo";
+            qDebug()<<"Insertando codigo en la fila "<<index.row();
             miobra->CrearPartida(value.toString(),filavacia);
-            hayFilaVacia=false;
             emit dataChanged(index, index);
+            hayFilaVacia=false;
             return true;
         }
         if (indice.column()==tipoColumna::RESUMEN)
@@ -229,6 +230,7 @@ bool PrincipalModel::insertRows(int row, int count, const QModelIndex & parent)
 {
     Q_UNUSED(parent);
     qDebug()<<"-Row: "<<row<<" -Count: "<<count;
+    if (!HayFilaVacia())
     {
         beginInsertRows(QModelIndex(), row, row+count-1);
         hayFilaVacia = true;
@@ -245,11 +247,11 @@ bool PrincipalModel::removeRows(int filaInicial, int numFilas, const QModelIndex
     miobra->PosicionarAristaActual(filaInicial);
     miobra->BorrarPartida();    
     ActualizarDatos();
-    endRemoveRows();
-    if (miobra->EsPartidaVacia())
+    if (rowCount(QModelIndex())==0)
     {
-        insertRows(0,1,QModelIndex());
+        insertRow(0);
     }
+    endRemoveRows();
     return true;
 }
 

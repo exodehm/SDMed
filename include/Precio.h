@@ -15,7 +15,7 @@ struct Precio
     ~Precio();
     //funciones miembro:
     bool EsBloqueado() const;
-    const float LeePrecio() const;
+    float LeePrecio() const;
     void EscribePrecio (float p);
     void Bloquear();
     void Desbloquear();

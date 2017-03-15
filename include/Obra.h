@@ -39,11 +39,12 @@ public:
     void CrearPartida (TEXTO CodPadre, float cantidad, TEXTO CodHijo);
     void CrearPartida (TEXTO CodPadre, MedCert med, TEXTO CodHijo);
     void CrearPartida(TEXTO CodigoHijo, int posicion);
+    pNodo DefinirConcepto(TEXTO Cod, TEXTO Res="", float precio=0, int ud=0, int nat = Codificacion::Sin_clasificar);
     void CopiarPartida(TEXTO codigo, float cantidad);
     void BorrarPartida();
     void BorrarPartida(pNodo N);
     void SuprimirDescomposicion();
-    void DuplicarPartida(TEXTO codigo);
+    void DuplicarPartida(TEXTO codigo);    
     /*****moverse por la obra**********/
     void BajarNivel();
     void SubirNivel();

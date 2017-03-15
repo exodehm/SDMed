@@ -55,7 +55,7 @@ void Obra::IniciarObra (Concepto conceptoRaiz)
     aristaPadre=new arista<MedCert,Concepto>(1);//el concepto raiz en principio tiene siempre el valor 1 (una unidad de obra)
     aristaPadre->destino=padre;
     pilaAristas.push(aristaPadre);
-    aristaActual=0;
+    aristaActual=nullptr;
 }
 
 void Obra::CrearPartida (TEXTO CodPadre, float cantidad, TEXTO CodHijo)
@@ -87,42 +87,10 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
     //int N=Codificacion::Partida;//en principio la inicializo como partida
     int N=nat;
     //ahora toca ver si se trata de un porcentaje
-
     pNodo nuevoNodo = existeConcepto(Cod);
     if (!nuevoNodo)
     {
-        if (Cod.contains("%"))
-        {
-            ud=Unidad::porcentaje;
-            N=Codificacion::Sin_clasificar;
-            std::cin.ignore(100,'\n');
-            precio=padre->datonodo.LeeImportePres()/100;
-        }
-        else //si no lo es
-        {
-            /***asignamos la naturaleza***/
-            if (NivelCero())
-            {
-                N=Codificacion::Capitulo;
-            }
-            else
-            {
-                N=codificacion.AsignarNaturalezaSegunCuadro(Cod.toStdString());
-            }
-            /***si la naturaleza del concepto es maquinaria o mano de obra podemos asignar
-            de forma automatica la unidad a la hora**/
-            if (N==Codificacion::Mano_de_Obra || N==Codificacion::Maquinaria) //mano de obra o maquinaria
-            {
-                ud=Unidad::hora; //hora h
-            }
-            else if(N==Codificacion::Partida)
-            {
-                ud=Unidad::sinUnidad;
-            }
-        }
-        //por ultimo creo el concepto con los datos dados y lo inserto en la obra
-        Concepto* NuevoConcepto= new Concepto(Cod,ud, Res,precio,N);
-        nuevoNodo = new nodo<Concepto,MedCert>(*NuevoConcepto);
+        nuevoNodo = DefinirConcepto(Cod,Res,precio,ud,nat);
     }
     //según sea partida o no, crearé una cant certificacion = cant medicion o no
     nuevaArista= new arista<MedCert,Concepto>(cantidad);
@@ -132,16 +100,8 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
         selectorMedCer=MedCert::CERTIFICACION;
         nuevaArista->datoarista.escribeTotalMedCer(selectorMedCer,0);
         selectorMedCer=MedCert::MEDICION;
-    }
-    if (!aristaActual->siguiente)//si es la última arista
-    {
-        G.InsertarHijo(padre, nuevoNodo, cantidad);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
-    }
-    else
-    {
-        G.InsertarHijo(padre, nuevoNodo, cantidad, aristaActual->anterior);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
-    }
-
+    } 
+    G.Insertar(padre,nuevoNodo,nuevaArista);
     //aristaActual=nuevaArista;
     aristaActual = G.hallarArista(padre,nuevoNodo);
     //Y actualizo el grafo partiendo del nodo insertado
@@ -150,32 +110,61 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
 
 void Obra::CrearPartida(TEXTO CodigoHijo, int posicion)
 {
-     pNodo nuevoNodo = existeConcepto(CodigoHijo);
-     if (!nuevoNodo)
-     {
-         Concepto* NuevoConcepto= new Concepto(CodigoHijo,1, "",0,0);
-         nuevoNodo = new nodo<Concepto,MedCert>(*NuevoConcepto);
-     }
-    // pArista A = padre->adyacente;
-     qDebug()<<"Posicion de insertado: "<<posicion;
-     /*for (int i=0;i<posicion;i++)
-     {
-         A=A->siguiente;
-         qDebug()<<"i: "<<i<<"A: "<<A;
-     }*/
-     /*if (!A->siguiente)//si es la última arista
-     {
-         G.InsertarHijo(padre, nuevoNodo, 0);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
-         qDebug()<<"Caso A";
-     }
-     else
-     {*/
-         //G.InsertarHijo(padre, nuevoNodo, 0, A->anterior);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
-        //G.Insertar(padre, nuevoNodo, 0, A->anterior);//<---OJOCUIDAO EN CUARENTENA LO DE arstaActual
-     pArista A = new arista<MedCert,Concepto>(0);
-        G.Insertar(padre, nuevoNodo, A, posicion);
-         qDebug()<<"Caso B";
-     //}
+    qDebug()<<"Insertar por posicion en: "<<posicion;
+    pNodo nuevoNodo = existeConcepto(CodigoHijo);
+    if (!nuevoNodo)
+    {
+       nuevoNodo = DefinirConcepto(CodigoHijo);
+    }
+    float cantidad=0;
+    if (NivelCero())
+    {
+        cantidad=1;
+    }
+    pArista A = new arista<MedCert,Concepto>(cantidad);
+    G.Insertar(padre, nuevoNodo, A, posicion);
+}
+
+pNodo Obra::DefinirConcepto(TEXTO Cod, TEXTO Res, float precio,int ud, int nat)
+{
+    int N=nat;
+    if (Cod.contains("%"))
+    {
+        ud=Unidad::porcentaje;
+        N=Codificacion::Sin_clasificar;
+        std::cin.ignore(100,'\n');
+        precio=padre->datonodo.LeeImportePres()/100;
+    }
+    else //si no lo es
+    {
+        /***asignamos la naturaleza***/
+        if (NivelCero())
+        {
+            N=Codificacion::Capitulo;
+        }
+        else if(NivelUno())
+        {
+            N=Codificacion::Partida;
+        }
+        else
+        {
+            N=codificacion.AsignarNaturalezaSegunCuadro(Cod.toStdString());
+        }
+        /***si la naturaleza del concepto es maquinaria o mano de obra podemos asignar
+        de forma automatica la unidad a la hora**/
+        if (N==Codificacion::Mano_de_Obra || N==Codificacion::Maquinaria) //mano de obra o maquinaria
+        {
+            ud=Unidad::hora; //hora h
+        }
+        else if(N==Codificacion::Partida)
+        {
+            ud=Unidad::sinUnidad;
+        }
+    }
+    //por ultimo creo el concepto con los datos dados y lo inserto en la obra
+    Concepto* NuevoConcepto= new Concepto(Cod,ud, Res,precio,N);
+    pNodo nuevoNodo = new nodo<Concepto,MedCert>(*NuevoConcepto);
+    return nuevoNodo;
 }
 
 void Obra::CopiarPartida(TEXTO codigo, float cantidad)
