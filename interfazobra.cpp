@@ -5,7 +5,6 @@ InterfazObra::InterfazObra(QString nombrefichero, QWidget *parent):QWidget(paren
 {
     AbrirGuardar* A = new AbrirGuardarBC3();    
     O = A->Leer(nombrefichero);
-    //O=new Obra("001 / 14 VDAS","14 Viviendas y garaje");
     if (O)
     {
         O->IrAInicio();
@@ -16,7 +15,7 @@ InterfazObra::InterfazObra(QString nombrefichero, QWidget *parent):QWidget(paren
 
 InterfazObra::~InterfazObra()
 {
-    delete O;
+    delete O;    
 }
 
 void InterfazObra::GenerarUI()
@@ -85,6 +84,11 @@ void InterfazObra::GenerarUI()
 
     //QObject::connect(ui->botonGuardar,SIGNAL(clicked(bool)),this,SLOT(GuardarBC3()));
 
+}
+
+Obra* InterfazObra::LeeObra()
+{
+    return O;
 }
 
 void InterfazObra::MostrarDeSegun(int indice)

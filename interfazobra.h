@@ -35,6 +35,7 @@ public:
 
 public slots:
 
+    Obra* LeeObra();
     void SubirNivel();
     void BajarNivel(QModelIndex indice);
     /*void lineaMas();
