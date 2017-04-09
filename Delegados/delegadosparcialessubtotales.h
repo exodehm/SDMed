@@ -6,7 +6,7 @@
 #include <QPen>
 #include<QBrush>
 
-#include "./Delegados/delegadoeditornumeros.h"
+#include "../Delegados/delegadoeditornumeros.h"
 
 class DelegadosParcialesSubtotales : public DelegadoEditorNumeros
 {

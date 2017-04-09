@@ -2,7 +2,7 @@
 #define TABLAPRINCIPAL_H
 
 #include "../defs.h"
-#include "./Tablas/tablabase.h"
+#include "tablabase.h"
 
 class TablaPrincipal : public TablaBase
 {

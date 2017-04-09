@@ -9,7 +9,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include "./Obra.h"
-#include "./include/definiciones.h"
+#include "./definiciones.h"
 
 
 class AbrirGuardar

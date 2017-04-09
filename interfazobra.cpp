@@ -1,10 +1,9 @@
 #include "interfazobra.h"
 //#include "ui_interfazobra.h"
 
-InterfazObra::InterfazObra(QWidget *parent):QWidget(parent)
+InterfazObra::InterfazObra(QString nombrefichero, QWidget *parent):QWidget(parent)
 {
-    AbrirGuardar* A = new AbrirGuardarBC3();
-    QString nombrefichero = "/home/david/programacion/cmasmas/PruebasObra/bin/Debug/CENZANO.bc3";
+    AbrirGuardar* A = new AbrirGuardarBC3();    
     O = A->Leer(nombrefichero);
     //O=new Obra("001 / 14 VDAS","14 Viviendas y garaje");
     if (O)

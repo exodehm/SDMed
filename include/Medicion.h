@@ -12,7 +12,7 @@
 #include "LineaMedicion.h"
 #include "GestorEntradaDatosLineasMedicion.h"
 #include "Fecha.h"
-#include "./defs.h"
+#include "../defs.h"
 
 class Medicion
 {

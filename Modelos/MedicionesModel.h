@@ -15,7 +15,7 @@
 #include <QLocale>
 #include <iostream>
 
-#include "./include/Obra.h"
+#include "../include/Obra.h"
 #include "../defs.h"
 
 

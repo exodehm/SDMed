@@ -26,7 +26,7 @@ class InterfazObra : public QWidget
     Q_OBJECT
 
 public:
-    explicit InterfazObra(QWidget *parent = 0);
+    explicit InterfazObra(QString nombrefichero, QWidget *parent = 0);
     ~InterfazObra();
 
     void GenerarUI();

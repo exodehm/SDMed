@@ -2,7 +2,7 @@
 #define TABLAMEDCERT_H
 
 #include "../defs.h"
-#include "./Tablas/tablabase.h"
+#include "tablabase.h"
 
 
 class TablaMedCert : public TablaBase

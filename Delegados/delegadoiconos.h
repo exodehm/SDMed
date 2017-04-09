@@ -3,7 +3,7 @@
 
 #include <QStyledItemDelegate>
 #include <QComboBox>
-#include "./Delegados/delegadobase.h"
+#include "../Delegados/delegadobase.h"
 #include "../iconos.h"
 
 

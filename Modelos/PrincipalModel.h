@@ -10,13 +10,13 @@
 #include <QTextStream>
 #include <QMessageBox>
 
-#include "./include/Obra.h"
-#include "./Dialogos/dialogosuprimirmedicion.h"
-#include "./Dialogos/dialogoprecio.h"
+#include "../include/Obra.h"
+#include "../Dialogos/dialogosuprimirmedicion.h"
+#include "../Dialogos/dialogoprecio.h"
 
 
 #include "../iconos.h"
-#include "./defs.h"
+#include "../defs.h"
 
 
 class PrincipalModel : public QAbstractTableModel
