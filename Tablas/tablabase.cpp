@@ -7,24 +7,27 @@ TablaBase::TablaBase(int nColumnas, QWidget *parent): QTableView(parent)
     {
         celdaBloqueada[i]=false;
     }
-    cabecera = this->horizontalHeader();
+    cabeceraHorizontal = this->horizontalHeader();
+    cabeceraVertical = this->verticalHeader();
     alturaFilas = this->verticalHeader();
     dlgBA = new DelegadoBase;
     dlgCB = new DelegadoColumnasBloqueadas;
     dlgEN = new DelegadoEditorNumeros;
     filtro = new Filter;
     installEventFilter(filtro);
-    cabecera->setContextMenuPolicy(Qt::CustomContextMenu);
-    mapper =  new QSignalMapper(cabecera);
+    cabeceraHorizontal->setContextMenuPolicy(Qt::CustomContextMenu);
+    cabeceraVertical->setContextMenuPolicy(Qt::CustomContextMenu);
+    mapperH = new QSignalMapper(cabeceraHorizontal);
+    mapperV = new QSignalMapper(cabeceraVertical);
 
     resizeColumnsToContents();
     resizeRowsToContents();
     setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::AnyKeyPressed);
 
-    cabecera->setSectionResizeMode(QHeaderView::Fixed);
-    //cabecera->setDefaultSectionSize(24);
+    cabeceraHorizontal->setSectionResizeMode(QHeaderView::Fixed);
     alturaFilas->setDefaultSectionSize(24);
-    QObject::connect(cabecera, SIGNAL(customContextMenuRequested(QPoint)), SLOT(customMenuRequested(QPoint)));
+    QObject::connect(cabeceraHorizontal, SIGNAL(customContextMenuRequested(QPoint)), SLOT(MostrarMenuCabecera(QPoint)));
+    QObject::connect(cabeceraVertical, SIGNAL(customContextMenuRequested(QPoint)), SLOT(MostrarMenuLateralTabla(QPoint)));
 }
 
 TablaBase::~TablaBase()
@@ -54,12 +57,31 @@ void TablaBase::Bloquear(int columna)
     }
 }
 
-void TablaBase::customMenuRequested(QPoint pos)
+void TablaBase::Copiar()
 {
-    MostrarMenu(pos);
+    qDebug()<<sender()->parent();
+    TablaBase* tabla = qobject_cast<TablaBase*>(sender()->parent());
+    if (MedicionesModel* mod = qobject_cast<MedicionesModel*>(tabla->model()))
+    {
+        emit CopiarMedicion();
+    }
+    else if (PrincipalModel* mod = qobject_cast<PrincipalModel*>(tabla->model()))
+    {
+        emit CopiarPartidas();
+    }
+}
+
+void TablaBase::Pegar()
+{
+    qDebug()<<"Pegar";
+}
+
+void TablaBase::Certificar()
+{
+    qDebug()<<"Certificar fila: ";
 }
 
 QHeaderView* TablaBase::CabeceraDeTabla()
 {
-    return cabecera;
+    return cabeceraHorizontal;
 }

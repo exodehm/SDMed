@@ -7,9 +7,15 @@
 
 class TablaMedCert : public TablaBase
 {
+     Q_OBJECT
 public:
     explicit TablaMedCert(int nColumnas, QWidget *parent=nullptr);
-    void MostrarMenu(QPoint pos);
+
+
+public slots:
+    void MostrarMenuCabecera(QPoint pos);
+    void MostrarMenuLateralTabla(QPoint pos);
+
 
 private:
     DelegadosParcialesSubtotales* dlgPS;

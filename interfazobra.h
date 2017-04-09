@@ -10,6 +10,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QSplitter>
+#include <QPushButton>
 
 #include "./include/Obra.h"
 #include "./include/AbrirGuardar.h"
@@ -47,6 +48,7 @@ public slots:
     void RefrescarVista(QModelIndex indice1, QModelIndex indice2);
     //void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
     void CopiarMedicion();
+    void CopiarPartida();
     void PegarMedicion();
     void GuardarBC3();
     /*void InsertarFilaVacia();

@@ -75,6 +75,7 @@ public:
     /*********funciones de edicion***********/
     void EditarCodigo (TEXTO codigo);
     void EditarResumen (TEXTO resumen);
+    void EditarTexto (TEXTO textopartida);
     void EditarCantidad (float cantidad);
     void EditarUnidad(int ud);
     void EditarNaturaleza (int nat);

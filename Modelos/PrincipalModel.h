@@ -42,7 +42,7 @@ public:
     int FilaVacia();
     void ActualizarDatos();
     bool esColumnaNumerica(int columna) const;
-    void QuitarIndicadorFilaVacia();
+    void QuitarIndicadorFilaVacia();    
 
 signals:
     void EditarCampoTexto (int, QString);

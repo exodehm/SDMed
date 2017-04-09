@@ -3,6 +3,9 @@
 
 #include <QAbstractTableModel>
 #include <QStandardItemModel>
+#include <QClipboard>
+#include <QMimeData>
+#include <QItemSelectionModel>
 #include <QList>
 #include <QStringList>
 #include <QVariant>
@@ -35,7 +38,7 @@ public:
     bool insertRows(int row, int count, const QModelIndex & parent);
     bool removeRows(int filaInicial, int numFilas, const QModelIndex& parent);
     bool filaVacia(const QStringList& linea);
-    void ActualizarDatos();
+    void ActualizarDatos();    
 
 signals:
     void EditarCampoLineaMedicion (QModelIndex, float, QString);

@@ -190,9 +190,13 @@ void Concepto::EscribeFecha(Fecha efe)
     fecha=efe;
 }
 
+#include <QDebug>
+
 void Concepto::EscribeTexto(TEXTO nuevotexto)
 {
+    qDebug()<<"Texto antes de: "<<Texto;
     Texto=nuevotexto;
+    qDebug()<<"Texto despues de: "<<Texto;
 }
 
 Concepto::~Concepto()

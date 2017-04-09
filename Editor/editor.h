@@ -19,9 +19,10 @@ class Editor : 	public QMainWindow, private Ui::Editor
 public:
     Editor (QWidget* parent=nullptr);
     //~MainWindow();
-    QTextEdit &LeeTexto();
+    QTextEdit &LeeTexto() const;
     void EscribeTexto(const QString& texto);
     bool HayCambios();
+    QString LeeContenido() const;
 
 protected:
     void setupActions();

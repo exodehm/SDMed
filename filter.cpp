@@ -195,10 +195,11 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
         }
         default:
         {
+            return false;
             break;
         }
-        }
-        return false;
+        }        
     }
+    return false;
 }
 

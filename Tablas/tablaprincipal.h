@@ -6,9 +6,14 @@
 
 class TablaPrincipal : public TablaBase
 {
+     Q_OBJECT
 public:
     explicit TablaPrincipal(int nColumnas, QWidget *parent=nullptr);
-    void MostrarMenu(QPoint pos);
+
+public slots:
+    void MostrarMenuCabecera(QPoint pos);
+    void MostrarMenuLateralTabla(QPoint pos);
+
 };
 
 #endif // TABLAPRINCIPAL_H

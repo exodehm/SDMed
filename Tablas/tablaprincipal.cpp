@@ -20,10 +20,10 @@ TablaPrincipal::TablaPrincipal(int nColumnas, QWidget *parent): TablaBase(nColum
 
     dlgIco= new DelegadoIconos;
     setItemDelegateForColumn(tipoColumna::NATURALEZA,dlgIco);
-    cabecera->setSelectionMode(QAbstractItemView::NoSelection);
+    cabeceraHorizontal->setSelectionMode(QAbstractItemView::NoSelection);
 }
 
-void TablaPrincipal::MostrarMenu(QPoint pos)
+void TablaPrincipal::MostrarMenuCabecera(QPoint pos)
 {
     int column=this->horizontalHeader()->logicalIndexAt(pos);
     qDebug()<<"Columna: "<<column;
@@ -31,11 +31,19 @@ void TablaPrincipal::MostrarMenu(QPoint pos)
     QMenu *menu=new QMenu(this);
     QAction *AccionBloquearColumna = new QAction("Bloquear columna", this);
     menu->addAction(AccionBloquearColumna);
-    mapper->setMapping(AccionBloquearColumna,column);
-    QObject::connect(AccionBloquearColumna, SIGNAL(triggered()), mapper, SLOT(map()));
-    QObject::connect(mapper, SIGNAL(mapped(int)), this, SLOT(Bloquear(int)));
+    mapperH->setMapping(AccionBloquearColumna,column);
+    QObject::connect(AccionBloquearColumna, SIGNAL(triggered()), mapperH, SLOT(map()));
+    QObject::connect(mapperH, SIGNAL(mapped(int)), this, SLOT(Bloquear(int)));
 
     menu->popup(this->horizontalHeader()->viewport()->mapToGlobal(pos));
-
 }
 
+void TablaPrincipal::MostrarMenuLateralTabla(QPoint pos)
+{
+    QMenu *menu=new QMenu(this);
+    QAction *AccionCopiar = new QAction("Copiar lineas de medición", this);
+    menu->addAction(AccionCopiar);
+    /*copiar*/
+    QObject::connect(AccionCopiar, SIGNAL(triggered()), this, SLOT(Copiar()));
+    menu->popup(cabeceraVertical->viewport()->mapToGlobal(pos));
+}

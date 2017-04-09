@@ -828,6 +828,14 @@ void Obra::EditarResumen (TEXTO resumen)
     }
 }
 
+void Obra::EditarTexto (TEXTO textopartida)
+{
+    if (aristaPadre)
+    {
+        aristaPadre->destino->datonodo.EscribeTexto(textopartida);
+    }
+}
+
 void Obra::BloquearPrecio (float precio)
 {
     aristaActual->destino->datonodo.bloquearPrecio();

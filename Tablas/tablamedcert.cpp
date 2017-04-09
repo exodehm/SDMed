@@ -24,10 +24,10 @@ TablaMedCert::TablaMedCert(int nColumnas, QWidget *parent): TablaBase(nColumnas,
     setItemDelegateForColumn(tipoColumna::FASE,dlgCB);
     setItemDelegateForColumn(tipoColumna::ID,dlgCB);
 
-    QObject::connect(cabecera, SIGNAL(sectionClicked(int)), this,SLOT(Bloquear(int)));
+    QObject::connect(cabeceraHorizontal, SIGNAL(sectionClicked(int)), this,SLOT(Bloquear(int)));
 }
 
-void TablaMedCert::MostrarMenu(QPoint pos)
+void TablaMedCert::MostrarMenuCabecera(QPoint pos)
 {
     int column=this->horizontalHeader()->logicalIndexAt(pos);
     qDebug()<<"Columna: "<<column;
@@ -35,4 +35,18 @@ void TablaMedCert::MostrarMenu(QPoint pos)
     QMenu *menu=new QMenu(this);
     menu->addAction(new QAction("Hacer algo", this));
     menu->popup(this->horizontalHeader()->viewport()->mapToGlobal(pos));
+}
+
+void TablaMedCert::MostrarMenuLateralTabla(QPoint pos)
+{
+    QMenu *menu=new QMenu(this);
+    QAction *AccionCopiar = new QAction("Copiar lineas de medición", this);
+    QAction *AccionCertificar = new QAction("Certificar lineas de medición", this);
+    menu->addAction(AccionCopiar);
+    menu->addAction(AccionCertificar);
+    /*copiar*/
+    QObject::connect(AccionCopiar, SIGNAL(triggered()), this, SLOT(Copiar()));
+    /*certificar*/
+    QObject::connect(AccionCertificar, SIGNAL(triggered()), this, SLOT(Certificar()));
+    menu->popup(cabeceraVertical->viewport()->mapToGlobal(pos));
 }

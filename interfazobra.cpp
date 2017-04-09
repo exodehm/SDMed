@@ -1,5 +1,5 @@
 #include "interfazobra.h"
-#include "ui_interfazobra.h"
+//#include "ui_interfazobra.h"
 
 InterfazObra::InterfazObra(QWidget *parent):QWidget(parent)
 {
@@ -71,14 +71,15 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal->CabeceraDeTabla(),SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
     QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
-    //QObject::connect(ui->botonCopiar,SIGNAL(clicked(bool)),this,SLOT(CopiarMedicion()));
+    QObject::connect(tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(CopiarPartida()));
+    QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicion()));
     //QObject::connect(ui->botonPegar,SIGNAL(clicked(bool)),this,SLOT(PegarMedicion()));
     //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
     QObject::connect(modeloTablaP, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
     QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
 
     QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(MostrarDeSegun(int)));    
-    //QObject::connect(tabMedCert,SIGNAL(currentChanged(int)),this,SLOT(CambiarMedCert(int)));
+    //QObject::connect(tabMedCert,SIGNAL(currentChanged(int)),this,SLOT(CambiarMedCert(int)));    
 
     QObject::connect(botonAvanzar,SIGNAL(clicked(bool)),this,SLOT(Avanzar()));
     QObject::connect(botonRetroceder,SIGNAL(clicked(bool)),this,SLOT(Retroceder()));
@@ -106,8 +107,7 @@ void InterfazObra::MostrarDeSegun(int indice)
 
 void InterfazObra::SubirNivel()
 {
-    /*GuardarTextoPartida();
-    EliminarFilasVacias();
+    /*EliminarFilasVacias();
 
     if (guardar.recuperar)
     {
@@ -118,6 +118,7 @@ void InterfazObra::SubirNivel()
     }*/
     tablaPrincipal->clearSelection();
     modeloTablaP->QuitarIndicadorFilaVacia();
+    GuardarTextoPartida();
     O->SubirNivel();
     RefrescarVista(QModelIndex(),QModelIndex());
     //O->MostrarHijos();
@@ -127,8 +128,8 @@ void InterfazObra::SubirNivel()
 void InterfazObra::BajarNivel(QModelIndex indice)
 {
     Q_UNUSED (indice);
-    GuardarTextoPartida();
     modeloTablaP->QuitarIndicadorFilaVacia();
+    GuardarTextoPartida();
     O->BajarNivel();
     /*if (!O->HayHijos() && (O->EsPartida() || O->EsCapitulo()))
         {
@@ -143,22 +144,16 @@ void InterfazObra::BajarNivel(QModelIndex indice)
 
 void InterfazObra::Avanzar()
 {
-    //GuardarTextoPartida();
     modeloTablaP->QuitarIndicadorFilaVacia();
+    GuardarTextoPartida();
     O->Siguiente();
-
-    //O->MostrarHijos();
-    /*if (!O->HayHijos() && (O->EsPartida() || O->EsCapitulo()))
-    {
-        InsertarFilaVacia();
-    }*/
     RefrescarVista(QModelIndex(),QModelIndex());
 }
 
 void InterfazObra::Retroceder()
 {
-    //GuardarTextoPartida();
     modeloTablaP->QuitarIndicadorFilaVacia();
+    GuardarTextoPartida();
     O->Anterior();
     //O->MostrarHijos();
     /*if (!O->HayHijos() && (O->EsPartida() || O->EsCapitulo()))
@@ -175,7 +170,7 @@ void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
     if (modeloTablaP->rowCount(QModelIndex())==0)
     {
         modeloTablaP->insertRow(0);
-    }
+    }    
     modeloTablaP->ActualizarDatos();
     modeloTablaMC->ActualizarDatos();    
     //O->MostrarHijos();
@@ -216,11 +211,15 @@ void InterfazObra::PosicionarTablaM(QModelIndex indice)
 
 void InterfazObra::GuardarTextoPartida()
 {
-
+    if (editor->HayCambios())
+    {
+        O->EditarTexto(editor->LeeContenido());
+    }
 }
 
 void InterfazObra::CopiarMedicion()
 {
+    qDebug()<<"Copiar medicion interfad";
     QItemSelectionModel *selecmodel = tablaMediciones->selectionModel();
     QModelIndexList list = selecmodel->selectedIndexes();
     QString textoACopiar;
@@ -230,13 +229,19 @@ void InterfazObra::CopiarMedicion()
         {
             QModelIndex index = list.at(i);
             textoACopiar.append(modeloTablaMC->data(index).toString());
-            textoACopiar.append(";");
+            textoACopiar.append(" ");
+            textoACopiar.append('\n');
         }
     }
     textoACopiar.replace(",",".");
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(textoACopiar);
     tablaMediciones->clearSelection();
+}
+
+void InterfazObra::CopiarPartida()
+{
+    qDebug()<<"copiar partidas";
 }
 
 void InterfazObra::PegarMedicion()

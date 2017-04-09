@@ -125,7 +125,7 @@ Qt::ItemFlags PrincipalModel::flags(const QModelIndex &index) const
 bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, int role)
 {
     QModelIndex indice = index;
-    if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
+    if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole) && value.toString()!=index.data().toString())
     {
         //insertar partida nueva
         if (index.column()==tipoColumna::CODIGO && index.row()==filavacia && HayFilaVacia())
@@ -138,6 +138,7 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
         }
         if (indice.column()==tipoColumna::RESUMEN)
         {
+            qDebug()<<"Editando resumen";
             miobra->EditarResumen(value.toString());
             emit dataChanged(index, index);
             return true;

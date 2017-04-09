@@ -19,9 +19,14 @@ Editor::Editor(QWidget *parent): QMainWindow(parent)
     QObject::connect (textEdit, SIGNAL(textChanged()), this, SLOT(updateStats()));
 }
 
-QTextEdit &Editor::LeeTexto()
+QTextEdit &Editor::LeeTexto() const
 {
     return *textEdit;
+}
+
+QString Editor::LeeContenido() const
+{
+    return textEdit->document()->toPlainText();
 }
 
 void Editor::EscribeTexto(const QString& texto)
@@ -162,5 +167,5 @@ void Editor::updateStats()
 
 bool Editor:: HayCambios()
 {
-    //return textEdit->
+    return textEdit->document()->isModified();
 }
