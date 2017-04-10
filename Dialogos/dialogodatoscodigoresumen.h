@@ -9,7 +9,7 @@ class DialogoDatosCodigoResumen : public QDialog, private Ui::DialogoDatosCodigo
     Q_OBJECT
 
 public:
-    explicit DialogoDatosCodigoResumen(QWidget *parent = 0);
+    explicit DialogoDatosCodigoResumen(QWidget *parent = nullptr);
 
     QString LeeCodigo();
     QString LeeResumen();

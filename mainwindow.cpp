@@ -42,7 +42,6 @@ void MainWindow::ActionAbrir()
         QString leyenda = QString(tr("Creada la obra %1").arg(obraActual->miobra->LeeObra()->LeeResumenObra()));
         statusBar()->showMessage(leyenda,5000);
     }
-
 }
 
 bool MainWindow::ActionGuardar()
