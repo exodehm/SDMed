@@ -7,8 +7,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QList>
+#include <QDir>
 
 #include "interfazobra.h"
+#include "Dialogos/dialogodatoscodigoresumen.h"
 
 
 namespace Ui {
@@ -34,6 +36,8 @@ private slots:
     void ActionExportarBC3();
     void ActionAdelante();
     void ActionAtras();
+    void CambiarObraActual(int indice);
+    void CambiarMedCert(int indice);
 
 private:
 
@@ -45,11 +49,18 @@ private:
     };
     std::list<MetaObra>ListaObras;
     std::list<MetaObra>::iterator obraActual;
+    QString rutaarchivo;
 
     Ui::MainWindow *ui;
 
     bool ConfirmarContinuar();
     void setupActions();
+    void AnadirObraAVentanaPrincipal(MetaObra& nuevaobra);
+    //el combo he de annadirlo a mano porque no se puede insertar un widget a una qToolBar desde QtDesigner
+    QLabel* label;
+    QComboBox* comboMedCert;
+
+    QDir ruta;
 };
 
 #endif // MAINWINDOW_H

@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     Dialogos/dialogoprecio.cpp \
     Delegados/delegadobase.cpp \
     Delegados/delegadoeditornumeros.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    Dialogos/dialogodatoscodigoresumen.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -93,12 +94,15 @@ HEADERS  += interfazobra.h \
     Dialogos/dialogoprecio.h \
     Delegados/delegadobase.h \
     Delegados/delegadoeditornumeros.h \
-    mainwindow.h
+    mainwindow.h \
+    Dialogos/dialogodatoscodigoresumen.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \
     Dialogos/dialogoprecio.ui \
-    Ui/mainwindow.ui
+    Ui/mainwindow.ui \
+    Ui/dialogodatosgenerales.ui \
+    Ui/dialogodatoscodigoresumen.ui
 
 RESOURCES += \
     Editor/iconosEditor.qrc \

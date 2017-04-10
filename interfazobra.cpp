@@ -13,6 +13,17 @@ InterfazObra::InterfazObra(QString nombrefichero, QWidget *parent):QWidget(paren
     }
 }
 
+InterfazObra::InterfazObra(QString codigo, QString resumen,QWidget *parent):QWidget(parent)
+{
+    O= new Obra(codigo,resumen);
+    if (O)
+    {
+        O->IrAInicio();
+        O->MostrarHijos();
+        GenerarUI();
+    }
+}
+
 InterfazObra::~InterfazObra()
 {
     delete O;    
@@ -22,47 +33,28 @@ void InterfazObra::GenerarUI()
 {
     lienzoGlobal = new QVBoxLayout(this);
     separador = new QSplitter(Qt::Vertical);
-    widgetSuperior = new QWidget(separador);
-    separador->addWidget(widgetSuperior);
-    lienzoSuperior = new QVBoxLayout(widgetSuperior);
 
-
+    //tabla principal
     modeloTablaP = new PrincipalModel(O);
     tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()), separador);
     tablaPrincipal->setModel(modeloTablaP);
+    separador->addWidget(tablaPrincipal);
 
-
+    //tabla mediciones
     modeloTablaMC = new MedicionesModel(O);
     tablaMediciones =  new TablaMedCert(modeloTablaMC->columnCount(QModelIndex()), separador);
     tablaMediciones->setModel(modeloTablaMC);
     separador->addWidget(tablaMediciones);
+
     //editor
     editor = new Editor(separador);
     separador->addWidget(editor);
-    //zona de botones
-    botonAvanzar = new QPushButton("->");
-    botonRetroceder = new QPushButton("<-");
 
-    //una vez creadas las tablas y los editores los coloco en el layout
-    comboMedCert = new QComboBox;
-    comboMedCert->addItem(tr("Medicion"));
-    comboMedCert->addItem(tr("Certificación"));
-    botonera = new QHBoxLayout();
-    botonera->addWidget(comboMedCert);
-    botonera->addWidget(botonRetroceder);
-    botonera->addWidget(botonAvanzar);
-    botonera->addStretch();
-
-    lienzoSuperior->addLayout(botonera);
-    lienzoSuperior->addWidget(tablaPrincipal);
-
+    //añado el separador al layout
     lienzoGlobal->addWidget(separador);
 
     RefrescarVista(QModelIndex(),QModelIndex());
-    MostrarDeSegun(0);
-
-    /**********editor*****************/
-    //EscribirTexto();
+    MostrarDeSegun(0);   
 
     /************signals y slots*****************/
     QObject::connect(tablaPrincipal,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
@@ -76,14 +68,8 @@ void InterfazObra::GenerarUI()
     QObject::connect(modeloTablaP, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
     QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
 
-    QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(MostrarDeSegun(int)));    
-    //QObject::connect(tabMedCert,SIGNAL(currentChanged(int)),this,SLOT(CambiarMedCert(int)));    
 
-    QObject::connect(botonAvanzar,SIGNAL(clicked(bool)),this,SLOT(Avanzar()));
-    QObject::connect(botonRetroceder,SIGNAL(clicked(bool)),this,SLOT(Retroceder()));
-
-    //QObject::connect(ui->botonGuardar,SIGNAL(clicked(bool)),this,SLOT(GuardarBC3()));
-
+    //QObject::connect(tabMedCert,SIGNAL(currentChanged(int)),this,SLOT(CambiarMedCert(int)));
 }
 
 Obra* InterfazObra::LeeObra()

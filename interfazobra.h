@@ -26,7 +26,8 @@ class InterfazObra : public QWidget
     Q_OBJECT
 
 public:
-    explicit InterfazObra(QString nombrefichero, QWidget *parent = 0);
+    explicit InterfazObra(QString nombrefichero, QWidget *parent = nullptr);
+    explicit InterfazObra(QString codigo, QString resumen, QWidget *parent=nullptr);
     ~InterfazObra();
 
     void GenerarUI();
@@ -70,16 +71,12 @@ private:
 
     QVBoxLayout* lienzoGlobal;
     QVBoxLayout* lienzoSuperior;
-    QHBoxLayout* botonera;
     QWidget* widgetSuperior;
 
     QSplitter* separador;
 
-    QPushButton* botonAvanzar;
-    QPushButton* botonRetroceder;
     TablaBase* tablaPrincipal;
-    TablaBase* tablaMediciones;
-    QComboBox* comboMedCert;
+    TablaBase* tablaMediciones;    
 
     Editor* editor;
 
