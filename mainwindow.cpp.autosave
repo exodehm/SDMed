@@ -102,7 +102,7 @@ void MainWindow::ActionCerrar()
         std::list<MetaObra>::iterator obraBorrar = obraActual;
         {
             obraActual = ListaObras.erase(obraActual);
-            delete obraBorrar->miobra; //ya no es necesario
+            delete obraBorrar->miobra;
             if ( obraActual == ListaObras.end() && !ListaObras.empty())
             {
                 obraActual = std::prev(obraActual);

@@ -46,6 +46,7 @@ private:
         InterfazObra* miobra;
         QString nombrefichero;
         MetaObra():miobra(nullptr){}
+        //~MetaObra(){delete miobra;}
     };
     std::list<MetaObra>ListaObras;
     std::list<MetaObra>::iterator obraActual;
