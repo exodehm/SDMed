@@ -250,16 +250,13 @@ void AbrirGuardarBC3::Escribir(QFile &fichero, const Obra *obra)
     EscribirRegistroK(cadenabc3);    
     /********Registros C y D**************/
     pNodo indice=obra->G.LeeRaiz();
-    int ii=0;
-    for (int i=0; i<obra->G.LeeNumNodos(); i++)
+    for (int i=0; i<=obra->G.LeeNumNodos(); i++)
     {        
         EscribirRegistroC(indice,cadenabc3,obra);
         if (indice->adyacente)
         {
             EscribirRegistroD(indice,cadenabc3,obra);
         }
-        qDebug()<<ii;
-        ii++;
         indice=indice->siguiente;
     }
     /*******Registro M y N************/

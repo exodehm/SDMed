@@ -462,7 +462,7 @@
      <x>0</x>
      <y>0</y>
      <width>897</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArchivo">
@@ -493,7 +493,14 @@
     <addaction name="separator"/>
     <addaction name="actionPropiedades_de_la_obra"/>
     <addaction name="separator"/>
+    <addaction name="actionObra_1"/>
+    <addaction name="actionObra_2"/>
+    <addaction name="actionObra_3"/>
+    <addaction name="actionObra_4"/>
+    <addaction name="actionObra_5"/>
+    <addaction name="separator"/>
     <addaction name="action_Salir"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuEdicion">
     <property name="title">
@@ -629,6 +636,9 @@
    </property>
   </action>
   <action name="actionGuardar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../recursos.qrc">
      <normaloff>:/images/floppy.png</normaloff>:/images/floppy.png</iconset>
@@ -812,6 +822,61 @@
   <action name="actionRecientes">
    <property name="text">
     <string>Recientes</string>
+   </property>
+  </action>
+  <action name="actionObra_1">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Obra 1</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionObra_2">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Obra 2</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionObra_3">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Obra 3</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionObra_4">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Obra 4</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionObra_5">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Obra 5</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>

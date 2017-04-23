@@ -24,6 +24,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void updateRecentFileActions();
+    QString strippedName(const QString &fullFileName);
 
 private slots:
     void ActionNuevo();
@@ -31,9 +33,7 @@ private slots:
     bool ActionGuardar();
     bool ActionGuardarComo();
     void ActionCerrar();
-    void ActionSalir();
-    void ActionImportarBC3();
-    void ActionExportarBC3();
+    void ActionSalir();    
     void ActionAdelante();
     void ActionAtras();
     void CambiarObraActual(int indice);
@@ -52,11 +52,17 @@ private:
     std::list<MetaObra>::iterator obraActual;
     QString rutaarchivo;
 
+    QStringList recentFiles;
+    enum { MaxRecentFiles = 5 };
+    QAction *recentFileActions[MaxRecentFiles];
+    QAction *separatorAction;
+
     Ui::MainWindow *ui;
 
     bool ConfirmarContinuar();
     void setupActions();
     void AnadirObraAVentanaPrincipal(MetaObra& nuevaobra);
+    bool GuardarObra(QString &nombreFichero);
     //el combo he de annadirlo a mano porque no se puede insertar un widget a una qToolBar desde QtDesigner
     QLabel* label;
     QComboBox* comboMedCert;

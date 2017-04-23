@@ -244,12 +244,8 @@ void InterfazObra::PegarMedicion()
     }
 }
 
-void InterfazObra::GuardarBC3()
+void InterfazObra::GuardarBC3(QString fileName)
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Guardar fichero"),
-                                                    "/home/david/noname.bc3",
-                                                    tr("FIEBDC-12 (*.bc3)"));
-
     QFile ficheroBC3(fileName);
     if (ficheroBC3.open(QIODevice::WriteOnly|QIODevice::Text))
     {

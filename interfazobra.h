@@ -52,7 +52,7 @@ public slots:
     void CopiarMedicion();
     void CopiarPartida();
     void PegarMedicion();
-    void GuardarBC3();
+    void GuardarBC3(QString fileName);
     /*void InsertarFilaVacia();
     void InsertarDelante();
     void Eliminar(const QList<int> &Lista);
