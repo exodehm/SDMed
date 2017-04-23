@@ -2,7 +2,7 @@
 
 DelegadoEditorNumeros::DelegadoEditorNumeros(QObject *parent):DelegadoBase(parent)
 {
-    rx = new QRegExp("[0-9]{0,5}[\\,\\.]{1}[0-9]{1,3}");
+    rx = new QRegExp("[-]{0,1}[0-9]{0,5}[\\,\\.]{1}[0-9]{1,3}");
 }
 
 QWidget* DelegadoEditorNumeros::createEditor(QWidget * parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
