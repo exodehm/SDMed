@@ -117,6 +117,7 @@ bool MainWindow::GuardarObra(QString &nombreFichero)
         nombreFichero.append(".bc3");
     }
     obraActual->miobra->GuardarBC3(nombreFichero);
+    qDebug()<<"Guardada la obra "<<nombreFichero<<" con exito";
     return true;
 }
 

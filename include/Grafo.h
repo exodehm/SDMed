@@ -77,9 +77,9 @@ public:
         //return nNodos;
         int i=0;
         pNodo indice = Raiz;
-        while (indice->siguiente)
+        while (indice)
         {
-            ++i;
+            i++;
             indice=indice->siguiente;
         }
         return i;
