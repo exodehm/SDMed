@@ -41,7 +41,7 @@ struct arista
 
     ~arista()
     {
-        std::cout<<"Destructor arista"<<std::endl;
+        //std::cout<<"Destructor arista"<<std::endl;
     }
 };
 

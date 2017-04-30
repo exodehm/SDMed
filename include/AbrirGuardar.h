@@ -11,6 +11,9 @@
 #include "./Obra.h"
 #include "./definiciones.h"
 
+#include <ctime>
+
+
 
 class AbrirGuardar
 {
@@ -59,7 +62,7 @@ public:
     Obra*  Leer(std::ifstream &ifs);
     Obra*  Leer(TEXTO nombrefichero);
     void procesarConceptos(Obra* &obra, QStringList& registroC);
-    void procesarRelaciones (Obra* &obra, QString linea, QStringList& registroM);
+    void procesarRelaciones (Obra* &obra, const QString &linea, QStringList& registroM);
     MedCert procesarMediciones (QStringList& registroM, TEXTO nombrepadre, TEXTO nombrehijo);
     void procesarTexto(Obra* &obra, const QStringList& registroT);
 

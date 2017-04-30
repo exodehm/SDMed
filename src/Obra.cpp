@@ -6,7 +6,7 @@ Obra::Obra(TEXTO Cod, TEXTO Res, int ud, int CuadroDePrecios):G(),codificacion(C
 {
     Concepto* conceptoRaiz=new Concepto(Cod,ud,Res);
     IniciarObra(*conceptoRaiz);
-    std::cout<<"Iniciada la obra con "<<LeeCodigoObra().toStdString()<<std::endl;
+    std::cout<<"Iniciada la obra con "<<LeeCodigoObra().toStdString()<<std::endl;    
 }
 
 Obra::Obra(Concepto conceptoRaiz)
@@ -51,6 +51,7 @@ void Obra::IniciarObra (Concepto conceptoRaiz)
 {
     pNodo primero=new nodo<Concepto,MedCert> (conceptoRaiz);
     G.InsertarHijo(primero,primero, 1);
+    mapaNodos.insert(std::pair<const TEXTO,pNodo>(primero->datonodo.LeeCodigo(),primero));
     padre=primero;
     aristaPadre=new arista<MedCert,Concepto>(1);//el concepto raiz en principio tiene siempre el valor 1 (una unidad de obra)
     aristaPadre->destino=padre;
@@ -70,11 +71,11 @@ void Obra::CrearPartida (TEXTO CodPadre, MedCert med, TEXTO CodHijo)
     pNodo hijo = existeConcepto(CodHijo);
     if (!padre)
     {
-        padre = new t_nodo(CodPadre);
+        padre = DefinirConcepto(CodPadre);
     }
     if (!hijo)
     {
-        hijo  = new t_nodo(CodHijo);
+        hijo = DefinirConcepto(CodHijo);
     }
     pArista relacion=new arista<MedCert,Concepto>(med);
     G.Insertar(padre, hijo, relacion);
@@ -82,7 +83,7 @@ void Obra::CrearPartida (TEXTO CodPadre, MedCert med, TEXTO CodHijo)
 
 void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int ud, int nat)
 {
-    /******variables que usaré para crear el concepto*****************/
+    /******variables que usaré para crear el concepto*****************/    
     pArista nuevaArista;
     //int N=Codificacion::Partida;//en principio la inicializo como partida
     int N=nat;
@@ -102,7 +103,6 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
         selectorMedCer=MedCert::MEDICION;
     } 
     G.Insertar(padre,nuevoNodo,nuevaArista);
-    //aristaActual=nuevaArista;
     aristaActual = G.hallarArista(padre,nuevoNodo);
     //Y actualizo el grafo partiendo del nodo insertado
     Actualizar(aristaActual->destino);
@@ -114,7 +114,7 @@ void Obra::CrearPartida(TEXTO CodigoHijo, int posicion)
     pNodo nuevoNodo = existeConcepto(CodigoHijo);
     if (!nuevoNodo)
     {
-       nuevoNodo = DefinirConcepto(CodigoHijo);
+       nuevoNodo = DefinirConcepto(CodigoHijo);       
     }
     float cantidad=0;
     if (NivelCero())
@@ -164,6 +164,7 @@ pNodo Obra::DefinirConcepto(TEXTO Cod, TEXTO Res, float precio,int ud, int nat)
     //por ultimo creo el concepto con los datos dados y lo inserto en la obra
     Concepto* NuevoConcepto= new Concepto(Cod,ud, Res,precio,N);
     pNodo nuevoNodo = new nodo<Concepto,MedCert>(*NuevoConcepto);
+    mapaNodos.insert(std::pair<const TEXTO,pNodo>(Cod,nuevoNodo));
     return nuevoNodo;
 }
 
@@ -453,7 +454,12 @@ void Obra:: SumarHijos(pNodo n)
 void Obra::BorrarPartida()
 {
     qDebug()<<"Borrar la partida: "<<aristaActual->destino->datonodo.LeeResumen();
-    G.borrarNodos(aristaActual);
+    auto it = mapaNodos.find(aristaActual->destino->datonodo.LeeCodigo());
+    if (it!=mapaNodos.end())
+    {
+        G.borrarNodos(aristaActual);
+    }
+    mapaNodos.erase(aristaActual->destino->datonodo.LeeCodigo());
     if (padre->adyacente)
     {
         aristaActual=padre->adyacente;
@@ -982,13 +988,18 @@ bool Obra::EsPartidaVacia() const
 
 pNodo Obra::existeConcepto(const TEXTO &codigo)
 {
-    std::list<pNodo> lista = G.recorrerNodos();
+    /*std::list<pNodo> lista = G.recorrerNodos();
     for (auto elem:lista)
-    {        
+    {
         if (elem->datonodo.LeeCodigo()==codigo)
         {
             return elem;
         }
+    }*/
+    auto it = mapaNodos.find(codigo);
+    if (it!=mapaNodos.end())
+    {
+        return it->second;
     }
     return nullptr;
 }

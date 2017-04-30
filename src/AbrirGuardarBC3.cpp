@@ -14,6 +14,7 @@ Obra*  AbrirGuardarBC3::Leer(TEXTO nombrefichero)
     QTextStream datos(&fichero);
     datos.setCodec("Windows-1252");
     QStringList registros = datos.readAll().split('~');
+    qDebug()<<"Total lineas: "<<registros.size();
     QStringList registroD;
     QStringList registroM;
     QStringList registroC;
@@ -27,41 +28,53 @@ Obra*  AbrirGuardarBC3::Leer(TEXTO nombrefichero)
             linea.remove(0,2);
             //qDebug()<<linea;
             registroC.append(linea);
-        }
+        }        
         if (linea[0]=='D' && linea[1]=='|')
         {
             linea.chop(2);
             linea.remove(0,2);
             //qDebug()<<linea;
             registroD.append(linea);
-        }
+        }        
         if (linea[0]=='M' && linea[1]=='|')
         {
             linea.chop(2);
             linea.remove(0,2);
             //qDebug()<<linea;
             registroM.append(linea);
-        }
+        }        
         if (linea[0]=='T')
         {
             linea.chop(2);
             linea.remove(0,2);
             //qDebug()<<linea;
             registroT.append(linea);
-        }
+        }        
     }
+    qDebug()<<"Total lineas Resitro C: "<<registroC.size();
+    qDebug()<<"Total lineas Resitro D: "<<registroD.size();
+    qDebug()<<"Total lineas Resitro M: "<<registroM.size();
+    qDebug()<<"Total lineas Resitro T: "<<registroT.size();
     //empiezo construyendo el grafo solo con los codigos-->registroD
-    foreach (QString linea, registroD)
+    clock_t t_ini, t_fin;
+    double secs;
+    t_ini = clock();
+    foreach (const QString& linea, registroD)
     {
         procesarRelaciones(obra,linea,registroM);
     }
+    t_fin = clock();
+    secs = (double)(t_fin - t_ini) / CLOCKS_PER_SEC;
+    qDebug()<<"Procesadas las relaciones en: "<<secs<<" segundos";
     procesarConceptos(obra,registroC);
+    qDebug()<<"Procesados los conceptos";
     procesarTexto(obra,registroT);
+    qDebug()<<"Procesados los textos";
     fichero.close();
     return obra;
 }
 
-void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, QString linea, QStringList &registroM)
+void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, const QString &linea, QStringList &registroM)
 {
     //Miro si el registro tiene 2 o 3 campos
     //3 campos->verson FIEBDC-3/2012->tener en cuenta porcentajes
@@ -123,9 +136,8 @@ void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, QString linea, QStringLis
 }
 
 void AbrirGuardarBC3::procesarConceptos(Obra* &obra, QStringList &registroC)
-{
-    QString linea;
-    foreach (linea, registroC)
+{    
+    foreach (const QString& linea, registroC)
     {
         QStringList datos = linea.split("|");
         QString codigo = datos.at(0);
@@ -161,16 +173,16 @@ void AbrirGuardarBC3::procesarConceptos(Obra* &obra, QStringList &registroC)
             {
                 nat=Codificacion::Partida;
             }
-            minodo->datonodo.EscribeNaturaleza(nat);
+            minodo->datonodo.EscribeNaturaleza(nat);            
         }
     }
 }
 
 MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombrepadre, TEXTO nombrehijo)
 {
-    QString linea;
+    //QString linea;
     int i=0;
-    foreach (linea, registroM)
+    foreach (const QString &linea, registroM)
     {
         QStringList datos = linea.split("|");
         QStringList padrehijo = datos.at(0).split("\\");
@@ -407,8 +419,8 @@ void AbrirGuardarBC3::quitarSimbolos (pNodo n)
 
 void AbrirGuardarBC3::quitarSimbolos (TEXTO &codigo)
 {
-    int posicion=-1;
-    posicion = codigo.indexOf('#');
+    //int posicion=-1;
+    int posicion = codigo.indexOf('#');
     if (posicion>0 || posicion==0)
     {
         codigo.truncate(posicion);

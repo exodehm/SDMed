@@ -16,7 +16,6 @@
 #include "Certificacion.h"
 #include "Datos.h"
 
-
 class Obra
 {
 public:
@@ -140,6 +139,7 @@ public:
 
 private:
     Grafo<datonodo_t,datoarista_t> G;
+    std::map<const TEXTO,pNodo>mapaNodos;
     //elementos auxiliares para moverme por el grafo
     pNodo padre;
     pArista aristaPadre;
@@ -160,8 +160,7 @@ private:
     QList<QStringList> listadoTablaP;
     QList<QStringList> listadoTablaMC;
 
-    friend class AbrirGuardarBC3;
-
+    friend class AbrirGuardarBC3;    
 };
 
 #endif // OBRA_H

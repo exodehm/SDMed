@@ -33,7 +33,7 @@ struct nodo
         adyacente=nullptr;
         //borrar pila?
         //borrar datonodo?
-        std::cout<<"Destructor nodo"<<std::endl;
+        //std::cout<<"Destructor nodo"<<std::endl;
     }
     //operador de asignacion
     nodo& operator = (const nodo<DATON, DATOA>& n)
@@ -50,18 +50,18 @@ struct nodo
 
     void InsertarHijo(pNodo& hijo, pArista& nueva, pArista& precedente)
     {
-        std::cout<<"INSERTAR NODO2"<<std::endl;
+        //std::cout<<"INSERTAR NODO2"<<std::endl;
         nueva->origen=this;
         nueva->destino=hijo;
 
         if (!adyacente)//primera arista
         {
-            std::cout<<"primer NODO"<<std::endl;
+            //std::cout<<"primer NODO"<<std::endl;
             adyacente = nueva;
         }
         else if (!precedente)//insertar en primera posicion
         {
-            std::cout<<"primerita posicion"<<std::endl;
+            //std::cout<<"primerita posicion"<<std::endl;
             nueva->siguiente=adyacente;
             adyacente->anterior=nueva;
             adyacente=nueva;
@@ -76,7 +76,7 @@ struct nodo
             }
             precedente->siguiente=nueva;
         }
-        std::cout<<"NODO INSERTADO CON EXITO"<<std::endl;
+        //std::cout<<"NODO INSERTADO CON EXITO"<<std::endl;
     }
 };
 
