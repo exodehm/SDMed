@@ -2,7 +2,7 @@
 
 TablaPrincipal::TablaPrincipal(int nColumnas, QWidget *parent): TablaBase(nColumnas, parent)
 {
-    limiteIzquierdo=tipoColumna::NATURALEZA;
+    limiteIzquierdo=tipoColumna::CODIGO;
     limiteDerecho=tipoColumna::PRCERT;
 
     celdaBloqueada[tipoColumna::CODIGO]=true;
@@ -11,6 +11,7 @@ TablaPrincipal::TablaPrincipal(int nColumnas, QWidget *parent): TablaBase(nColum
     celdaBloqueada[tipoColumna::IMPCERT]=true;
     //setItemDelegateForColumn(tipoColumna::CODIGO,dlgCB);
     setItemDelegateForColumn(tipoColumna::CODIGO,dlgBA);
+    setItemDelegateForColumn(tipoColumna::UD,dlgBA);
     setItemDelegateForColumn(tipoColumna::RESUMEN,dlgBA);
     setItemDelegateForColumn(tipoColumna::CANPRES,dlgEN);
     setItemDelegateForColumn(tipoColumna::PRPRES,dlgEN);

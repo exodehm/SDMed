@@ -427,7 +427,7 @@ void Grafo<datonodo_t,datoarista_t>:: borrarNodos(pNodo& padre, pNodo& hijo)
         if (!hijo->adyacente)
         {
             //me posiciono en la arista a borrar
-            std::cout<<"Es hoja---"<<std::endl;
+            //std::cout<<"Es hoja---"<<std::endl;
             eliminarArista(A);
             eliminarNodo(hijo);//lo saco de la lista general de nodos
         }

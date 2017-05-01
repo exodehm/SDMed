@@ -110,14 +110,20 @@ bool MainWindow::ActionGuardarComo()
 
 bool MainWindow::GuardarObra(QString &nombreFichero)
 {
-    obraActual->nombrefichero=nombreFichero;
+    qDebug()<<"Nombrefichero: "<<nombreFichero;
     QString extension = nombreFichero.right(4);
-    if (extension!=".bc3" && extension!=".BC3")
+    obraActual->nombrefichero=nombreFichero;
+    if (extension == ".bc3" || extension == ".BC3")
     {
-        nombreFichero.append(".bc3");
+        obraActual->miobra->GuardarBC3(nombreFichero);
+        qDebug()<<"Guardada la obra "<<nombreFichero<<" con exito";
+        return true;
     }
-    obraActual->miobra->GuardarBC3(nombreFichero);
-    qDebug()<<"Guardada la obra "<<nombreFichero<<" con exito";
+    if (extension == ".sdm" || extension == ".SDM")
+    {
+        qDebug()<<"Guardando en formato SDM";
+        return true;
+    }
     return true;
 }
 

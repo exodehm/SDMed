@@ -124,97 +124,44 @@ Qt::ItemFlags PrincipalModel::flags(const QModelIndex &index) const
 
 bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, int role)
 {
-    QModelIndex indice = index;
     if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole) && value.toString()!=index.data().toString())
     {
-        //insertar partida nueva
-        if (index.column()==tipoColumna::CODIGO && index.row()==filavacia && HayFilaVacia())
+        switch (index.column())
         {
-            qDebug()<<"Insertando codigo en la fila "<<index.row();
-            miobra->CrearPartida(value.toString(),filavacia);
-            emit dataChanged(index, index);
-            hayFilaVacia=false;
-            return true;
+        case tipoColumna::CODIGO:
+        {
+            qDebug()<<"editando código";
+            return EditarCodigo(index,value.toString());
         }
-        if (indice.column()==tipoColumna::RESUMEN)
+        case tipoColumna::NATURALEZA:
         {
-            qDebug()<<"Editando resumen";
-            miobra->EditarResumen(value.toString());
-            emit dataChanged(index, index);
-            return true;
+            qDebug()<<"editando naturaleza";
+            return EditarNaturaleza(index, value.toInt());
         }
-        else if (indice.column()==tipoColumna::CANPRES)
+        case tipoColumna::UD:
         {
-            if (miobra->hayMedicionPartidaActual())
-            {
-                DialogoSuprimirMedicion* d = new DialogoSuprimirMedicion(miobra->LeeCodigoObra());
-                if (d->exec()==QDialog::Accepted && d->Suprimir())
-                {
-                    miobra->EditarCantidad(value.toFloat());
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                miobra->EditarCantidad(value.toFloat());
-            }
-            emit dataChanged(index, index);
-            return true;
+            qDebug()<<"editando unidad";
+            return EditarUnidad(index, value.toString());
         }
-        else if (indice.column()==tipoColumna::PRPRES)
+        case tipoColumna::RESUMEN:
         {
-            if (miobra->hayDescomposicion())
-            {
-                DialogoPrecio* d = new DialogoPrecio(miobra->LeeCodigoActual());
-                if (d->exec()==QDialog::Accepted)
-                {
-                    switch (d->Respuesta())
-                    {
-                    case 1:
-                    {
-                        qDebug()<<"Suprimir descomposicion";
-                        miobra->SuprimirDescomposicion();
-                        miobra->EditarPrecio(value.toFloat());
-                        break;
-                    }
-                    case 2:
-                    {
-                        qDebug()<<"Bloquear precio";
-                        miobra->BloquearPrecio(value.toFloat());
-                        break;
-                    }
-                    case 3:
-                    {
-                        qDebug()<<"Ajustar";
-                        break;
-                    }
-                    default:
-                        miobra->EditarPrecio(value.toFloat());
-                        break;
-                    }
-                    emit dataChanged(index, index);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                miobra->EditarPrecio(value.toFloat());
-                emit dataChanged(index, index);
-                return true;
-            }            
-        }       
-        else if (index.column()==tipoColumna::NATURALEZA)
+            qDebug()<<"editando resumen";
+            return EditarResumen(index, value.toString());
+        }
+        case tipoColumna::CANPRES:
         {
-            miobra->EditarNaturaleza(value.toInt());
-            emit dataChanged(index, index);
-            return true;
+            qDebug()<<"editando cantidad";
+            return EditarCantidad(index,value.toFloat());
+        }
+        case tipoColumna::PRPRES:
+        {
+            qDebug()<<"editando precio";
+            return EditarPrecio(index,value.toFloat());
+        }
+        default:
+        {
+            return false;
+        }
         }
     }
     return false;
@@ -295,3 +242,112 @@ bool PrincipalModel::esColumnaNumerica(int columna) const
             columna==tipoColumna::IMPPRES ||
             columna==tipoColumna:: IMPCERT;
 }
+
+bool PrincipalModel::EditarCodigo(const QModelIndex & index, TEXTO codigo)
+{
+    if (index.row()==filavacia && HayFilaVacia())//insertar partida nueva
+    {
+        qDebug()<<"Insertando codigo en la fila "<<index.row();
+        miobra->CrearPartida(codigo,filavacia);
+        hayFilaVacia=false;
+    }
+    else
+    {
+        miobra->EditarCodigo(codigo);
+    }
+    emit dataChanged(index, index);
+    return true;
+}
+
+bool PrincipalModel::EditarResumen(const QModelIndex &index, TEXTO resumen)
+{
+    miobra->EditarResumen(resumen);
+    emit dataChanged(index, index);
+    return true;
+}
+
+bool PrincipalModel::EditarNaturaleza(const QModelIndex & index, int naturaleza)
+{
+    miobra->EditarNaturaleza(naturaleza);
+    emit dataChanged(index, index);
+    return true;
+}
+
+bool PrincipalModel::EditarUnidad(const QModelIndex & index, TEXTO unidad)
+{
+    miobra->EditarUnidad(unidad);
+    emit dataChanged(index, index);
+    return true;
+}
+
+bool PrincipalModel::EditarCantidad(const QModelIndex & index, float cantidad)
+{
+    if (miobra->hayMedicionPartidaActual())
+    {
+        DialogoSuprimirMedicion* d = new DialogoSuprimirMedicion(miobra->LeeCodigoObra());
+        if (d->exec()==QDialog::Accepted && d->Suprimir())
+        {
+            miobra->EditarCantidad(cantidad);
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        miobra->EditarCantidad(cantidad);
+    }
+    emit dataChanged(index, index);
+    return true;
+}
+
+bool PrincipalModel::EditarPrecio(const QModelIndex & index, float precio)
+{
+    if (miobra->hayDescomposicion())
+    {
+        DialogoPrecio* d = new DialogoPrecio(miobra->LeeCodigoActual());
+        if (d->exec()==QDialog::Accepted)
+        {
+            switch (d->Respuesta())
+            {
+            case 1:
+            {
+                qDebug()<<"Suprimir descomposicion";
+                miobra->SuprimirDescomposicion();
+                miobra->EditarPrecio(precio);
+                break;
+            }
+            case 2:
+            {
+                qDebug()<<"Bloquear precio";
+                miobra->BloquearPrecio(precio);
+                break;
+            }
+            case 3:
+            {
+                qDebug()<<"Ajustar";
+                break;
+            }
+            default:
+                return false;
+                break;
+            }
+            emit dataChanged(index, index);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        miobra->EditarPrecio(precio);
+        emit dataChanged(index, index);
+        return true;
+    }
+    return false;
+}
+
+

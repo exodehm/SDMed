@@ -42,12 +42,19 @@ public:
     int FilaVacia();
     void ActualizarDatos();
     bool esColumnaNumerica(int columna) const;
-    void QuitarIndicadorFilaVacia();    
+    void QuitarIndicadorFilaVacia();
+    /***********FUNCIONES DE EDICION**********************************/
+    bool EditarCodigo(const QModelIndex & index, TEXTO codigo);
+    bool EditarResumen(const QModelIndex & index, TEXTO resumen);
+    bool EditarNaturaleza(const QModelIndex & index, int naturaleza);
+    bool EditarCantidad(const QModelIndex & index, float cantidad);
+    bool EditarPrecio(const QModelIndex & index, float precio);
+    bool EditarUnidad(const QModelIndex & index, TEXTO unidad);
 
-signals:
+/*signals:
     void EditarCampoTexto (int, QString);
     void EditarCampoNumerico(int,float);
-    void EditarNaturaleza (int);
+    void EditarNaturaleza (int);*/
 
 private:
     QList <QStringList> datos;

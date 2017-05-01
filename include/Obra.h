@@ -77,6 +77,7 @@ public:
     void EditarTexto (TEXTO textopartida);
     void EditarCantidad (float cantidad);
     void EditarUnidad(int ud);
+    void EditarUnidad(TEXTO ud);
     void EditarNaturaleza (int nat);
     void EditarCertificacionCant(float cantidad);
     void EditarCertificacionPorc(float porcentaje);

@@ -875,6 +875,14 @@ void Obra::EditarUnidad(int ud)
     }
 }
 
+void Obra::EditarUnidad(TEXTO ud)
+{
+    if (!NivelCero())
+    {
+        aristaActual->destino->datonodo.EscribeUd(ud);
+    }
+}
+
 void Obra::EditarNaturaleza (int nat)
 {
     if (!NivelCero())

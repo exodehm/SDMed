@@ -176,8 +176,8 @@ void Concepto::desbloquearPrecio()
 
 void Concepto::EscribeUd(TEXTO ud)
 {
-    /*ud=ud.substr(0,2);
-    U.EscribeUd(ud);*/
+    ud=ud.left(2);
+    U.EscribeUd(ud.toStdString());
 }
 
 void Concepto::EscribeUd(int numUd)

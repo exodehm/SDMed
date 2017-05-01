@@ -39,7 +39,7 @@ void DelegadoEditorNumeros::setModelData(QWidget * editor, QAbstractItemModel * 
     QString dato = mieditor->text();
     dato.replace(",",".");
     model->setData(index,dato,Qt::DisplayRole);
-    model->setData(index,dato,Qt::EditRole);
+    //model->setData(index,dato,Qt::EditRole);
 }
 
 void DelegadoEditorNumeros::paint( QPainter *painter,const QStyleOptionViewItem &option, const QModelIndex &index ) const

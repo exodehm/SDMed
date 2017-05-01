@@ -35,11 +35,13 @@ Unidad::~Unidad()
 
 void Unidad::EscribeUd(int n)
 {
+    std::cout<<"escrbiendo unidad numero"<<n<<std::endl;
     strcpy(unidad,ListaUnidades[n]);
 }
 
 void Unidad::EscribeUd(std::string ud)
 {
+    std::cout<<"escrbiendo unidad"<<std::endl;
     strcpy(unidad,ud.c_str());
 }
 
