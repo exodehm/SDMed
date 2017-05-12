@@ -76,12 +76,12 @@ const TEXTO Concepto::LeeFecha() const
     return QString::fromStdString(fecha.LeeFecha());
 }
 
-const float Concepto::LeeImportePres() const
+float Concepto::LeeImportePres() const
 {
     return Importe[MEDICION].LeePrecio();
 }
 
-const float Concepto::LeeImporteCert() const
+float Concepto::LeeImporteCert() const
 {
     return Importe[CERTIFICACION].LeePrecio();
 }

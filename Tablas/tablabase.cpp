@@ -73,7 +73,16 @@ void TablaBase::Copiar()
 
 void TablaBase::Pegar()
 {
-    qDebug()<<"Pegar";
+    qDebug()<<sender()->parent();
+    TablaBase* tabla = qobject_cast<TablaBase*>(sender()->parent());
+    if (MedicionesModel* mod = qobject_cast<MedicionesModel*>(tabla->model()))
+    {
+        emit PegarMedicion();
+    }
+    else if (PrincipalModel* mod = qobject_cast<PrincipalModel*>(tabla->model()))
+    {
+        emit PegarPartidas();
+    }
 }
 
 void TablaBase::Certificar()

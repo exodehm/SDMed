@@ -48,9 +48,10 @@ public slots:
     void Avanzar();
     void Retroceder();
     void RefrescarVista(QModelIndex indice1, QModelIndex indice2);
-    //void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
+    //void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);    
+    void CopiarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosCopiarPegar);
+    void PegarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosCopiarPegar);
     void CopiarMedicion();
-    void CopiarPartida();
     void PegarMedicion();
     void GuardarBC3(QString fileName);
     /*void InsertarFilaVacia();

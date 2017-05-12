@@ -16,11 +16,21 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
         {
             if (table->selectionModel()->isRowSelected(indice.row(),QModelIndex()))//si hay alguna fila seleccionada
             {
-                table->model()->removeRows(table->selectionModel()->selectedRows().first().row(),table->selectionModel()->selectedRows().size());
-                /*if(table->model()->rowCount(QModelIndex())==0)
+                //table->model()->removeRows(table->selectionModel()->selectedRows().first().row(),table->selectionModel()->selectedRows().size());
+                table->setUpdatesEnabled(false);
+                QModelIndexList indexes = table->selectionModel()->selectedIndexes();
+                QList<int> listaIndices;
+                foreach (QModelIndex i, indexes)
                 {
-                    table->model()->insertRows(0,1);
-                }*/
+                    if (!listaIndices.contains(i.row()))
+                        listaIndices.prepend(i.row());
+                }
+                foreach (int i, listaIndices)
+                {
+                    table->model()->removeRow(i);
+                    qDebug()<<i;
+                }
+                table->setUpdatesEnabled(true);
             }
             else
             {

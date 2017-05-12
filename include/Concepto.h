@@ -38,8 +38,8 @@ public:
     const TEXTO LeeResumen() const;
     const TEXTO LeeUd() const;
     int LeeNUd() const;
-    const float LeeImportePres() const;
-    const float LeeImporteCert() const;
+    float LeeImportePres() const;
+    float LeeImporteCert() const;
     const TEXTO LeeFecha() const;
     const int& LeeNat() const;
     Divisas LeeDivisa() const;

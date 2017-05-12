@@ -7,6 +7,7 @@
 #include <QList>
 #include <QString>
 #include <QStringList>
+#include <QHash>
 #include <QDebug>
 
 #include "Grafo.h"
@@ -21,6 +22,7 @@ class Obra
 public:
 
     typedef std::list<std::pair<pNodo,pArista>> ListaNodosAristas;
+    typedef std::list<std::pair<pArista,pNodo>> ListaAristasNodos;
 
     //Constructor
     Obra();
@@ -41,6 +43,7 @@ public:
     pNodo DefinirConcepto(TEXTO Cod, TEXTO Res="", float precio=0, int ud=0, int nat = Codificacion::Sin_clasificar);
     void CopiarPartida(TEXTO codigo, float cantidad);
     void BorrarPartida();
+    void BorrarPartidas();
     void BorrarPartida(pNodo N);
     void SuprimirDescomposicion();
     void DuplicarPartida(TEXTO codigo);    
@@ -81,8 +84,8 @@ public:
     void EditarNaturaleza (int nat);
     void EditarCertificacionCant(float cantidad);
     void EditarCertificacionPorc(float porcentaje);
-    void Copiar(const std::pair<pArista,pNodo>& dato);
-    void Pegar(std::list<std::pair<pArista,pNodo>>listaNodosACopiar);
+    void Copiar(std::list<std::pair<pArista,pNodo>>&listaNodosACopiar,int inf, int sup);
+    void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar);
     void EditarCodificacion(int n);
     /*****funciones relacionadas con la medicion o certificacion de la partida********/
     void InsertarLineasVaciasMedicion(int pos, int num);
@@ -129,7 +132,7 @@ public:
     const TEXTO LeeCodigoPartida() const;
     const TEXTO LeeCodigoActual() const;
     const TEXTO LeeResumenObra() const;
-    const float LeePrecioObra() const;
+    float LeePrecioObra() const;
     const TEXTO LeeFecha() const;
     void EscribeCodigoObra(TEXTO codigo);
     void EscribeResumenObra(TEXTO resumen);
@@ -140,7 +143,8 @@ public:
 
 private:
     Grafo<datonodo_t,datoarista_t> G;
-    std::map<const TEXTO,pNodo>mapaNodos;
+    //std::map<TEXTO,pNodo>mapaNodos;
+    QHash<TEXTO,pNodo>mapaNodos;
     //elementos auxiliares para moverme por el grafo
     pNodo padre;
     pArista aristaPadre;

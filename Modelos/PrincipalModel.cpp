@@ -249,13 +249,13 @@ bool PrincipalModel::EditarCodigo(const QModelIndex & index, TEXTO codigo)
     {
         qDebug()<<"Insertando codigo en la fila "<<index.row();
         miobra->CrearPartida(codigo,filavacia);
-        hayFilaVacia=false;
     }
     else
     {
         miobra->EditarCodigo(codigo);
     }
     emit dataChanged(index, index);
+    hayFilaVacia=false;
     return true;
 }
 

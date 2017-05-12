@@ -33,7 +33,11 @@ private slots:
     bool ActionGuardar();
     bool ActionGuardarComo();
     void ActionCerrar();
-    void ActionSalir();    
+    void ActionSalir();
+    void ActionCopiar();
+    void ActionPegar();
+    void ActionCortar();
+
     void ActionAdelante();
     void ActionAtras();
     void CambiarObraActual(int indice);
@@ -49,7 +53,7 @@ private:
         //~MetaObra(){delete miobra;}
     };
     std::list<MetaObra>ListaObras;
-    std::list<MetaObra>::iterator obraActual;
+    std::list<MetaObra>::iterator obraActual;    
     QString rutaarchivo;
 
     QStringList recentFiles;
@@ -62,12 +66,14 @@ private:
     bool ConfirmarContinuar();
     void setupActions();
     void AnadirObraAVentanaPrincipal(MetaObra& nuevaobra);
-    bool GuardarObra(QString &nombreFichero);
+    bool GuardarObra(QString nombreFichero);
     //el combo he de annadirlo a mano porque no se puede insertar un widget a una qToolBar desde QtDesigner
     QLabel* label;
     QComboBox* comboMedCert;
 
     QDir ruta;
+
+    std::list<std::pair<pArista,pNodo>>listaNodosCopiarPegar;
 };
 
 #endif // MAINWINDOW_H

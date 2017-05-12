@@ -51,7 +51,8 @@ void Obra::IniciarObra (Concepto conceptoRaiz)
 {
     pNodo primero=new nodo<Concepto,MedCert> (conceptoRaiz);
     G.InsertarHijo(primero,primero, 1);
-    mapaNodos.insert(std::pair<const TEXTO,pNodo>(primero->datonodo.LeeCodigo(),primero));
+    //mapaNodos.insert(std::pair<const TEXTO,pNodo>(primero->datonodo.LeeCodigo(),primero));
+    mapaNodos.insert(primero->datonodo.LeeCodigo(),primero);
     padre=primero;
     aristaPadre=new arista<MedCert,Concepto>(1);//el concepto raiz en principio tiene siempre el valor 1 (una unidad de obra)
     aristaPadre->destino=padre;
@@ -164,7 +165,8 @@ pNodo Obra::DefinirConcepto(TEXTO Cod, TEXTO Res, float precio,int ud, int nat)
     //por ultimo creo el concepto con los datos dados y lo inserto en la obra
     Concepto* NuevoConcepto= new Concepto(Cod,ud, Res,precio,N);
     pNodo nuevoNodo = new nodo<Concepto,MedCert>(*NuevoConcepto);
-    mapaNodos.insert(std::pair<const TEXTO,pNodo>(Cod,nuevoNodo));
+    //mapaNodos.insert(std::pair<const TEXTO,pNodo>(Cod,nuevoNodo));
+    mapaNodos.insert(Cod,nuevoNodo);
     return nuevoNodo;
 }
 
@@ -397,11 +399,11 @@ const QList<QStringList>& Obra::VerActual()
     lineapadre = RellenaLinea(padre, aristaPadre);
     listadoTablaP.append(lineapadre);
 
-    ListaNodosAristas listahijos = G.recorrerHijos(padre);
+    ListaAristasNodos listahijos = G.recorrerHijos(padre);
     QStringList lineahijo;
     for (auto elem:listahijos)
     {
-        lineahijo = RellenaLinea(elem.first, elem.second);
+        lineahijo = RellenaLinea(elem.second, elem.first);
         listadoTablaP.append(lineahijo);
         lineahijo.clear();
     }
@@ -432,16 +434,16 @@ void Obra:: SumarHijos(pNodo n)
         float sumapres=0, sumacert=0;
         float medicion = 0, certificacion = 0;
         float precio = 0;
-        ListaNodosAristas lista = G.recorrerHijos(n);
+        ListaAristasNodos lista = G.recorrerHijos(n);
         for (auto elem : lista)
         {
-            medicion = elem.second->datoarista.LeeMedicion().LeeTotal();
-            certificacion = elem.second->datoarista.LeeCertificacion().LeeTotal();
-            precio = elem.first->datonodo.LeeImportePres();
+            medicion = elem.first->datoarista.LeeMedicion().LeeTotal();
+            certificacion = elem.first->datoarista.LeeCertificacion().LeeTotal();
+            precio = elem.second->datonodo.LeeImportePres();
             qDebug()<<"Cantidad: "<<medicion<<"* Precio: "<<precio;
-            if (elem.first->datonodo.LeeCodigo().contains("%")) //si es un porcentaje
+            if (elem.second->datonodo.LeeCodigo().contains("%")) //si es un porcentaje
             {
-                elem.first->datonodo.EscribeImportePres(sumapres/100.0);
+                elem.second->datonodo.EscribeImportePres(sumapres/100.0);
             }
             sumapres+=precio * medicion;
             sumacert+=precio * certificacion;
@@ -457,9 +459,17 @@ void Obra::BorrarPartida()
     auto it = mapaNodos.find(aristaActual->destino->datonodo.LeeCodigo());
     if (it!=mapaNodos.end())
     {
+        qDebug()<<"Borro el nodo: "<<aristaActual->destino->datonodo.LeeCodigo();
         G.borrarNodos(aristaActual);
     }
-    mapaNodos.erase(aristaActual->destino->datonodo.LeeCodigo());
+    //mapaNodos.erase(aristaActual->destino->datonodo.LeeCodigo());
+    std::list<pNodo> lista = G.recorrerNodos();
+    mapaNodos.clear();
+    for (auto elem : lista)
+    {
+        mapaNodos.insert(elem->datonodo.LeeCodigo(),elem);
+        qDebug()<<"Nodos despues del borrado: "<<elem->datonodo.LeeCodigo();
+    }
     if (padre->adyacente)
     {
         aristaActual=padre->adyacente;
@@ -919,17 +929,38 @@ const float& Obra::LeeTotalMedicion() const
     return aristaPadre->datoarista.LeeMedCer().LeeTotal();
 }
 
-void Obra::Copiar(const std::pair<pArista,pNodo>& dato)
+void Obra::Copiar(std::list<std::pair<pArista,pNodo>>&listaNodosACopiar,int inf, int sup)
 {
-    nodosParaCopiar.clear();
-    nodosParaCopiar.push_back(dato);
+    qDebug()<<inf;
+    qDebug()<<sup;
+    listaNodosACopiar.clear();
+    listaNodosACopiar=G.recorrerHijos(padre);
+    std::list<std::pair<pArista,pNodo>>::iterator it1,it2;
+    it1 = it2 = listaNodosACopiar.begin();
+    advance(it1,inf);
+    advance(it2,sup+1);
+    listaNodosACopiar.erase(listaNodosACopiar.begin(),it1);
+    listaNodosACopiar.erase(it2,listaNodosACopiar.end());
+    for (auto elem : listaNodosACopiar)
+    {
+        qDebug()<<elem.second->datonodo.LeeCodigo();
+    }
 }
 
-void Obra::Pegar(std::list<std::pair<pArista,pNodo>>listaNodosACopiar)
+void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar)
 {
     for (auto elem : listaNodosACopiar)
     {
         G.Copiar(padre,elem.second,elem.first,aristaActual);
+    }
+    std::list<pNodo> lista = G.recorrerNodos();
+    for (auto elem : lista)
+    {
+       if (!mapaNodos.contains(elem->datonodo.LeeCodigo()))
+       {
+           std::cout<<"Meto en el mapa el codigo: "<< elem->datonodo.LeeCodigo().toStdString()<<" del nodo: "<<elem<<std::endl;
+           mapaNodos.insert(elem->datonodo.LeeCodigo(),elem);
+       }
     }
     //aristaActual=padre->adyacente;
     Actualizar(aristaActual->destino);
@@ -995,19 +1026,11 @@ bool Obra::EsPartidaVacia() const
 }
 
 pNodo Obra::existeConcepto(const TEXTO &codigo)
-{
-    /*std::list<pNodo> lista = G.recorrerNodos();
-    for (auto elem:lista)
-    {
-        if (elem->datonodo.LeeCodigo()==codigo)
-        {
-            return elem;
-        }
-    }*/
+{   
     auto it = mapaNodos.find(codigo);
     if (it!=mapaNodos.end())
     {
-        return it->second;
+        return it.value();
     }
     return nullptr;
 }
@@ -1068,7 +1091,7 @@ const TEXTO Obra::LeeResumenObra() const
     return G.LeeRaiz()->datonodo.LeeResumen();
 }
 
-const float Obra::LeePrecioObra() const
+float Obra::LeePrecioObra() const
 {
     return G.LeeRaiz()->datonodo.LeeImportePres();
 }

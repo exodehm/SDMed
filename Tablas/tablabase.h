@@ -47,6 +47,8 @@ signals:
     void CambiaFila(QModelIndex ind);
     void CopiarPartidas();
     void CopiarMedicion();
+    void PegarPartidas();
+    void PegarMedicion();
 
 protected:
     QHeaderView* cabeceraHorizontal;

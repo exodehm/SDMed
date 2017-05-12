@@ -61,7 +61,8 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal->CabeceraDeTabla(),SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
     QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
-    QObject::connect(tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(CopiarPartida()));
+    QObject::connect(tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(CopiarPartidas()));
+    QObject::connect(tablaPrincipal,SIGNAL(PegarPartidas()),this,SLOT(PegarPartidas()));
     QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicion()));
     //QObject::connect(ui->botonPegar,SIGNAL(clicked(bool)),this,SLOT(PegarMedicion()));
     //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
@@ -95,16 +96,7 @@ void InterfazObra::MostrarDeSegun(int indice)
 }
 
 void InterfazObra::SubirNivel()
-{
-    /*EliminarFilasVacias();
-
-    if (guardar.recuperar)
-    {
-        guardar.Arista->nodo_destino->datonodo.EscribePrecio(guardar.precio);
-        qDebug()<<"Poniendo precio: "<<guardar.precio;
-        guardar.recuperar=false;
-        O->Actualizar(guardar.Arista->nodo_destino);
-    }*/
+{   
     tablaPrincipal->clearSelection();
     modeloTablaP->QuitarIndicadorFilaVacia();
     GuardarTextoPartida();
@@ -206,9 +198,25 @@ void InterfazObra::GuardarTextoPartida()
     }
 }
 
+void InterfazObra::CopiarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
+{
+    qDebug()<<"copiar partidas";
+    QItemSelectionModel *selecmodel = tablaPrincipal->selectionModel();
+    QModelIndexList selectedRowsIndexesList = selecmodel->selectedRows();
+    O->Copiar(listaNodosCopiarPegar,selectedRowsIndexesList.first().row(),selectedRowsIndexesList.last().row());
+    selecmodel->clearSelection();
+}
+
+void InterfazObra::PegarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
+{
+    qDebug()<<"Pegar partidas";
+    O->Pegar(listaNodosCopiarPegar);
+    RefrescarVista(QModelIndex(),QModelIndex());
+}
+
 void InterfazObra::CopiarMedicion()
 {
-    qDebug()<<"Copiar medicion interfad";
+    qDebug()<<"Copiar medicion interfaz";
     QItemSelectionModel *selecmodel = tablaMediciones->selectionModel();
     QModelIndexList list = selecmodel->selectedIndexes();
     QString textoACopiar;
@@ -226,11 +234,6 @@ void InterfazObra::CopiarMedicion()
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(textoACopiar);
     tablaMediciones->clearSelection();
-}
-
-void InterfazObra::CopiarPartida()
-{
-    qDebug()<<"copiar partidas";
 }
 
 void InterfazObra::PegarMedicion()

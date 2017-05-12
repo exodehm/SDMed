@@ -4,7 +4,6 @@
 #include <iostream>
 #include <stack>
 #include <list>
-//#include <utility>
 
 #include "arista.h"
 #include "nodo.h"
@@ -50,7 +49,7 @@ public:
     /******funciones para recorrer el grafo*************************/
     std::list<pNodo> recorrerNodos();
     //std::list<pNodo> recorrerHijos(const pNodo& padre);
-    std::list<std::pair<pNodo,pArista>> recorrerHijos(const pNodo& padre);
+    std::list<std::pair<pArista,pNodo>> recorrerHijos(const pNodo& padre);
     std::list<pNodo>& recorrerGrafo(pNodo& inicio);
     std::list<pNodo>& lista_recorrerGrafo(pNodo& inicio);
     std::list<std::pair<pNodo,int>>& recorrerGrafoConNiveles(const pNodo& inicio, int nivel=0);
@@ -294,40 +293,10 @@ void Grafo<datonodo_t,datoarista_t>::eliminarNodo(pNodo& n)
     {
         anterior->siguiente=n->siguiente;
     }
+    std::cout<<"Borrando el nodo: "<<n->datonodo.LeeCodigo().toStdString()<<std::endl;
     delete n;
     nNodos--;
 }
-
-//*****************//
-//añadir una arista//
-//*****************//
-/*template <typename datonodo_t, typename datoarista_t>
-    void Grafo<datonodo_t,datoarista_t>::anadirArista (pNodo& NodoOrigen, pNodo& NodoDestino, pArista& precedente, pArista& NuevaArista)
-    {
-        if (!NodoOrigen->adyacente)//primera arista
-        {
-            NodoOrigen->adyacente=NuevaArista;
-            //std::cout<<"Primera arista"<<std::endl;
-        }
-        else
-        {
-            pArista Aux=NodoOrigen->adyacente;
-            while (Aux!=precedente && Aux->siguiente)
-            {
-                Aux=Aux->siguiente;
-            }
-            NuevaArista->siguiente=Aux->siguiente;
-            if (Aux->siguiente)
-            {
-                Aux->siguiente->anterior=NuevaArista;
-            }
-
-            Aux->siguiente=NuevaArista;
-            NuevaArista->anterior=Aux;
-        }
-        NuevaArista->destino=NodoDestino;
-        NuevaArista->origen=NodoOrigen;
-    }*/
 
 //*******************//
 //eliminar una arista//
@@ -371,7 +340,7 @@ template <typename datonodo_t, typename datoarista_t>
 void Grafo<datonodo_t,datoarista_t>::borrarNodos(pArista& A)
 {
     pNodo hijo=A->destino;
-    //std::cout<<"BORRARR: "<<A->destino->datonodo<<std::endl;
+    std::cout<<"BORRARR: "<<A->destino->datonodo.LeeCodigo().toStdString()<<std::endl;
     //quitar un padre al nodo hijo
     if (hijo->nPadres>0) hijo->nPadres--;
     //si todavía es hijo de algún padre....
@@ -595,11 +564,12 @@ arista<datoarista_t,datonodo_t>* Grafo<datonodo_t,datoarista_t>::hallarArista (p
 template <typename datonodo_t, typename datoarista_t>
 void Grafo<datonodo_t,datoarista_t>::Copiar(pNodo& padre, pNodo& hijo, pArista NuevaArista, pArista& precedente)
 {
-    //std::cout<<"FUNCION COPIAR "<<padre->datonodo<<"-->"<<hijo->datonodo<<std::endl;
+    std::cout<<"FUNCION COPIAR "<<padre->datonodo.LeeCodigo().toStdString()<<"-->"<<hijo->datonodo.LeeCodigo().toStdString()<<std::endl;
     pArista copianuevaarista = nullptr;
     pNodo copiahijo = nullptr;
     if (NuevaArista)
     {
+        std::cout<<"Creo la nueva arista con el valor: "<<NuevaArista->datoarista.LeeMedicion().LeeTotal()<<std::endl;
         copianuevaarista = new t_arista(*NuevaArista);
     }
     else
@@ -610,21 +580,32 @@ void Grafo<datonodo_t,datoarista_t>::Copiar(pNodo& padre, pNodo& hijo, pArista N
     if (!copiahijo)
     {
         copiahijo = new t_nodo(*hijo);
-        guardaAristasParaCopia(hijo);
-        //std::cout<<"copia hijo: "<<copiahijo->datonodo<<std::endl;
+        anadirNodo(copiahijo);
     }
+    guardaAristasParaCopia(hijo);
+    std::cout<<"copia hijo: "<<copiahijo->datonodo.LeeCodigo().toStdString()<<" - "<<copiahijo<<std::endl;
+    //}
     InsertarHijo(padre,copiahijo,copianuevaarista,precedente);
 
     while (!pilaAristasParaCopia.empty())
     {
-        pArista actual = pilaAristasParaCopia.top();
-        pNodo &nieto = actual->destino;
-        //std::cout<<"Nieto es: "<<nieto->datonodo<<std::endl;
+        pArista actual = pilaAristasParaCopia.top();        
+        pNodo nieto = actual->destino;
+        std::cout<<"Nieto es: "<<nieto->datonodo.LeeCodigo().toStdString()<<std::endl;
         pilaAristasParaCopia.pop();
-        //std::cout<<"Copia hijo adyacente: "<<copiahijo->adyacente<<std::endl;
+        std::cout<<"Copia hijo adyacente: "<<copiahijo->adyacente<<std::endl;
         pArista prec = hallarArista(copiahijo,nieto);
+        if(prec)
+            std::cout<<"Arista precedente con valor: "<<prec->datoarista.LeeMedicion().LeeTotal()<<std::endl;
         pNodo repadre = posicionarseEnNodo(actual->origen->datonodo);
-        Copiar(repadre, nieto, actual,prec);
+        std::cout<<"Busco el repadre de actual: "<<actual->origen->datonodo.LeeCodigo().toStdString()<<std::endl;
+        //pNodo repadre = actual->origen;
+        if (repadre)
+        {
+            std::cout<<"Hasta aqui 1 con repadre= "<<repadre->datonodo.LeeCodigo().toStdString()<<std::endl;
+            Copiar(repadre, nieto, actual,prec);
+        }
+        std::cout<<"Hasta aqui 2"<<std::endl;
     }
 }
 
@@ -676,22 +657,22 @@ std::list<nodo<datonodo_t,datoarista_t>*>Grafo<datonodo_t,datoarista_t>::recorre
 //recorre solamente los nodos hijos directos que penden de un nodo padre//
 //**********************************************************************//
 template <typename datonodo_t, typename datoarista_t>
-std::list<std::pair<nodo<datonodo_t,datoarista_t>*, arista<datoarista_t, datonodo_t>*>> Grafo<datonodo_t,datoarista_t>::recorrerHijos(const pNodo& padre)
+std::list<std::pair<arista<datoarista_t, datonodo_t>*,nodo<datonodo_t,datoarista_t>*>> Grafo<datonodo_t,datoarista_t>::recorrerHijos(const pNodo& padre)
 {
-    std::list<std::pair<pNodo, pArista>>hijos;
-    std::pair<pNodo,pArista> aux;
+    std::list<std::pair<pArista,pNodo>>hijos;
+    std::pair<pArista,pNodo> aux;
     if (padre->adyacente!=nullptr)
     {
         pArista A=padre->adyacente;
         while (A->siguiente!=nullptr)
         {
-            aux.first=A->destino;
-            aux.second=A;
+            aux.second=A->destino;
+            aux.first=A;
             hijos.push_back(aux);
             A=A->siguiente;
         }
-        aux.first=A->destino;
-        aux.second=A;
+        aux.second=A->destino;
+        aux.first=A;
         hijos.push_back(aux);
     }
     return hijos;
@@ -1026,7 +1007,9 @@ void Grafo<datonodo_t,datoarista_t>::guardaAristas (pNodo& n)
 template <typename datonodo_t, typename datoarista_t>
 void Grafo<datonodo_t,datoarista_t>::guardaAristasParaCopia(pNodo& n)
 {
+    VaciarPila(pilaAristasParaCopia);
     pArista A;
+    //std::cout<<"Guardando las aristas del nodo: "<<n->datonodo.LeeCodigo().toStdString()<<std::endl;
 
     if (n && n->adyacente) //si hay aristas
     {
@@ -1036,15 +1019,13 @@ void Grafo<datonodo_t,datoarista_t>::guardaAristasParaCopia(pNodo& n)
         {
             A=A->siguiente;
         }
-        //empiezo el recorrido hacia atrás
         while (A->anterior!=nullptr)
         {
             pilaAristasParaCopia.push (A); //meto la arista en la pila
-            //std::cout<<"MEto la arista de :"<<A->destino->datonodo<<std::endl;
             A=A->anterior;
         }
-        pilaAristasParaCopia.push (A); //meto la primera arista en la pila*/
-        //std::cout<<"MEto la arista de :"<<A->destino->datonodo<<std::endl;
+        pilaAristasParaCopia.push (A); //meto la arista en la pila
+        //std::cout<<"MEto la arista de :"<<A->destino->datonodo.LeeCodigo().toStdString()<<std::endl;
     }
 }
 
@@ -1086,10 +1067,12 @@ void Grafo<datonodo_t,datoarista_t>::guardaAristasNivel (const pNodo& n, int niv
 template <typename DATON, typename DATOA>
 nodo<DATON,DATOA>* Grafo<DATON,DATOA>::posicionarseEnNodo(datonodo_t dato)
 {
+    std::cout<<"Buscando el nodo con codigo: "<<dato.LeeCodigo().toStdString()<<std::endl;
     pNodo indice=Raiz;
 
     while (indice && indice->siguiente)
     {
+        std::cout<<"Nodo a comparar: "<<indice->datonodo.LeeCodigo().toStdString()<<std::endl;
         if (indice->datonodo == dato)
         {
             return indice;
@@ -1099,6 +1082,7 @@ nodo<DATON,DATOA>* Grafo<DATON,DATOA>::posicionarseEnNodo(datonodo_t dato)
             indice=indice->siguiente;
         }
     }
+    std::cout<<"Ultimo nodo a comparar: "<<indice->datonodo.LeeCodigo().toStdString()<<std::endl;
     if (indice->datonodo==dato)
     {
         return indice;

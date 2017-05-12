@@ -687,6 +687,9 @@
    <property name="text">
     <string>Copiar</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
   </action>
   <action name="actionCortar">
    <property name="icon">
@@ -696,6 +699,9 @@
    <property name="text">
     <string>Cortar</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
   </action>
   <action name="actionPegar">
    <property name="icon">
@@ -704,6 +710,9 @@
    </property>
    <property name="text">
     <string>Pegar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="actionMover">

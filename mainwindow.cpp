@@ -98,20 +98,34 @@ bool MainWindow::ActionGuardar()
 
 bool MainWindow::ActionGuardarComo()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Guardar Obra"), ".",
-                                                    tr("Archivos BC3 (*.bc3);;Archivos SDM (*.sdm)"));
-    if (fileName.isEmpty())
+    QFileDialog d(this,tr("Guardar fichero"),QDir::homePath(),tr("Archivos BC3 (*.bc3);;Archivos SDM (*.sdm)"));
+    if (d.exec())
     {
-        return false;
+        QString fileName = d.selectedFiles()[0];
+        if (fileName.isEmpty())
+        {
+            return false;
+        }
+        else
+        {
+            QString extension = d.selectedNameFilter();
+            extension = extension.right(5);
+            extension = extension.left(4);
+            if (fileName.right(4)==".bc3" || fileName.right(4)==".sdm")
+            {
+                fileName=fileName.left(fileName.size()-4);
+            }
+            return GuardarObra(fileName + extension);
+        }
     }
-    return GuardarObra(fileName);
+    return false;
 }
 
-bool MainWindow::GuardarObra(QString &nombreFichero)
+bool MainWindow::GuardarObra(QString nombreFichero)
 {
     qDebug()<<"Nombrefichero: "<<nombreFichero;
     QString extension = nombreFichero.right(4);
+    qDebug()<<"La extension del archivo a guardar es "<<extension;
     obraActual->nombrefichero=nombreFichero;
     if (extension == ".bc3" || extension == ".BC3")
     {
@@ -124,7 +138,7 @@ bool MainWindow::GuardarObra(QString &nombreFichero)
         qDebug()<<"Guardando en formato SDM";
         return true;
     }
-    return true;
+    return false;
 }
 
 void MainWindow::ActionCerrar()
@@ -174,10 +188,35 @@ QString MainWindow::strippedName(const QString &fullFileName)
     return QFileInfo(fullFileName).fileName();
 }
 
-
 void MainWindow::ActionSalir()
 {
 
+}
+
+void MainWindow::ActionCopiar()
+{
+    QWidget* w = qApp->focusWidget();
+    qDebug()<<w->metaObject()->className();
+    if (strcmp(w->metaObject()->className(),"TablaPrincipal")==0)
+    {
+        qDebug()<<"Copiar partidas";
+        obraActual->miobra->CopiarPartidas(listaNodosCopiarPegar);
+    }
+    if (strcmp(w->metaObject()->className(),"TablaMedCert")==0)
+    {
+        qDebug()<<"Copiar medicion";
+    }
+}
+
+void MainWindow::ActionPegar()
+{
+    qDebug()<<"Accion Pegar";
+    obraActual->miobra->PegarPartidas(listaNodosCopiarPegar);
+}
+
+void MainWindow::ActionCortar()
+{
+    qDebug()<<"Accion Cortar";
 }
 
 void MainWindow::ActionAdelante()
@@ -220,6 +259,9 @@ void MainWindow::setupActions()
     QObject::connect(ui->actionGuardar,SIGNAL(triggered(bool)),this,SLOT(ActionGuardar()));
     QObject::connect(ui->actionGuardar_como,SIGNAL(triggered(bool)),this,SLOT(ActionGuardarComo()));
     QObject::connect(ui->action_Salir, SIGNAL(triggered(bool)),qApp, SLOT(quit()));
+    QObject::connect(ui->actionCopiar,SIGNAL(triggered(bool)),this,SLOT(ActionCopiar()));
+    QObject::connect(ui->actionCortar,SIGNAL(triggered(bool)),this,SLOT(ActionCortar()));
+    QObject::connect(ui->actionPegar,SIGNAL(triggered(bool)),this,SLOT(ActionPegar()));
     QObject::connect(ui->tabPrincipal,SIGNAL(currentChanged(int)),this,SLOT(CambiarObraActual(int)));
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
