@@ -66,10 +66,10 @@ Obra*  AbrirGuardarBC3::Leer(TEXTO nombrefichero)
     t_fin = clock();
     secs = (double)(t_fin - t_ini) / CLOCKS_PER_SEC;
     qDebug()<<"Procesadas las relaciones en: "<<secs<<" segundos";
-    /*procesarConceptos(obra,registroC);
+    procesarConceptos(obra,registroC);
     qDebug()<<"Procesados los conceptos";
     procesarTexto(obra,registroT);
-    qDebug()<<"Procesados los textos";*/
+    qDebug()<<"Procesados los textos";
     fichero.close();
     return obra;
 }
@@ -111,12 +111,12 @@ void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, const QString &linea, QSt
     for (int i=0; i<nHijos; i++)
     {
         //qDebug()<<"Vuelta "<<i<<nHijos<<" - "<<relaciones.size()<<"Num hjijos: "<<nHijos;
-        qDebug()<<"Padre: "<<padre<<" - "<<"Hijo: "<<registros[0];
         for (int j=0;j<3;j++)
         {
             registros[j] = relaciones.first();
             relaciones.pop_front();
         }
+        //qDebug()<<"Padre: "<<padre<<" - "<<"Hijo: "<<registros[0];
         float cant =  registros[2].toFloat();
         MedCert medi = procesarMediciones(registroM, padre, registros[0]);//registros[0]==nombrehijo
         if (medi.hayMedCert())

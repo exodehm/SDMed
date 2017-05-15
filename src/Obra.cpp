@@ -133,7 +133,7 @@ pNodo Obra::DefinirConcepto(TEXTO Cod, TEXTO Res, float precio,int ud, int nat)
     {
         ud=Unidad::porcentaje;
         N=Codificacion::Sin_clasificar;
-        std::cin.ignore(100,'\n');
+        //std::cin.ignore(100,'\n');
         precio=padre->datonodo.LeeImportePres()/100;
     }
     else //si no lo es
