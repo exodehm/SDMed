@@ -256,6 +256,7 @@ bool PrincipalModel::EditarCodigo(const QModelIndex & index, TEXTO codigo)
     }
     emit dataChanged(index, index);
     hayFilaVacia=false;
+    emit dataChanged(index, index);//repito la orden una vez quitada la fila vacia para eliminar la fila sobrante
     return true;
 }
 

@@ -148,12 +148,13 @@ void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
 {
     Q_UNUSED (indice1);
     Q_UNUSED (indice2);
+
+    modeloTablaP->ActualizarDatos();
+    modeloTablaMC->ActualizarDatos();
     if (modeloTablaP->rowCount(QModelIndex())==0)
     {
         modeloTablaP->insertRow(0);
-    }    
-    modeloTablaP->ActualizarDatos();
-    modeloTablaMC->ActualizarDatos();    
+    }
     //O->MostrarHijos();
     EscribirTexto();
     //MostrarTexto();
@@ -211,6 +212,7 @@ void InterfazObra::PegarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodos
 {
     qDebug()<<"Pegar partidas";
     O->Pegar(listaNodosCopiarPegar);
+    modeloTablaP->QuitarIndicadorFilaVacia();
     RefrescarVista(QModelIndex(),QModelIndex());
 }
 

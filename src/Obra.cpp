@@ -962,7 +962,7 @@ void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar)
            mapaNodos.insert(elem->datonodo.LeeCodigo(),elem);
        }
     }
-    //aristaActual=padre->adyacente;
+    aristaActual=padre->adyacente;
     Actualizar(aristaActual->destino);
     std::cout<<"Implementando el pegado"<<std::endl;
 }

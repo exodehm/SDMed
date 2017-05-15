@@ -293,7 +293,7 @@ void Grafo<datonodo_t,datoarista_t>::eliminarNodo(pNodo& n)
     {
         anterior->siguiente=n->siguiente;
     }
-    std::cout<<"Borrando el nodo: "<<n->datonodo.LeeCodigo().toStdString()<<std::endl;
+    //std::cout<<"Borrando el nodo: "<<n->datonodo.LeeCodigo().toStdString()<<std::endl;
     delete n;
     nNodos--;
 }
@@ -348,7 +348,7 @@ void Grafo<datonodo_t,datoarista_t>::borrarNodos(pArista& A)
     if (hijo->nPadres)
     {
         //...me limito a borrar la arista que une al padre con el hijo
-        std::cout<<"Eliminar arista A"<<std::endl;
+        //std::cout<<"Eliminar arista A"<<std::endl;
         eliminarArista(A);
     }
     else //si se queda huerfanito
@@ -357,13 +357,13 @@ void Grafo<datonodo_t,datoarista_t>::borrarNodos(pArista& A)
         if (!hijo->adyacente)
         {
             //me posiciono en la arista a borrar
-            std::cout<<"Es hoja---"<<std::endl;
+            //std::cout<<"Es hoja---"<<std::endl;
             eliminarArista(A);
             eliminarNodo(hijo);//lo saco de la lista general de nodos
         }
         else
         {
-            std::cout<<"El caso mas chungo"<<std::endl;
+            //std::cout<<"El caso mas chungo"<<std::endl;
             guardaAristas(hijo);
             eliminarArista(A);
             eliminarNodo(hijo);
@@ -380,9 +380,9 @@ void Grafo<datonodo_t,datoarista_t>::borrarNodos(pArista& A)
 template <typename datonodo_t, typename datoarista_t>
 void Grafo<datonodo_t,datoarista_t>:: borrarNodos(pNodo& padre, pNodo& hijo)
 {
-    std::cout<<"BORRARR V2: "<<padre->datonodo<<"->"<<hijo->datonodo<<std::endl;
+    //std::cout<<"BORRARR V2: "<<padre->datonodo<<"->"<<hijo->datonodo<<std::endl;
     pArista A = hallarPrecedente(padre,hijo);
-    std::cout<<"Arista padre-hijo: "<<A->datoarista<<"->"<<A->destino->datonodo<<std::endl;
+    //std::cout<<"Arista padre-hijo: "<<A->datoarista<<"->"<<A->destino->datonodo<<std::endl;
     //quitar un padre al nodo hijo
     if (hijo->nPadres>0) hijo->nPadres--;
     //si todavía es hijo de algún padre....
@@ -451,8 +451,8 @@ void Grafo<datonodo_t,datoarista_t>::Insertar(pNodo& padre, pNodo& hijo, pArista
         A=padre->adyacente;
         for (int i=0;i<posicion-1;i++)
         {
-            std::cout<<"i: "<<i<<std::endl;
-            std::cout<<A->destino->datonodo.LeeCodigo().toStdString()<<std::endl;
+            //std::cout<<"i: "<<i<<std::endl;
+            //std::cout<<A->destino->datonodo.LeeCodigo().toStdString()<<std::endl;
             A=A->siguiente;
         }
     }
