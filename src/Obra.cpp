@@ -468,7 +468,7 @@ void Obra::BorrarPartida()
     for (auto elem : lista)
     {
         mapaNodos.insert(elem->datonodo.LeeCodigo(),elem);
-        qDebug()<<"Nodos despues del borrado: "<<elem->datonodo.LeeCodigo();
+        qDebug()<<"Insertar en el mapa el nodo: "<<elem->datonodo.LeeCodigo();
     }
     if (padre->adyacente)
     {
