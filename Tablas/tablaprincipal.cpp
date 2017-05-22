@@ -42,9 +42,13 @@ void TablaPrincipal::MostrarMenuCabecera(QPoint pos)
 void TablaPrincipal::MostrarMenuLateralTabla(QPoint pos)
 {
     QMenu *menu=new QMenu(this);
-    QAction *AccionCopiar = new QAction("Copiar", this);
-    QAction *AccionPegar = new QAction("Pegar", this);
-    //AccionPegar->setEnabled(false);
+    QAction *AccionCopiar = new QAction(tr("Copiar partidas"), this);
+    QAction *AccionPegar = new QAction(tr("Pegar partidas"), this);
+    QModelIndexList indexes = this->selectionModel()->selectedIndexes();
+    if (indexes.size()==0)
+    {
+        AccionCopiar->setEnabled(false);
+    }
     menu->addAction(AccionCopiar);
     menu->addAction(AccionPegar);
     /*copiar*/

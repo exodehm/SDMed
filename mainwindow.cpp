@@ -49,6 +49,7 @@ void MainWindow::ActionAbrir()
         NuevaObra.nombrefichero = nombrefichero;
         NuevaObra.miobra = new InterfazObra(nombrefichero);
         AnadirObraAVentanaPrincipal(NuevaObra);
+
     }
     ruta.setPath(nombrefichero);
     rutaarchivo=ruta.canonicalPath();
@@ -57,13 +58,15 @@ void MainWindow::ActionAbrir()
 
 void MainWindow::AnadirObraAVentanaPrincipal(MetaObra &nuevaobra)
 {
+    QObject::connect(nuevaobra.miobra,SIGNAL(CopiarP()),this,SLOT(ActionCopiar()));
+    QObject::connect(nuevaobra.miobra,SIGNAL(PegarP()),this,SLOT(ActionPegar()));
     ui->tabPrincipal->addTab(nuevaobra.miobra,nuevaobra.miobra->LeeObra()->LeeResumenObra());
     ui->tabPrincipal->setCurrentIndex(ui->tabPrincipal->currentIndex()+1);
     ListaObras.push_back(nuevaobra);
     obraActual=ListaObras.begin();
     std::advance(obraActual,ListaObras.size()-1);
     QString leyenda = QString(tr("Creada la obra %1").arg(obraActual->miobra->LeeObra()->LeeResumenObra()));
-    statusBar()->showMessage(leyenda,5000);    
+    statusBar()->showMessage(leyenda,5000);
 }
 
 void MainWindow::CambiarObraActual(int indice)
@@ -266,4 +269,5 @@ void MainWindow::setupActions()
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
     QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarMedCert(int)));
+    //QObject::connect(NuevaObra.miobra->tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(ActionCopiar()));
 }

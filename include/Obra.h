@@ -84,8 +84,8 @@ public:
     void EditarNaturaleza (int nat);
     void EditarCertificacionCant(float cantidad);
     void EditarCertificacionPorc(float porcentaje);
-    void Copiar(std::list<std::pair<pArista,pNodo>>&listaNodosACopiar,int inf, int sup);
-    void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar);
+    void Copiar(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, const QList<int> &listaIndices);
+    void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar, bool ultimafila = false);
     void EditarCodificacion(int n);
     /*****funciones relacionadas con la medicion o certificacion de la partida********/
     void InsertarLineasVaciasMedicion(int pos, int num);

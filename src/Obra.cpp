@@ -811,7 +811,6 @@ bool Obra::esPrecioBloqueado()
 
 void Obra::EditarPrecio(float precio)
 {
-    //std::cout<<"Poniendo al nodo: "<<aristaActual->destino->datonodo.LeeCodigo()<<" el precio de "<<precio<<std::endl;
     aristaActual->destino->datonodo.EscribePrecio(precio);
     Actualizar(aristaActual->destino);
 }
@@ -929,29 +928,39 @@ const float& Obra::LeeTotalMedicion() const
     return aristaPadre->datoarista.LeeMedCer().LeeTotal();
 }
 
-void Obra::Copiar(std::list<std::pair<pArista,pNodo>>&listaNodosACopiar,int inf, int sup)
+void Obra::Copiar(std::list<std::pair<pArista, pNodo> > &listaNodosSeleccionados, const QList<int> &listaIndices)
 {
-    qDebug()<<inf;
-    qDebug()<<sup;
-    listaNodosACopiar.clear();
-    listaNodosACopiar=G.recorrerHijos(padre);
-    std::list<std::pair<pArista,pNodo>>::iterator it1,it2;
-    it1 = it2 = listaNodosACopiar.begin();
-    advance(it1,inf);
-    advance(it2,sup+1);
-    listaNodosACopiar.erase(listaNodosACopiar.begin(),it1);
-    listaNodosACopiar.erase(it2,listaNodosACopiar.end());
-    for (auto elem : listaNodosACopiar)
+    std::list<std::pair<pArista,pNodo>>listaNodos=G.recorrerHijos(padre);
+    auto iterator = listaNodos.begin();
+    for (auto elem:listaIndices)
+    {
+        qDebug()<<"Numero de fila: "<<elem;
+        std::advance(iterator,elem);
+        listaNodosSeleccionados.push_back(*iterator);
+        iterator = listaNodos.begin();
+    }
+    for (auto elem : listaNodosSeleccionados)
     {
         qDebug()<<elem.second->datonodo.LeeCodigo();
     }
 }
 
-void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar)
+void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar, bool ultimafila)
 {
+    pArista A = aristaActual;
+    bool NoHayHijos=false;
+    if (!padre->adyacente)
+    {
+        NoHayHijos=true;
+    }
+    if (padre->adyacente && ultimafila)
+    {
+        qDebug()<<"Pego al final del todo wey";
+        A=A->siguiente;//si estoy en el caso de la ultima fila me posiciono detrás de la aristaActual para copiar despues de ella, no antes
+    }
     for (auto elem : listaNodosACopiar)
     {
-        G.Copiar(padre,elem.second,elem.first,aristaActual);
+        G.Copiar(padre,elem.second,elem.first,A);
     }
     std::list<pNodo> lista = G.recorrerNodos();
     for (auto elem : lista)
@@ -962,7 +971,10 @@ void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar)
            mapaNodos.insert(elem->datonodo.LeeCodigo(),elem);
        }
     }
-    aristaActual=padre->adyacente;
+    if (NoHayHijos)
+    {
+        aristaActual=padre->adyacente;
+    }
     Actualizar(aristaActual->destino);
     std::cout<<"Implementando el pegado"<<std::endl;
 }

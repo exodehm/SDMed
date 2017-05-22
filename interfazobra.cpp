@@ -61,8 +61,8 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal->CabeceraDeTabla(),SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
     QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
-    QObject::connect(tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(CopiarPartidas()));
-    QObject::connect(tablaPrincipal,SIGNAL(PegarPartidas()),this,SLOT(PegarPartidas()));
+    QObject::connect(tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(CopiarPartidasTablaP()));
+    QObject::connect(tablaPrincipal,SIGNAL(PegarPartidas()),this,SLOT(PegarPartidasTablaP()));
     QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicion()));
     //QObject::connect(ui->botonPegar,SIGNAL(clicked(bool)),this,SLOT(PegarMedicion()));
     //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
@@ -199,19 +199,44 @@ void InterfazObra::GuardarTextoPartida()
     }
 }
 
+void InterfazObra::CopiarPartidasTablaP()
+{
+    emit CopiarP();
+}
+
 void InterfazObra::CopiarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
 {
     qDebug()<<"copiar partidas";
+    listaNodosCopiarPegar.clear();
     QItemSelectionModel *selecmodel = tablaPrincipal->selectionModel();
-    QModelIndexList selectedRowsIndexesList = selecmodel->selectedRows();
-    O->Copiar(listaNodosCopiarPegar,selectedRowsIndexesList.first().row(),selectedRowsIndexesList.last().row());
+    QModelIndexList selectedRowsIndexesList = selecmodel->selectedIndexes();
+    QList<int> listaIndices;
+    foreach (const QModelIndex &i, selectedRowsIndexesList)
+    {
+        if (!listaIndices.contains(i.row()))
+            listaIndices.append(i.row());
+    }
+    qSort(listaIndices);
+    O->Copiar(listaNodosCopiarPegar, listaIndices);
     selecmodel->clearSelection();
+}
+
+void InterfazObra::PegarPartidasTablaP()
+{
+    emit PegarP();
 }
 
 void InterfazObra::PegarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
 {
     qDebug()<<"Pegar partidas";
-    O->Pegar(listaNodosCopiarPegar);
+    QModelIndex indice = tablaPrincipal->currentIndex();
+    qDebug()<<indice.row();
+    bool insertarAlFinal=false;
+    if (modeloTablaP->HayFilaVacia() && indice.row()==modeloTablaP->FilaVacia())
+    {
+        insertarAlFinal=true;
+    }
+    O->Pegar(listaNodosCopiarPegar, insertarAlFinal);
     modeloTablaP->QuitarIndicadorFilaVacia();
     RefrescarVista(QModelIndex(),QModelIndex());
 }
