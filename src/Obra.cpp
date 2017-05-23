@@ -58,6 +58,7 @@ void Obra::IniciarObra (Concepto conceptoRaiz)
     aristaPadre->destino=padre;
     pilaAristas.push(aristaPadre);
     aristaActual=nullptr;
+    CI=1.10;
 }
 
 void Obra::CrearPartida (TEXTO CodPadre, float cantidad, TEXTO CodHijo)
@@ -426,20 +427,24 @@ const QList<QStringList>& Obra::VerMedCert()
     return listadoTablaMC;
 }
 
-void Obra:: SumarHijos(pNodo n)
+void Obra:: SumarHijos(pNodo padre)
 {
-    if (n->adyacente)
+    if (padre->adyacente)
     {
         //std::cout<<"Sumando hijos de "<<n->datonodo.LeeCodigo()<<std::endl;
         float sumapres=0, sumacert=0;
         float medicion = 0, certificacion = 0;
         float precio = 0;
-        ListaAristasNodos lista = G.recorrerHijos(n);
+        ListaAristasNodos lista = G.recorrerHijos(padre);
         for (auto elem : lista)
         {
             medicion = elem.first->datoarista.LeeMedicion().LeeTotal();
             certificacion = elem.first->datoarista.LeeCertificacion().LeeTotal();
-            precio = elem.second->datonodo.LeeImportePres();
+            precio = elem.second->datonodo.LeeImportePres();           
+            if (NivelUno(padre))
+            {
+                precio*=CI;
+            }
             qDebug()<<"Cantidad: "<<medicion<<"* Precio: "<<precio;
             if (elem.second->datonodo.LeeCodigo().contains("%")) //si es un porcentaje
             {
@@ -448,8 +453,8 @@ void Obra:: SumarHijos(pNodo n)
             sumapres+=precio * medicion;
             sumacert+=precio * certificacion;
         }
-        n->datonodo.EscribeImportePres(sumapres);
-        n->datonodo.EscribeImporteCert(sumacert);
+        padre->datonodo.EscribeImportePres(sumapres);
+        padre->datonodo.EscribeImporteCert(sumacert);
     }
 }
 
@@ -1066,11 +1071,28 @@ bool Obra::NivelCero() const
     return padre==G.LeeRaiz();
 }
 
-bool Obra::NivelUno() const
+bool Obra::NivelUno()
 {
-    if (G.LeeRaiz()->adyacente)
+    if (pilaAristas.size()>1)
     {
-        if (padre==G.LeeRaiz()->adyacente->destino)
+        pArista A = pilaAristas.top();//guardo la arista de la pila
+        pilaAristas.pop();
+        pArista anterior=pilaAristas.top();
+        pilaAristas.push(A);//la vuelvo a meter
+        if (anterior->destino==G.LeeRaiz())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Obra::NivelUno(pNodo nodo)
+{
+    std::list<std::pair<pArista,pNodo>>lista = G.recorrerHijos(G.LeeRaiz());
+    for (auto elem : lista)
+    {
+        if (elem.second==nodo)
         {
             return true;
         }
@@ -1141,12 +1163,30 @@ QStringList Obra::RellenaLinea(pNodo nodo,pArista arista)
     linea.append(QString::number((arista->datoarista.LeeCertificacion().LeeTotal()/arista->datoarista.LeeMedicion().LeeTotal())*100,'f',2));//porcentaje certificado
     linea.append(QString::number(nodo->datonodo.LeeImportePres(),'f',3));               //precio de la medicion
     linea.append(QString::number(nodo->datonodo.LeeImporteCert(),'f',3));               //precio de la certificacion
-    linea.append(nodo->datonodo.LeeImportePres()==0
+    /*linea.append(nodo->datonodo.LeeImportePres()==0
                 ? QString::number(nodo->datonodo.LeeImportePres()*1,'f',3)
-                : QString::number(nodo->datonodo.LeeImportePres()*arista->datoarista.LeeMedicion().LeeTotal(),'f',3));
+                : QString::number(nodo->datonodo.LeeImportePres()*arista->datoarista.LeeMedicion().LeeTotal(),'f',3));*/
+    linea.append(CalculaCantidad(nodo,arista));
     linea.append(nodo->datonodo.LeeImporteCert()==0
                 ? QString::number(nodo->datonodo.LeeImporteCert()*1,'f',3)
                 : QString::number(nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal(),'f',3));
 
     return linea;
+}
+
+TEXTO Obra::CalculaCantidad(pNodo n, pArista A)
+{
+    if (n->datonodo.LeeImportePres()==0)
+    {
+        return QString::number(n->datonodo.LeeImportePres()*1,'f',3);
+    }
+    else
+    {
+        float factor=1;
+        if (NivelUno(/*A->destino*/)&& A!=aristaPadre)
+        {
+            factor=CI;//para reflejar el coste indirecto en la columna ImpPres
+        }
+        return QString::number(n->datonodo.LeeImportePres()*A->datoarista.LeeMedicion().LeeTotal()*factor,'f',3);
+    }
 }

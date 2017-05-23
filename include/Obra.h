@@ -125,7 +125,8 @@ public:
     pNodo existeConcepto(const TEXTO& codigo);
     bool existeHermano(const TEXTO& codigo);
     bool NivelCero() const;
-    bool NivelUno() const;
+    bool NivelUno();
+    bool NivelUno(pNodo nodo);
     bool EsPartida();
     /************************Codigo y Resumen de la obra*************/
     const TEXTO LeeCodigoObra() const;
@@ -139,11 +140,11 @@ public:
     void EscribeRaiz(TEXTO nombreRaiz);
     /*************************auxiliar crear tabla*********************/
     QStringList RellenaLinea(pNodo nodo, pArista arista);
+    TEXTO CalculaCantidad(pNodo n, pArista A);
 
 
 private:
     Grafo<datonodo_t,datoarista_t> G;
-    //std::map<TEXTO,pNodo>mapaNodos;
     QHash<TEXTO,pNodo>mapaNodos;
     //elementos auxiliares para moverme por el grafo
     pNodo padre;
@@ -164,6 +165,7 @@ private:
     //Listados para tablas;
     QList<QStringList> listadoTablaP;
     QList<QStringList> listadoTablaMC;
+    float CI;//Costes Indirectos
 
     friend class AbrirGuardarBC3;    
 };
