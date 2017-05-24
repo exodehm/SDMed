@@ -193,6 +193,7 @@ bool PrincipalModel::removeRows(int filaInicial, int numFilas, const QModelIndex
         insertRow(0);
     }
     endRemoveRows();
+    layoutChanged();
     return true;
 }
 

@@ -15,6 +15,7 @@ Medicion::Medicion (const Medicion& origen)
 
 Medicion::~Medicion()
 {
+    BorrarMedicion();
     //std::cout<<"Borrada Medicion"<<std::endl;
     //m=std::list<LineaMedicion>();?
 }
@@ -248,6 +249,13 @@ const float& Medicion::LeeTotal ()const
 const LineaMedicion Medicion::LeeActual() const
 {
     return (*actual);
+}
+
+LineaMedicion Medicion::LeeLineaEnPosicion(int pos) const
+{
+    auto iterator = lm.begin();
+    std::advance (iterator,pos);
+    return *iterator;
 }
 
 void Medicion::EscribeTotal (float cantidad)

@@ -126,7 +126,8 @@ bool MedicionesModel::removeRows(int filaInicial, int numFilas, const QModelInde
     miobra->BorrarLineasMedicion(filaInicial,numFilas);    
     ActualizarDatos();
     endRemoveRows();
-	return true;
+    layoutChanged();
+    return true;
 }
 
 bool MedicionesModel::filaVacia(const QStringList& linea)

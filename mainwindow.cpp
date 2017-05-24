@@ -60,6 +60,8 @@ void MainWindow::AnadirObraAVentanaPrincipal(MetaObra &nuevaobra)
 {
     QObject::connect(nuevaobra.miobra,SIGNAL(CopiarP()),this,SLOT(ActionCopiar()));
     QObject::connect(nuevaobra.miobra,SIGNAL(PegarP()),this,SLOT(ActionPegar()));
+    QObject::connect(nuevaobra.miobra,SIGNAL(CopiarM()),this,SLOT(ActionCopiar()));
+    QObject::connect(nuevaobra.miobra,SIGNAL(PegarM()),this,SLOT(ActionPegar()));
     ui->tabPrincipal->addTab(nuevaobra.miobra,nuevaobra.miobra->LeeObra()->LeeResumenObra());
     ui->tabPrincipal->setCurrentIndex(ui->tabPrincipal->currentIndex()+1);
     ListaObras.push_back(nuevaobra);
@@ -202,19 +204,26 @@ void MainWindow::ActionCopiar()
     qDebug()<<w->metaObject()->className();
     if (strcmp(w->metaObject()->className(),"TablaPrincipal")==0)
     {
-        qDebug()<<"Copiar partidas";
-        obraActual->miobra->CopiarPartidas(listaNodosCopiarPegar);
+        obraActual->miobra->CopiarPartidas(ListaNodosCopiarPegar);
     }
     if (strcmp(w->metaObject()->className(),"TablaMedCert")==0)
     {
-        qDebug()<<"Copiar medicion";
+        obraActual->miobra->CopiarMedicion(ListaMedicionCopiarPegar);
     }
 }
 
 void MainWindow::ActionPegar()
 {
-    qDebug()<<"Accion Pegar";
-    obraActual->miobra->PegarPartidas(listaNodosCopiarPegar);
+    QWidget* w = qApp->focusWidget();
+    qDebug()<<w->metaObject()->className();
+    if (strcmp(w->metaObject()->className(),"TablaPrincipal")==0)
+    {
+       obraActual->miobra->PegarPartidas(ListaNodosCopiarPegar);
+    }
+    if (strcmp(w->metaObject()->className(),"TablaMedCert")==0)
+    {
+        obraActual->miobra->PegarMedicion(ListaMedicionCopiarPegar);
+    }
 }
 
 void MainWindow::ActionCortar()
@@ -268,6 +277,5 @@ void MainWindow::setupActions()
     QObject::connect(ui->tabPrincipal,SIGNAL(currentChanged(int)),this,SLOT(CambiarObraActual(int)));
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
-    QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarMedCert(int)));
-    //QObject::connect(NuevaObra.miobra->tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(ActionCopiar()));
+    QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarMedCert(int)));    
 }

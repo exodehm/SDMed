@@ -72,8 +72,9 @@ private:
     QComboBox* comboMedCert;
 
     QDir ruta;
-
-    std::list<std::pair<pArista,pNodo>>listaNodosCopiarPegar;
+    //listas para copiar y pegar
+    std::list<std::pair<pArista,pNodo>>ListaNodosCopiarPegar;
+    Medicion ListaMedicionCopiarPegar;
 };
 
 #endif // MAINWINDOW_H

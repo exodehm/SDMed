@@ -63,8 +63,8 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(CopiarPartidasTablaP()));
     QObject::connect(tablaPrincipal,SIGNAL(PegarPartidas()),this,SLOT(PegarPartidasTablaP()));
-    QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicion()));
-    //QObject::connect(ui->botonPegar,SIGNAL(clicked(bool)),this,SLOT(PegarMedicion()));
+    QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicionTablaM()));
+    QObject::connect(tablaMediciones,SIGNAL(PegarMedicion()),this,SLOT(PegarMedicionTablaM()));
     //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
     QObject::connect(modeloTablaP, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
     QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
@@ -204,12 +204,17 @@ void InterfazObra::CopiarPartidasTablaP()
     emit CopiarP();
 }
 
+void InterfazObra::CopiarMedicionTablaM()
+{
+    emit CopiarM();
+}
+
 void InterfazObra::CopiarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
 {
-    qDebug()<<"copiar partidas";
     listaNodosCopiarPegar.clear();
     QItemSelectionModel *selecmodel = tablaPrincipal->selectionModel();
     QModelIndexList selectedRowsIndexesList = selecmodel->selectedIndexes();
+    CopiarPartidasPortapapeles(selectedRowsIndexesList);
     QList<int> listaIndices;
     foreach (const QModelIndex &i, selectedRowsIndexesList)
     {
@@ -217,8 +222,40 @@ void InterfazObra::CopiarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodo
             listaIndices.append(i.row());
     }
     qSort(listaIndices);
-    O->Copiar(listaNodosCopiarPegar, listaIndices);
+    O->CopiarPartidas(listaNodosCopiarPegar, listaIndices);
     selecmodel->clearSelection();
+}
+
+void InterfazObra::CopiarPartidasPortapapeles(const QModelIndexList &lista)
+{
+    QString textoACopiar;
+    for(int i = 0; i < lista.size(); i++)
+    {
+        //if (i!=0 && (i-10)%10!=0 && (i-9)%9!=0) //excluyo de los datos a copiar la primera y ultima columna (Fase e Id)
+        {
+            QModelIndex index = lista.at(i);
+            textoACopiar.append(modeloTablaP->data(index).toString());
+            textoACopiar.append('\t');
+        }
+    }
+    //textoACopiar.replace(",",".");
+    int i=0, n=0;
+    while (i<textoACopiar.size())
+    {
+        if (textoACopiar.at(i)=='\t')
+        {
+            n++;
+        }
+        if (n==11)
+        {
+            textoACopiar.replace(i,1,'\n');
+            n=0;
+        }
+        i++;
+    }
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(textoACopiar);
+
 }
 
 void InterfazObra::PegarPartidasTablaP()
@@ -226,9 +263,13 @@ void InterfazObra::PegarPartidasTablaP()
     emit PegarP();
 }
 
-void InterfazObra::PegarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
+void InterfazObra::PegarMedicionTablaM()
 {
-    qDebug()<<"Pegar partidas";
+    emit PegarM();
+}
+
+void InterfazObra::PegarPartidas(const std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
+{
     QModelIndex indice = tablaPrincipal->currentIndex();
     qDebug()<<indice.row();
     bool insertarAlFinal=false;
@@ -241,37 +282,61 @@ void InterfazObra::PegarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodos
     RefrescarVista(QModelIndex(),QModelIndex());
 }
 
-void InterfazObra::CopiarMedicion()
+void InterfazObra::CopiarMedicion(Medicion& listaMedicionCopiarPegar)
 {
-    qDebug()<<"Copiar medicion interfaz";
+    listaMedicionCopiarPegar.BorrarMedicion();
     QItemSelectionModel *selecmodel = tablaMediciones->selectionModel();
-    QModelIndexList list = selecmodel->selectedIndexes();
+    QModelIndexList selectedRowsIndexesList = selecmodel->selectedIndexes();
+    CopiarMedicionPortapapeles(selectedRowsIndexesList);
+    QList<int> listaIndices;
+    foreach (const QModelIndex &i, selectedRowsIndexesList)
+    {
+        if (!listaIndices.contains(i.row()))
+            listaIndices.append(i.row());
+    }
+    qSort(listaIndices);
+    O->CopiarMedicion(listaMedicionCopiarPegar, listaIndices);
+    foreach (int i, listaIndices)
+        qDebug()<<"Copiando las linea de medicion: "<<i;
+    selecmodel->clearSelection();
+}
+
+void InterfazObra::CopiarMedicionPortapapeles(const QModelIndexList& lista)
+{
     QString textoACopiar;
-    for(int i = 0; i < list.size(); i++)
+    for(int i = 0; i < lista.size(); i++)
     {
         if (i!=0 && (i-10)%10!=0 && (i-9)%9!=0) //excluyo de los datos a copiar la primera y ultima columna (Fase e Id)
         {
-            QModelIndex index = list.at(i);
+            QModelIndex index = lista.at(i);
             textoACopiar.append(modeloTablaMC->data(index).toString());
-            textoACopiar.append(" ");
-            textoACopiar.append('\n');
+            textoACopiar.append('\t');
         }
-    }
+    }    
     textoACopiar.replace(",",".");
+    int i=0, n=0;
+    while (i<textoACopiar.size())
+    {
+        if (textoACopiar.at(i)=='\t')
+        {
+            n++;
+        }
+        if (n==8)
+        {
+            textoACopiar.replace(i,1,'\n');
+            n=0;
+        }
+        i++;
+    }
     QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText(textoACopiar);
-    tablaMediciones->clearSelection();
+    clipboard->setText(textoACopiar);    
 }
 
-void InterfazObra::PegarMedicion()
-{
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *mimeData = clipboard->mimeData();
-    if (mimeData->hasText())
-    {
-        O->pegarMedicion(tablaMediciones->currentIndex().row(),mimeData->text());
-        RefrescarVista(QModelIndex(),QModelIndex());
-    }
+void InterfazObra::PegarMedicion(const Medicion& ListaMedicion)
+{    
+    QModelIndex indice = tablaMediciones->currentIndex();
+    O->PegarMedicion(indice.row(),ListaMedicion);//indice.row() es la fila de la tabla a partir de la cual pego
+    RefrescarVista(QModelIndex(),QModelIndex());
 }
 
 void InterfazObra::GuardarBC3(QString fileName)

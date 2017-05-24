@@ -52,6 +52,7 @@ public:
     const float& LeeTotal ()const;
     const LineaMedicion LeeActual() const;
     bool hayMedicion() const;
+    LineaMedicion LeeLineaEnPosicion(int pos) const;
     /***************modificadores************************/
     void EditarCampo (int fila, int columna, float valor, TEXTO comentario="");
     void EscribeTotal (float cantidad);

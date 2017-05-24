@@ -588,10 +588,21 @@ void Obra::selecDeselecTodo()
     }
 }
 
-std::list<TEXTO> Obra::copiarMedicion()
+void Obra::CopiarMedicion(Medicion& ListaMedicion, const QList<int> &listaIndices)
+{
+    int i=0;
+    for (auto elem:listaIndices)
+    {
+        ListaMedicion.Insertar(i,aristaPadre->datoarista.LeeMedCer().LeeLineaEnPosicion(elem));
+        i++;
+    }
+    //ListaMedicion.Ver();
+}
+
+/*std::list<TEXTO> Obra::copiarMedicion()
 {
     std::list<std::string>listaMediciones;
-    /*if (aristaPadre->datoarista.LeeMedCer(selectorMedCer).hayMedicion())
+    if (aristaPadre->datoarista.LeeMedCer(selectorMedCer).hayMedicion())
     {
         listaAuxiliar.clear();
         aristaPadre->datoarista.LeeMedCer(selectorMedCer).Copiar(&listaAuxiliar);
@@ -603,9 +614,9 @@ std::list<TEXTO> Obra::copiarMedicion()
            <<"\t"<<(*it)->LeeAlto()<<"\t"<<(*it)->LeeFormula()<<"\t"<<(*it)->LeeParcial()<<"\t"<<(*it)->LeeSubtotal()<<"\t"<<(*it)->LeeTipo()<<"\n";
         std::string aux(oss.str());
         listaMediciones.push_back(aux);
-    }*/
+    }
     //return listaMediciones;
-}
+}*/
 
 void Obra::InsertarLineasVaciasMedicion(int pos, int num)
 {
@@ -621,35 +632,17 @@ void Obra::inicializarActual()
 }
 
 
-void Obra::pegarMedicion(int fila, const TEXTO& listaMedicion)
+void Obra::PegarMedicion(int fila, const Medicion& ListaMedicion)
 {
     if (aristaPadre->destino->datonodo.LeeNat()==Codificacion::Partida)//solo esta permitido que tengan medicion las partidas
-    {
-        QStringList lineamedicion;
-        int numLineas = listaMedicion.count(";")/8;
-        QStringList aux =listaMedicion.split(";");
-        int k=0;
-        for (int i=0;i<numLineas;i++)
+        for (auto it =ListaMedicion.LeeLista().begin();it!=ListaMedicion.LeeLista().end();++it)
         {
-            for (int j=0;j<8;j++)
-            {
-                lineamedicion.append(aux.at(j+k));
-            }
-            aristaPadre->datoarista.ModificaMedCer(selectorMedCer).Insertar(fila,
-                                                                            lineamedicion.at(0),
-                                                                            lineamedicion.at(1).toFloat(),
-                                                                            lineamedicion.at(2).toFloat(),
-                                                                            lineamedicion.at(3).toFloat(),
-                                                                            lineamedicion.at(4).toFloat(),
-                                                                            lineamedicion.at(5)
-                                                                            );
-            k+=8;
+            aristaPadre->datoarista.ModificaMedCer().Insertar(fila,(*it));
             fila++;
-            lineamedicion.clear();
         }
         Actualizar(aristaPadre->destino);
-    }
 }
+
 
 void Obra::EditarCodificacion(int n)
 {
@@ -933,7 +926,7 @@ const float& Obra::LeeTotalMedicion() const
     return aristaPadre->datoarista.LeeMedCer().LeeTotal();
 }
 
-void Obra::Copiar(std::list<std::pair<pArista, pNodo> > &listaNodosSeleccionados, const QList<int> &listaIndices)
+void Obra::CopiarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosSeleccionados, const QList<int> &listaIndices)
 {
     std::list<std::pair<pArista,pNodo>>listaNodos=G.recorrerHijos(padre);
     auto iterator = listaNodos.begin();
@@ -981,7 +974,7 @@ void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar,
         aristaActual=padre->adyacente;
     }
     Actualizar(aristaActual->destino);
-    std::cout<<"Implementando el pegado"<<std::endl;
+    //std::cout<<"Implementando el pegado"<<std::endl;
 }
 
 void Obra::cambiarEntreMedYCert()
@@ -1011,11 +1004,7 @@ bool Obra::hayMedicion() const
     //if (aristaActual)
     {            
         return aristaPadre->datoarista.LeeMedicion().hayMedicion();
-    }
-    /*else
-    {
-        return false;
-    }*/
+    }   
 }
 
 bool Obra::hayMedicionPartidaActual() const

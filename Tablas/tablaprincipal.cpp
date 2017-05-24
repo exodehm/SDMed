@@ -3,7 +3,7 @@
 TablaPrincipal::TablaPrincipal(int nColumnas, QWidget *parent): TablaBase(nColumnas, parent)
 {
     limiteIzquierdo=tipoColumna::CODIGO;
-    limiteDerecho=tipoColumna::PRCERT;
+    limiteDerecho=tipoColumna::IMPPRES;
 
     celdaBloqueada[tipoColumna::CODIGO]=true;
     celdaBloqueada[tipoColumna::PORCERTPRES]=true;

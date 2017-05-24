@@ -50,16 +50,22 @@ public slots:
     void RefrescarVista(QModelIndex indice1, QModelIndex indice2);
     //void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
     void CopiarPartidasTablaP();
+    void CopiarMedicionTablaM();
     void CopiarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosCopiarPegar);
     void PegarPartidasTablaP();
-    void PegarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosCopiarPegar);
-    void CopiarMedicion();
-    void PegarMedicion();
+    void PegarMedicionTablaM();
+    void PegarPartidas(const std::list<std::pair<pArista, pNodo> > &listaNodosCopiarPegar);
+    void CopiarMedicionPortapapeles(const QModelIndexList &lista);
+    void CopiarPartidasPortapapeles(const QModelIndexList &lista);
+    void CopiarMedicion(Medicion& listaMedicionCopiarPegar);
+    void PegarMedicion(const Medicion& ListaMedicion);
     void GuardarBC3(QString fileName);  
 
 signals:
     void CopiarP();
     void PegarP();
+    void CopiarM();
+    void PegarM();
 
 private:
     QHeaderView* cabeceraTablaP;

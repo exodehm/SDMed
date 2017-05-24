@@ -84,7 +84,7 @@ public:
     void EditarNaturaleza (int nat);
     void EditarCertificacionCant(float cantidad);
     void EditarCertificacionPorc(float porcentaje);
-    void Copiar(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, const QList<int> &listaIndices);
+    void CopiarPartidas(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, const QList<int> &listaIndices);
     void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar, bool ultimafila = false);
     void EditarCodificacion(int n);
     /*****funciones relacionadas con la medicion o certificacion de la partida********/
@@ -102,8 +102,8 @@ public:
     void retrocederLineaActualMedicion();
     void seleccionarLineaMedicion();
     void selecDeselecTodo();
-    std::list<TEXTO> copiarMedicion();
-    void pegarMedicion(int fila, const TEXTO& listaMedicion);
+    void CopiarMedicion(Medicion& ListaMedicion, const QList<int> &listaIndices);
+    void PegarMedicion(int fila, const Medicion& ListaMedicion);
     void bloquearColumna(int nColumna, float fValor);
     void Desbloquear();
     void Certificar();
@@ -116,7 +116,7 @@ public:
     const float& LeeTotalMedicion() const;
     /**********seleccionar entre medicion y certificacion********/
     void cambiarEntreMedYCert();
-    /***************************varias***************************/
+    /***************************varias de consulta********************/
     bool hayDescomposicion();
     bool hayMedicion() const;
     bool hayMedicionPartidaActual() const;
