@@ -61,6 +61,7 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal->CabeceraDeTabla(),SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
     QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
+    QObject::connect(tablaMediciones,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(CopiarPartidasTablaP()));
     QObject::connect(tablaPrincipal,SIGNAL(PegarPartidas()),this,SLOT(PegarPartidasTablaP()));
     QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicionTablaM()));
@@ -83,11 +84,11 @@ void InterfazObra::MostrarDeSegun(int indice)
     bool verCertificacion;
     if (indice==0)
     {
-        verCertificacion=true;
+        verCertificacion=true;        
     }
     else
     {
-        verCertificacion=false;
+        verCertificacion=false;        
     }
     tablaPrincipal->setColumnHidden(tipoColumna::CANCERT,verCertificacion);
     tablaPrincipal->setColumnHidden(tipoColumna::PORCERTPRES,verCertificacion);

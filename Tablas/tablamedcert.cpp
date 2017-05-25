@@ -5,8 +5,8 @@ TablaMedCert::TablaMedCert(int nColumnas, QWidget *parent): TablaBase(nColumnas,
     dlgME = new DelegadoMedicionesEstandar;
     dlgPS = new DelegadosParcialesSubtotales;
 
-    limiteIzquierdo=tipoColumna::COMENTARIO;
-    limiteDerecho=tipoColumna::FORMULA;
+    limiteIzquierdo=tipoColumna::FASE;
+    limiteDerecho=tipoColumna::PARCIAL;
 
     celdaBloqueada[tipoColumna::FASE]=true;
     celdaBloqueada[tipoColumna::PARCIAL]=true;
