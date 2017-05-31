@@ -200,6 +200,11 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
                 return true;
             }
             break;
+        }        
+        case (Qt::Key_C):
+        {
+            qDebug()<<"Copiandiki";
+            break;
         }
         default:
         {

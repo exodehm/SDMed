@@ -16,6 +16,11 @@ bool DelegadoBase::eventFilter(QObject *obj, QEvent* event)
             emit commitData(editor);
             emit closeEditor(editor, QStyledItemDelegate::NoHint);
         }
+        else if (key->key()==Qt::Key_Escape)
+        {
+             QLineEdit *editor=qobject_cast<QLineEdit*>(obj);
+             emit closeEditor(editor, QStyledItemDelegate::NoHint);
+        }
         else
         {
             return QObject::eventFilter(obj, event);

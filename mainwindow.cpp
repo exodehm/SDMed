@@ -201,7 +201,7 @@ void MainWindow::ActionSalir()
 void MainWindow::ActionCopiar()
 {
     QWidget* w = qApp->focusWidget();
-    qDebug()<<w->metaObject()->className();
+    qDebug()<<"Copiar main: "<<w->metaObject()->className();
     if (strcmp(w->metaObject()->className(),"TablaPrincipal")==0)
     {
         obraActual->miobra->CopiarPartidas(ListaNodosCopiarPegar);
