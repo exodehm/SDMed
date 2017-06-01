@@ -210,7 +210,7 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
         {
             table->edit(indice);
             return true;
-        }       
+        }
         default:
         {
             return false;
@@ -220,4 +220,3 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
     }
     return false;
 }
-

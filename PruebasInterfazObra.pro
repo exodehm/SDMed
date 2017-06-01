@@ -56,7 +56,6 @@ HEADERS  += interfazobra.h \
     Modelos/PrincipalModel.h \
     defs.h \
     Calc/include/Calc.h \
-    Calc/include/nodo.h \
     Calc/include/nodocalc.h \
     Calc/include/pila.h \
     include/AbrirGuardar.h \
