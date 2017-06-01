@@ -690,6 +690,9 @@
    <property name="shortcut">
     <string>Ctrl+C</string>
    </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
+   </property>
   </action>
   <action name="actionCortar">
    <property name="icon">
@@ -713,6 +716,9 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
    </property>
   </action>
   <action name="actionMover">

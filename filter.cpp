@@ -10,8 +10,13 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
     {
         QModelIndex indice = table->currentIndex();
         QKeyEvent *ke =static_cast<QKeyEvent*>(event);
+        if (ke->matches(QKeySequence::Copy))
+        {
+            qDebug()<<"Copianding";
+            return true;
+        }
         switch (ke->key())
-        {        
+        {
         case (Qt::Key_Delete):
         {
             if (table->selectionModel()->isRowSelected(indice.row(),QModelIndex()))//si hay alguna fila seleccionada
@@ -201,17 +206,17 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             }
             break;
         }        
-        case (Qt::Key_C):
+        case (Qt::Key_F2):
         {
-            qDebug()<<"Copiandiki";
-            break;
-        }
+            table->edit(indice);
+            return true;
+        }       
         default:
         {
             return false;
             break;
         }
-        }        
+        }
     }
     return false;
 }
