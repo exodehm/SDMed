@@ -6,6 +6,8 @@
 #include <QKeyEvent>
 #include <QDebug>
 
+#include "./include/Obra.h"
+
 class DelegadoBase : public QStyledItemDelegate
 {
     Q_OBJECT

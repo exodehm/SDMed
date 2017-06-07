@@ -6,6 +6,7 @@
 #include <QPainter>
 
 #include "./delegadobase.h"
+#include "./Modelos/PrincipalModel.h"
 
 
 class DelegadoEditorNumeros : public DelegadoBase

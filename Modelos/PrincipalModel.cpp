@@ -30,18 +30,18 @@ int PrincipalModel::rowCount(const QModelIndex& parent) const
     Q_UNUSED(parent);
     if (hayFilaVacia)
     {
-        return miobra->VerActual().size();
+        return datos.size();
     }
     else
-    {
-        return miobra->VerActual().size()-1;
+    {        
+        return datos.size()-1;
     }
 }
 
 int PrincipalModel::columnCount(const QModelIndex& parent) const
 {
-    Q_UNUSED(parent);
-    return miobra->VerActual().at(0).size();
+    Q_UNUSED(parent);    
+    return datos.at(0).size();
 }
 
 QVariant PrincipalModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -220,17 +220,9 @@ void PrincipalModel::QuitarIndicadorFilaVacia()
     hayFilaVacia=false;
 }
 
-void PrincipalModel::ActualizarDatos()
+Obra *PrincipalModel::LeeObra() const
 {
-    qDebug()<<"Filas iniciales: "<<datos.length();
-    datos.clear();
-    datos = miobra->VerActual();
-
-    for(int i=0; i<datos.at(0).length(); i++)
-    {
-        datos[0][i].prepend(LeyendasCabecera[i]);
-    }
-    qDebug()<<"Filas finales: "<<datos.length();
+    return miobra;
 }
 
 bool PrincipalModel::esColumnaNumerica(int columna) const
@@ -352,4 +344,70 @@ bool PrincipalModel::EditarPrecio(const QModelIndex & index, float precio)
     return false;
 }
 
+void PrincipalModel::ActualizarDatos()
+{
+    datos.clear();
+    mapaDeBool.clear();
+    QStringList lineapadre;
+    QList<bool>bLineapadre;
+    lineapadre = RellenaLinea(miobra->Padre(), miobra->AristaPadre());
+    datos.append(lineapadre);
+    mapaDeBool.append(bLineapadre);
 
+    ListaAristasNodos listahijos = miobra->LeeDecompuesto();
+    QStringList lineahijo;
+    QList<bool>bLineahijo;
+    for (auto elem:listahijos)
+    {
+        lineahijo = RellenaLinea(elem.second, elem.first);
+        datos.append(lineahijo);
+        mapaDeBool.append(bLineahijo);
+        lineahijo.clear();
+        bLineahijo.clear();
+    }
+    for(int i=0; i<datos.at(0).length(); i++)
+    {
+        datos[0][i].prepend(LeyendasCabecera[i]);
+    }   
+}
+
+QStringList PrincipalModel::RellenaLinea(pNodo nodo, pArista arista)
+{
+
+    QStringList linea;
+    linea.append(nodo->datonodo.LeeCodigo());                    //codigo
+    linea.append(QString::number(nodo->datonodo.LeeNat()));      //naturaleza
+    linea.append(nodo->datonodo.LeeUd());                        //ud
+    linea.append((nodo->datonodo.LeeResumen()));                   //resumen
+    linea.append(QString::number(arista->datoarista.LeeMedicion().LeeTotal(),'f',3));     //Cantidad presupuestada(medida)
+    linea.append(QString::number(arista->datoarista.LeeCertificacion().LeeTotal(),'f',3));//Cantidad certificada
+    linea.append(QString::number((arista->datoarista.LeeCertificacion().LeeTotal()/arista->datoarista.LeeMedicion().LeeTotal())*100,'f',2));//porcentaje certificado
+    linea.append(QString::number(nodo->datonodo.LeeImportePres(),'f',3));               //precio de la medicion
+    linea.append(QString::number(nodo->datonodo.LeeImporteCert(),'f',3));               //precio de la certificacion
+    /*linea.append(nodo->datonodo.LeeImportePres()==0
+                    ? QString::number(nodo->datonodo.LeeImportePres()*1,'f',3)
+                    : QString::number(nodo->datonodo.LeeImportePres()*arista->datoarista.LeeMedicion().LeeTotal(),'f',3));*/
+    linea.append(CalculaCantidad(nodo,arista));
+    linea.append(nodo->datonodo.LeeImporteCert()==0
+                 ? QString::number(nodo->datonodo.LeeImporteCert()*1,'f',3)
+                 : QString::number(nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal(),'f',3));
+
+    return linea;
+}
+
+TEXTO PrincipalModel::CalculaCantidad(pNodo n, pArista A)
+{
+    if (n->datonodo.LeeImportePres()==0)
+    {
+        return QString::number(n->datonodo.LeeImportePres()*1,'f',3);
+    }
+    else
+    {
+        float factor=1;
+        if (miobra->NivelUno(/*A->destino*/)&& A!=miobra->AristaPadre())
+        {
+            factor=1.1;//para reflejar el coste indirecto en la columna ImpPres
+        }
+        return QString::number(n->datonodo.LeeImportePres()*A->datoarista.LeeMedicion().LeeTotal()*factor,'f',3);
+    }
+}

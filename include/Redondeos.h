@@ -6,8 +6,10 @@
 
 #include <string>
 
-struct Coeficientes
+class Coeficientes
 {
+private:
+
     typedef unsigned short int factorRed;
     factorRed RedCapitulo;
     factorRed RedCantidadConceptos;
@@ -20,6 +22,8 @@ struct Coeficientes
     factorRed RedSuministros;
     std::list<std::pair<std::string,factorRed> > Factores;
     //constructor
+public:
+
     Coeficientes();
 };
 

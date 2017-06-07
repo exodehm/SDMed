@@ -60,7 +60,6 @@ HEADERS  += interfazobra.h \
     Calc/include/pila.h \
     include/AbrirGuardar.h \
     include/arista.h \
-    include/Caracteres.h \
     include/Certificacion.h \
     include/Concepto.h \
     include/Datos.h \

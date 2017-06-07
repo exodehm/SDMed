@@ -24,6 +24,12 @@ class PrincipalModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
+
+    typedef std::list<std::pair<pNodo,pArista>> ListaNodosAristas;
+    typedef std::list<std::pair<pArista,pNodo>> ListaAristasNodos;
+    enum class tipoprecio{NORMAL,BLOQUEADO,DESCOMPUESTO};
+
+
     PrincipalModel(Obra* O, QObject* parent=nullptr);
     ~PrincipalModel();
 
@@ -43,6 +49,7 @@ public:
     void ActualizarDatos();
     bool esColumnaNumerica(int columna) const;
     void QuitarIndicadorFilaVacia();
+    Obra* LeeObra() const;
     /***********FUNCIONES DE EDICION**********************************/
     bool EditarCodigo(const QModelIndex & index, TEXTO codigo);
     bool EditarResumen(const QModelIndex & index, TEXTO resumen);
@@ -50,6 +57,11 @@ public:
     bool EditarCantidad(const QModelIndex & index, float cantidad);
     bool EditarPrecio(const QModelIndex & index, float precio);
     bool EditarUnidad(const QModelIndex & index, TEXTO unidad);
+    /*****************************************************************/
+    void VerActual();
+    QStringList RellenaLinea(pNodo nodo, pArista arista);
+    TEXTO CalculaCantidad(pNodo n, pArista A);
+
 
 /*signals:
     void EditarCampoTexto (int, QString);
@@ -58,6 +70,7 @@ public:
 
 private:
     QList <QStringList> datos;
+    QList<QList<bool>>mapaDeBool;
     QStringList cabecera;
     QString LeyendasCabecera[11];
     Obra* miobra;

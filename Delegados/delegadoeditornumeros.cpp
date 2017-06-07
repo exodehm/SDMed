@@ -17,11 +17,10 @@ QWidget* DelegadoEditorNumeros::createEditor(QWidget * parent, const QStyleOptio
     return mieditor;
 }
 
-void DelegadoEditorNumeros::setEditorData(QWidget * editor, const QModelIndex&index)const
+void DelegadoEditorNumeros::setEditorData(QWidget * editor, const QModelIndex&index) const
 {
     QLineEdit *mieditor=qobject_cast<QLineEdit*>(editor);
-    const QAbstractItemModel *model =index.model();
-    if (!mieditor|| !model)
+    if (!mieditor)
     {
         QStyledItemDelegate::setEditorData(editor,index);
     }
@@ -31,7 +30,7 @@ void DelegadoEditorNumeros::setEditorData(QWidget * editor, const QModelIndex&in
 void DelegadoEditorNumeros::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex&index) const
 {
     if (!index.isValid()) return;
-    QLineEdit * mieditor=qobject_cast<QLineEdit * >(editor);
+    QLineEdit * mieditor=qobject_cast<QLineEdit * >(editor);    
     if (!mieditor)
     {
         return QStyledItemDelegate::setModelData(editor, model, index);
@@ -43,8 +42,31 @@ void DelegadoEditorNumeros::setModelData(QWidget * editor, QAbstractItemModel * 
 }
 
 void DelegadoEditorNumeros::paint( QPainter *painter,const QStyleOptionViewItem &option, const QModelIndex &index ) const
-{
-    QStyledItemDelegate::paint(painter, option, index);
+{ 
+    /*if (index.isValid())
+    {
+        QAbstractItemModel *model =const_cast<QAbstractItemModel *>(index.model());
+        PrincipalModel* modelo=qobject_cast<PrincipalModel*>(model);
+        painter->save();
+        if (modelo)
+        {
+            if (modelo->LeeObra()->hayMedicionPartidaActual())
+            {
+                painter->setPen(Qt::magenta);
+            }
+            /*else
+            {
+                painter->setPen(Qt::black);
+            }*/
+        //}
+        //painter->setPen(QColor(255,255,170));
+        // painter->setBrush(QColor(255,255,170));
+       /* painter->drawRect(option.rect);
+        painter->drawText(option.rect, Qt::AlignCenter, displayText(index.data(), QLocale::system()));
+        painter->restore();
+    }
+    else*/
+        QStyledItemDelegate::paint(painter, option, index);
 }
 
 QSize DelegadoEditorNumeros::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const

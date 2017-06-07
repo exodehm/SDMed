@@ -26,7 +26,7 @@ class TablaBase : public QTableView
     Q_OBJECT
 
 public:
-    TablaBase(int nColumnas, QWidget *parent=nullptr);    
+    TablaBase(int nColumnas, QWidget *parent=nullptr);
     ~TablaBase();
     bool columnaBloqueada(int columna);
     QHeaderView* CabeceraDeTabla();

@@ -11,6 +11,7 @@
 #include <QVBoxLayout>
 #include <QSplitter>
 #include <QPushButton>
+#include <QTabWidget>
 
 #include "./include/Obra.h"
 #include "./include/AbrirGuardar.h"
@@ -76,7 +77,9 @@ private:
     QVBoxLayout* lienzoSuperior;
     QWidget* widgetSuperior;
 
-    QSplitter* separador;
+    QSplitter* separadorPrincipal;
+
+    QTabWidget* separadorTablasMedicion;
 
     TablaBase* tablaPrincipal;
     TablaBase* tablaMediciones;    

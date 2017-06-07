@@ -9,12 +9,14 @@
 class Certificacion
 {
     private:
+
     typedef std::pair<bool,Fecha>cert;
     std::list<cert>certificaciones;
 
     public:
+
     Certificacion();
-    virtual ~Certificacion();
+    ~Certificacion();
 
     void anadir();
     void eliminar(unsigned int posicion);

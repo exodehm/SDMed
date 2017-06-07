@@ -393,40 +393,6 @@ TEXTO Obra::VerTexto()
     return padre->datonodo.LeeTexto();
 }
 
-const QList<QStringList>& Obra::VerActual()
-{
-    listadoTablaP.clear();
-    QStringList lineapadre;
-    lineapadre = RellenaLinea(padre, aristaPadre);
-    listadoTablaP.append(lineapadre);
-
-    ListaAristasNodos listahijos = G.recorrerHijos(padre);
-    QStringList lineahijo;
-    for (auto elem:listahijos)
-    {
-        lineahijo = RellenaLinea(elem.second, elem.first);
-        listadoTablaP.append(lineahijo);
-        lineahijo.clear();
-    }
-    return listadoTablaP;
-}
-
-const QList<QStringList>& Obra::VerMedCert()
-{
-    std::list<LineaMedicion> lista = aristaPadre->datoarista.LeeMedCer().LeeLista();
-    listadoTablaMC.clear();
-    for (auto elem : lista)
-    {
-        listadoTablaMC.append(elem.LeeLineaMedicion());
-        /*QString dato;
-        foreach (dato, elem.LeeLineaMedicion())
-        {
-            qDebug()<<dato;
-        }*/
-    }
-    return listadoTablaMC;
-}
-
 void Obra:: SumarHijos(pNodo padre)
 {
     if (padre->adyacente)
@@ -535,18 +501,18 @@ void Obra::borrarTodaMedicionOCertificacion()
 
 void Obra::borrarTodaMedicion()
 {
-    //if (hayMedicion())
+    if (hayMedicion())
     {
-        aristaActual->datoarista.ModificaMedCer().BorrarMedicion();
+        aristaActual->datoarista.ModificaMedCer(MedCert::MEDICION).BorrarMedicion();
         Actualizar(aristaPadre->destino);
     }
 }
 
 void Obra::borrarTodaCertificacion()
 {
-    //if (hayMedicion())
+    if (hayMedicion())
     {
-        aristaActual->datoarista.ModificaMedCer().BorrarMedicion();
+        aristaActual->datoarista.ModificaMedCer(MedCert::CERTIFICACION).BorrarMedicion();
         Actualizar(aristaPadre->destino);
     }
 }
@@ -1140,42 +1106,22 @@ void Obra::EscribeRaiz(TEXTO nombreRaiz)
     G.escribeRaiz(raiz);
 }
 
-QStringList Obra::RellenaLinea(pNodo nodo,pArista arista)
+pNodo Obra::Padre()
 {
-    QStringList linea;
-    linea.append(nodo->datonodo.LeeCodigo());                    //codigo
-    linea.append(QString::number(nodo->datonodo.LeeNat()));      //naturaleza
-    linea.append(nodo->datonodo.LeeUd());                        //ud
-    linea.append((nodo->datonodo.LeeResumen()));                   //resumen
-    linea.append(QString::number(arista->datoarista.LeeMedicion().LeeTotal(),'f',3));     //Cantidad presupuestada(medida)
-    linea.append(QString::number(arista->datoarista.LeeCertificacion().LeeTotal(),'f',3));//Cantidad certificada
-    linea.append(QString::number((arista->datoarista.LeeCertificacion().LeeTotal()/arista->datoarista.LeeMedicion().LeeTotal())*100,'f',2));//porcentaje certificado
-    linea.append(QString::number(nodo->datonodo.LeeImportePres(),'f',3));               //precio de la medicion
-    linea.append(QString::number(nodo->datonodo.LeeImporteCert(),'f',3));               //precio de la certificacion
-    /*linea.append(nodo->datonodo.LeeImportePres()==0
-                ? QString::number(nodo->datonodo.LeeImportePres()*1,'f',3)
-                : QString::number(nodo->datonodo.LeeImportePres()*arista->datoarista.LeeMedicion().LeeTotal(),'f',3));*/
-    linea.append(CalculaCantidad(nodo,arista));
-    linea.append(nodo->datonodo.LeeImporteCert()==0
-                ? QString::number(nodo->datonodo.LeeImporteCert()*1,'f',3)
-                : QString::number(nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal(),'f',3));
-
-    return linea;
+    return padre;
 }
 
-TEXTO Obra::CalculaCantidad(pNodo n, pArista A)
+pArista Obra::AristaPadre()
 {
-    if (n->datonodo.LeeImportePres()==0)
-    {
-        return QString::number(n->datonodo.LeeImportePres()*1,'f',3);
-    }
-    else
-    {
-        float factor=1;
-        if (NivelUno(/*A->destino*/)&& A!=aristaPadre)
-        {
-            factor=CI;//para reflejar el coste indirecto en la columna ImpPres
-        }
-        return QString::number(n->datonodo.LeeImportePres()*A->datoarista.LeeMedicion().LeeTotal()*factor,'f',3);
-    }
+    return aristaPadre;
+}
+
+pArista Obra::AristaActual()
+{
+    return aristaActual;
+}
+
+std::list<std::pair<pArista,pNodo>>Obra::LeeDecompuesto()
+{
+    return G.recorrerHijos(padre);
 }

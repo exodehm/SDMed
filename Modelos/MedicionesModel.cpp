@@ -149,14 +149,28 @@ void MedicionesModel::ActualizarDatos()
     datos.clear();
     qDebug()<<"Total medicion: "<<miobra->LeeTotalMedicion();
     LeyendasCabecera[tipoColumna::PARCIAL].clear();
-    datos = miobra->VerMedCert();
+    VerMedCert(datos);
     if (rowCount(QModelIndex())==0 && miobra->EsPartida())
     {
         miobra->InsertarLineasVaciasMedicion(0,1);
     }
-    datos.clear();
-    datos = miobra->VerMedCert();
+    VerMedCert(datos);
     qDebug()<<"Num liNEAS: "<<rowCount(QModelIndex());
     QString suma=QString::number(miobra->LeeTotalMedicion(),'f',2);
     LeyendasCabecera[tipoColumna::PARCIAL].append("Parcial\n").append(suma);
+}
+
+void MedicionesModel::VerMedCert(QList<QStringList> &datos)
+{
+    std::list<LineaMedicion> lista = miobra->AristaPadre()->datoarista.LeeMedCer().LeeLista();
+    datos.clear();
+    for (auto elem : lista)
+    {
+        datos.append(elem.LeeLineaMedicion());
+        /*QString dato;
+        foreach (dato, elem.LeeLineaMedicion())
+        {
+            qDebug()<<dato;
+        }*/
+    }
 }

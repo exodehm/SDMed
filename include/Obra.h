@@ -57,9 +57,7 @@ public:
     void IrAInicio();
     void PosicionarAristaActual(int pos);
     /******funciones para mostrar datos*******/
-    void MostrarHijos();
-    const QList<QStringList>&VerActual();
-    const QList<QStringList>& VerMedCert();
+    void MostrarHijos();    
     void VerNodos();
     void VerArbol();
     void VerRama();
@@ -138,9 +136,12 @@ public:
     void EscribeCodigoObra(TEXTO codigo);
     void EscribeResumenObra(TEXTO resumen);
     void EscribeRaiz(TEXTO nombreRaiz);
-    /*************************auxiliar crear tabla*********************/
-    QStringList RellenaLinea(pNodo nodo, pArista arista);
-    TEXTO CalculaCantidad(pNodo n, pArista A);
+
+    /***********acceso a nodos y aristas**************/
+    pNodo Padre();
+    pArista AristaPadre();
+    pArista AristaActual();
+    std::list<std::pair<pArista,pNodo>>LeeDecompuesto();
 
 
 private:
@@ -162,9 +163,6 @@ private:
     int selectorMedCer;
     //redondeos de la obra
     Coeficientes Redondeos;
-    //Listados para tablas;
-    QList<QStringList> listadoTablaP;
-    QList<QStringList> listadoTablaMC;
     float CI;//Costes Indirectos
 
     friend class AbrirGuardarBC3;    

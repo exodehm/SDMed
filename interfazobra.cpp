@@ -32,26 +32,30 @@ InterfazObra::~InterfazObra()
 void InterfazObra::GenerarUI()
 {
     lienzoGlobal = new QVBoxLayout(this);
-    separador = new QSplitter(Qt::Vertical);
+    separadorPrincipal = new QSplitter(Qt::Vertical);
 
     //tabla principal
     modeloTablaP = new PrincipalModel(O);
-    tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()), separador);
+    tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()), separadorPrincipal);
     tablaPrincipal->setModel(modeloTablaP);
-    separador->addWidget(tablaPrincipal);
+    separadorPrincipal->addWidget(tablaPrincipal);
 
     //tabla mediciones
     modeloTablaMC = new MedicionesModel(O);
-    tablaMediciones =  new TablaMedCert(modeloTablaMC->columnCount(QModelIndex()), separador);
+    tablaMediciones =  new TablaMedCert(modeloTablaMC->columnCount(QModelIndex()), this);
     tablaMediciones->setModel(modeloTablaMC);
-    separador->addWidget(tablaMediciones);
+    separadorTablasMedicion = new QTabWidget;
+    separadorTablasMedicion->addTab(tablaMediciones,QString(tr("Medicion")));
+    separadorTablasMedicion->addTab(new QWidget(),"+");
+
+    separadorPrincipal->addWidget(separadorTablasMedicion);
 
     //editor
-    editor = new Editor(separador);
-    separador->addWidget(editor);
+    editor = new Editor(separadorPrincipal);
+    separadorPrincipal->addWidget(editor);
 
     //añado el separador al layout
-    lienzoGlobal->addWidget(separador);
+    lienzoGlobal->addWidget(separadorPrincipal);
 
     RefrescarVista(QModelIndex(),QModelIndex());
     MostrarDeSegun(0);   
@@ -163,7 +167,7 @@ void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
     modeloTablaMC->layoutChanged();
     tablaPrincipal->resizeColumnsToContents();
     tablaMediciones->resizeColumnsToContents();
-    tablaMediciones->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
+    separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
 
     //AjustarAltura();
     //MostrarTablasMyC();
