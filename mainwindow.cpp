@@ -15,6 +15,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     //establezco la ruta incial para localizar archivos
     ruta = QDir::currentPath();
     rutaarchivo = ruta.canonicalPath();
+    //cargo los settings
+    readSettings();
+    //archivos recientes
+    for (int i=0;i<MaxRecentFiles;i++)
+    {
+        recentFileActions[i] = new QAction(this);
+        connect (recentFileActions[i], SIGNAL(triggered()), this, SLOT(ActionAbrirDesdeReciente()));
+        ui->menuAbrir_reciente->addAction(recentFileActions[i]);
+    }
+    updateArchivosRecientesActions();
 }
 
 MainWindow::~MainWindow()
@@ -35,25 +45,40 @@ void MainWindow::ActionNuevo()
     ui->actionGuardar->setEnabled(true);
 }
 
-void MainWindow::ActionAbrir()
+bool MainWindow::ActionAbrir()
 {
     QString nombrefichero;
     nombrefichero = QFileDialog::getOpenFileName(this,\
                                                  tr("Abrir Obra"),\
                                                  rutaarchivo,\
                                                  tr("Archivos BC3 (*.bc3);;Archivos SDM (*.sdm)"));
+    for (auto elem : ListaObras)
+    {
+        if (nombrefichero == elem.nombrefichero)
+        {
+            QMessageBox::warning(this, tr("Aviso"),
+                                           tr("La obra %1 ya está abierta").arg(nombrefichero),
+                                           QMessageBox::Ok);
+            return false;
+        }
+    }
 
     if (!nombrefichero.isEmpty())
     {
-        MetaObra NuevaObra;
-        NuevaObra.nombrefichero = nombrefichero;
-        NuevaObra.miobra = new InterfazObra(nombrefichero);
-        AnadirObraAVentanaPrincipal(NuevaObra);
+        if (recentFiles.contains(nombrefichero))
+        {
+            recentFiles.removeAll(nombrefichero);
+        }
+        recentFiles.prepend(nombrefichero);
 
+        updateArchivosRecientesActions();
+        AbrirArchivo(nombrefichero);
+        ruta.setPath(nombrefichero);
+        rutaarchivo=ruta.canonicalPath();
+        ui->actionGuardar->setEnabled(true);
+        return true;
     }
-    ruta.setPath(nombrefichero);
-    rutaarchivo=ruta.canonicalPath();
-    ui->actionGuardar->setEnabled(true);
+    return false;
 }
 
 void MainWindow::AnadirObraAVentanaPrincipal(MetaObra &nuevaobra)
@@ -86,6 +111,38 @@ void MainWindow::CambiarObraActual(int indice)
 void MainWindow::CambiarMedCert(int indice)
 {
     obraActual->miobra->MostrarDeSegun(indice);
+}
+
+bool MainWindow::ActionAbrirDesdeReciente()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    QString nombrefichero;
+    if (action)
+    {
+        nombrefichero = action->data().toString();
+    }
+    int indice=0;
+    for (auto elem : ListaObras)
+    {
+        if (nombrefichero == elem.nombrefichero)
+        {
+            qDebug()<<"Cambio la obra al indice: "<<indice;
+            CambiarObraActual(indice);
+            ui->tabPrincipal->setCurrentIndex(indice);
+            return false;
+        }
+        indice++;
+    }
+    AbrirArchivo(nombrefichero);
+    return true;
+}
+
+void MainWindow::AbrirArchivo(const QString &nombrefichero)
+{
+    MetaObra NuevaObra;
+    NuevaObra.nombrefichero = nombrefichero;
+    NuevaObra.miobra = new InterfazObra(nombrefichero);
+    AnadirObraAVentanaPrincipal(NuevaObra);    
 }
 
 
@@ -166,14 +223,21 @@ void MainWindow::ActionCerrar()
     }
 }
 
-void MainWindow::updateRecentFileActions()
+void MainWindow::updateArchivosRecientesActions()
 {
+    while (recentFiles.size()>MaxRecentFiles)
+    {
+        recentFiles.removeLast();
+    }
+    qDebug()<<"Numero de archivos recientes : "<<recentFiles.count();
     QMutableStringListIterator i(recentFiles);
     while (i.hasNext()) {
         if (!QFile::exists(i.next()))
             i.remove();
     }
-    for (int j = 0; j < MaxRecentFiles; ++j) {
+    //actualizar el submenu
+    for (int j = 0; j < MaxRecentFiles; ++j)
+    {
         if (j < recentFiles.count()) {
             QString text = tr("&%1 %2")
                     .arg(j + 1)
@@ -185,7 +249,7 @@ void MainWindow::updateRecentFileActions()
             recentFileActions[j]->setVisible(false);
         }
     }
-    separatorAction->setVisible(!recentFiles.isEmpty());
+    /*separatorAction->setVisible(!recentFiles.isEmpty());*/
 }
 
 QString MainWindow::strippedName(const QString &fullFileName)
@@ -195,7 +259,9 @@ QString MainWindow::strippedName(const QString &fullFileName)
 
 void MainWindow::ActionSalir()
 {
-
+    writeSettings();
+    qDebug()<<"Salir";
+    qApp->quit();
 }
 
 void MainWindow::ActionCopiar()
@@ -263,6 +329,28 @@ bool MainWindow::ConfirmarContinuar()
     return true;
 }
 
+void MainWindow::readSettings()
+{
+    QSettings settings("EGSoft", "SDMed");
+    settings.beginGroup("MainWindow");
+    QPoint pos = settings.value("pos").toPoint();
+    QSize size = settings.value("size").toSize();
+    recentFiles = settings.value("recentfiles").toStringList();
+    this->resize(size);
+    this->move(pos);    
+    settings.endGroup();
+}
+
+void MainWindow::writeSettings()
+{
+    QSettings settings("EGSoft", "SDMed");
+    settings.beginGroup("MainWindow");
+    settings.setValue("pos", this->pos());
+    settings.setValue("size", this->size());
+    settings.setValue("recentfiles", recentFiles);
+    settings.endGroup();
+}
+
 void MainWindow::setupActions()
 {
     QObject::connect(ui->actionNuevo,SIGNAL(triggered(bool)),this,SLOT(ActionNuevo()));
@@ -270,7 +358,7 @@ void MainWindow::setupActions()
     QObject::connect(ui->actionCerrar,SIGNAL(triggered(bool)),this,SLOT(ActionCerrar()));
     QObject::connect(ui->actionGuardar,SIGNAL(triggered(bool)),this,SLOT(ActionGuardar()));
     QObject::connect(ui->actionGuardar_como,SIGNAL(triggered(bool)),this,SLOT(ActionGuardarComo()));
-    QObject::connect(ui->action_Salir, SIGNAL(triggered(bool)),qApp, SLOT(quit()));
+    QObject::connect(ui->action_Salir, SIGNAL(triggered(bool)),this, SLOT(ActionSalir()));
     QObject::connect(ui->actionCopiar,SIGNAL(triggered(bool)),this,SLOT(ActionCopiar()));
     QObject::connect(ui->actionCortar,SIGNAL(triggered(bool)),this,SLOT(ActionCortar()));
     QObject::connect(ui->actionPegar,SIGNAL(triggered(bool)),this,SLOT(ActionPegar()));

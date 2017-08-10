@@ -40,8 +40,9 @@ void TablaMedCert::MostrarMenuCabecera(QPoint pos)
 void TablaMedCert::MostrarMenuLateralTabla(QPoint pos)
 {
     QMenu *menu=new QMenu(this);
-    QAction *AccionCopiar = new QAction("Copiar lineas de medición", this);
-    QAction *AccionPegar = new QAction("Pegar lineas de medición", this);
+    QAction *AccionCopiar = new QAction(tr("Copiar lineas de medición"), this);
+    QAction *AccionPegar = new QAction(tr("Pegar lineas de medición"), this);
+    QAction *AccionCertificar = new QAction(tr("Certificar lineas de medición"), this);
     QModelIndexList indexes = this->selectionModel()->selectedIndexes();
     if (indexes.size()==0)
     {
@@ -49,9 +50,12 @@ void TablaMedCert::MostrarMenuLateralTabla(QPoint pos)
     }
     menu->addAction(AccionCopiar);
     menu->addAction(AccionPegar);
+    menu->addAction(AccionCertificar);
     /*copiar*/
     QObject::connect(AccionCopiar, SIGNAL(triggered()), this, SLOT(Copiar()));
-    /*certificar*/
+    /*pegar*/
     QObject::connect(AccionPegar, SIGNAL(triggered()), this, SLOT(Pegar()));
+    /*certificar*/
+    QObject::connect(AccionCertificar, SIGNAL(triggered()), this, SLOT(Certificar()));
     menu->popup(cabeceraVertical->viewport()->mapToGlobal(pos));
 }

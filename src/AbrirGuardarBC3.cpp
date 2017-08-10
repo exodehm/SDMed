@@ -144,7 +144,7 @@ void AbrirGuardarBC3::procesarConceptos(Obra* &obra, QStringList &registroC)
         QString codigo = datos.at(0);
         QString codigo_comp = datos.at(0);
         codigo.remove('#');
-        pNodo minodo = obra->existeConcepto(codigo);
+        pNodo minodo = obra->ExisteConcepto(codigo);
         if (minodo)
         {
             //unidad
@@ -246,7 +246,7 @@ void AbrirGuardarBC3::procesarTexto(Obra *&obra,const QStringList &registroT)
         QStringList datos = linea.split("|");
         QString codigo = datos.at(0);
         codigo.remove('#');
-        pNodo minodo = obra->existeConcepto(codigo);
+        pNodo minodo = obra->ExisteConcepto(codigo);
         if (minodo)
         {
             minodo->datonodo.EscribeTexto(datos.at(1));

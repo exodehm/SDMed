@@ -7,6 +7,7 @@
 #include <QDebug>
 
 #include "./include/Obra.h"
+#include "./defs.h"
 
 class DelegadoBase : public QStyledItemDelegate
 {

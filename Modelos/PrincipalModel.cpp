@@ -14,6 +14,11 @@ PrincipalModel::PrincipalModel (Obra *O, QObject* parent):QAbstractTableModel(pa
     LeyendasCabecera[9]=QObject::tr("ImpPres\n");
     LeyendasCabecera[10]=QObject::tr("ImpCert\n");
 
+    Colores[eTipoDato::NORMAL] = Qt::black;
+    Colores[eTipoDato::BLOQUEADO] = Qt::red;
+    Colores[eTipoDato::DESCOMPUESTO] = Qt::magenta;
+
+
     miobra = O;
 
     ActualizarDatos();
@@ -50,7 +55,7 @@ QVariant PrincipalModel::headerData(int section, Qt::Orientation orientation, in
     {
         if (role == Qt::DisplayRole)
         {
-            return datos.at(0).at(section);
+            return datos.at(0).at(section).valor;
         }
     }
     return QAbstractTableModel::headerData(section, orientation, role);
@@ -67,8 +72,11 @@ QVariant PrincipalModel::data(const QModelIndex& index, int role) const
             indice = this->index(index.row()-1,index.column());            
         }
     }
-    QStringList fila = datos.at(indice.row()+1);//+1 porque la primera fila del array es el encabezado
-
+    QStringList fila;
+    for (auto elem:datos.at(indice.row()+1))//+1 porque la primera fila del array es el encabezado
+    {
+        fila.append(elem.valor);
+    }
     if (hayFilaVacia && index.row()==filavacia)
     {
         return QVariant();
@@ -177,7 +185,7 @@ bool PrincipalModel::insertRows(int row, int count, const QModelIndex & parent)
         hayFilaVacia = true;
         filavacia = row;
         endInsertRows();
-    }  
+    }
     return true;
 }
 
@@ -276,7 +284,7 @@ bool PrincipalModel::EditarUnidad(const QModelIndex & index, TEXTO unidad)
 
 bool PrincipalModel::EditarCantidad(const QModelIndex & index, float cantidad)
 {
-    if (miobra->hayMedicionPartidaActual())
+    if (miobra->HayMedicionPartidaActual())
     {
         DialogoSuprimirMedicion* d = new DialogoSuprimirMedicion(miobra->LeeCodigoObra());
         if (d->exec()==QDialog::Accepted && d->Suprimir())
@@ -298,7 +306,7 @@ bool PrincipalModel::EditarCantidad(const QModelIndex & index, float cantidad)
 
 bool PrincipalModel::EditarPrecio(const QModelIndex & index, float precio)
 {
-    if (miobra->hayDescomposicion())
+    if (miobra->HayDescomposicion())
     {
         DialogoPrecio* d = new DialogoPrecio(miobra->LeeCodigoActual());
         if (d->exec()==QDialog::Accepted)
@@ -344,57 +352,6 @@ bool PrincipalModel::EditarPrecio(const QModelIndex & index, float precio)
     return false;
 }
 
-void PrincipalModel::ActualizarDatos()
-{
-    datos.clear();
-    mapaDeBool.clear();
-    QStringList lineapadre;
-    QList<bool>bLineapadre;
-    lineapadre = RellenaLinea(miobra->Padre(), miobra->AristaPadre());
-    datos.append(lineapadre);
-    mapaDeBool.append(bLineapadre);
-
-    ListaAristasNodos listahijos = miobra->LeeDecompuesto();
-    QStringList lineahijo;
-    QList<bool>bLineahijo;
-    for (auto elem:listahijos)
-    {
-        lineahijo = RellenaLinea(elem.second, elem.first);
-        datos.append(lineahijo);
-        mapaDeBool.append(bLineahijo);
-        lineahijo.clear();
-        bLineahijo.clear();
-    }
-    for(int i=0; i<datos.at(0).length(); i++)
-    {
-        datos[0][i].prepend(LeyendasCabecera[i]);
-    }   
-}
-
-QStringList PrincipalModel::RellenaLinea(pNodo nodo, pArista arista)
-{
-
-    QStringList linea;
-    linea.append(nodo->datonodo.LeeCodigo());                    //codigo
-    linea.append(QString::number(nodo->datonodo.LeeNat()));      //naturaleza
-    linea.append(nodo->datonodo.LeeUd());                        //ud
-    linea.append((nodo->datonodo.LeeResumen()));                   //resumen
-    linea.append(QString::number(arista->datoarista.LeeMedicion().LeeTotal(),'f',3));     //Cantidad presupuestada(medida)
-    linea.append(QString::number(arista->datoarista.LeeCertificacion().LeeTotal(),'f',3));//Cantidad certificada
-    linea.append(QString::number((arista->datoarista.LeeCertificacion().LeeTotal()/arista->datoarista.LeeMedicion().LeeTotal())*100,'f',2));//porcentaje certificado
-    linea.append(QString::number(nodo->datonodo.LeeImportePres(),'f',3));               //precio de la medicion
-    linea.append(QString::number(nodo->datonodo.LeeImporteCert(),'f',3));               //precio de la certificacion
-    /*linea.append(nodo->datonodo.LeeImportePres()==0
-                    ? QString::number(nodo->datonodo.LeeImportePres()*1,'f',3)
-                    : QString::number(nodo->datonodo.LeeImportePres()*arista->datoarista.LeeMedicion().LeeTotal(),'f',3));*/
-    linea.append(CalculaCantidad(nodo,arista));
-    linea.append(nodo->datonodo.LeeImporteCert()==0
-                 ? QString::number(nodo->datonodo.LeeImporteCert()*1,'f',3)
-                 : QString::number(nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal(),'f',3));
-
-    return linea;
-}
-
 TEXTO PrincipalModel::CalculaCantidad(pNodo n, pArista A)
 {
     if (n->datonodo.LeeImportePres()==0)
@@ -410,4 +367,122 @@ TEXTO PrincipalModel::CalculaCantidad(pNodo n, pArista A)
         }
         return QString::number(n->datonodo.LeeImportePres()*A->datoarista.LeeMedicion().LeeTotal()*factor,'f',3);
     }
+}
+
+void PrincipalModel::ActualizarDatos()
+{
+    datos.clear();
+    QList<DatoCelda> lineapadre;
+    lineapadre = RellenaDatoLinea(miobra->Padre(), miobra->AristaPadre());
+    datos.append(lineapadre);
+
+    ListaAristasNodos listahijos = miobra->LeeDecompuesto();
+    qDebug()<<"Tamaño de la lista de hijos: "<<listahijos.size();
+    QList<DatoCelda> lineahijo;
+    for (auto elem:listahijos)
+    {
+        lineahijo = RellenaDatoLinea(elem.second, elem.first);
+        datos.append(lineahijo);
+        lineahijo.clear();
+    }
+    for(int i=0; i<datos.at(0).length(); i++)
+    {
+        datos[0][i].valor.prepend(LeyendasCabecera[i]);
+    }
+}
+
+QList<DatoCelda> PrincipalModel::RellenaDatoLinea(pNodo nodo, pArista arista)
+{
+    QList<DatoCelda>linea;
+    DatoCelda dato;
+
+    //codigo
+    dato.valor= nodo->datonodo.LeeCodigo();
+    dato.color = Colores[eTipoDato::NORMAL];
+    linea.append(dato);
+
+    //naturaleza
+    dato.valor= QString::number(nodo->datonodo.LeeNat());
+    dato.color = Colores[eTipoDato::NORMAL];
+    linea.append(dato);
+
+    //ud
+    dato.valor= nodo->datonodo.LeeUd();
+    dato.color = Colores[eTipoDato::NORMAL];
+    linea.append(dato);
+
+    //resumen
+    dato.valor= nodo->datonodo.LeeResumen();
+    dato.color = Colores[eTipoDato::NORMAL];
+    linea.append(dato);
+
+    //medicion
+    dato.valor= QString::number(arista->datoarista.LeeMedicion().LeeTotal(),'f',3);
+    miobra->PartidaConMedicion(arista)
+            ?dato.color = Colores[eTipoDato::DESCOMPUESTO]
+             :dato.color = Colores[eTipoDato::NORMAL];
+    linea.append(dato);
+
+    //certificacion
+    dato.valor= QString::number(arista->datoarista.LeeCertificacion().LeeTotal(),'f',3);
+    dato.color = Colores[eTipoDato::NORMAL];
+    //arista && arista->datoarista.LeeCertificacion().hayMedicion()?dato.color = Colores[eTipoDato::DESCOMPUESTO]:dato.color = Colores[eTipoDato::NORMAL];
+    linea.append(dato);
+
+    //porcentaje certificado
+    dato.valor= QString::number((arista->datoarista.LeeCertificacion().LeeTotal()/arista->datoarista.LeeMedicion().LeeTotal())*100,'f',2);
+    dato.color = Colores[eTipoDato::DESCOMPUESTO];
+    linea.append(dato);
+
+    //precio de la medicion
+    dato.valor= QString::number(nodo->datonodo.LeeImportePres(),'f',3);
+    miobra->PartidaConDescomposicion(arista)
+            ?dato.color = Colores[eTipoDato::DESCOMPUESTO]
+                :dato.color = Colores[eTipoDato::NORMAL];
+    linea.append(dato);
+
+    //precio de la certificacion
+    dato.valor= QString::number(nodo->datonodo.LeeImporteCert(),'f',3);
+    dato.color = QColor(Qt::red);
+    linea.append(dato);
+
+    //importe medicion
+    dato.valor= CalculaCantidad(nodo,arista);
+    dato.color = QColor(Qt::red);
+    linea.append(dato);
+
+    //importe certificacion
+    dato.valor= nodo->datonodo.LeeImporteCert()==0
+                 ? QString::number(nodo->datonodo.LeeImporteCert()*1,'f',3)
+                 : QString::number(nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal(),'f',3);
+    dato.color = QColor(Qt::red);
+    linea.append(dato);
+
+    return linea;
+}
+
+QColor PrincipalModel::LeeColor(int i, int j)
+{
+    return datos.at(i).at(j).color;
+}
+
+QString PrincipalModel::LeeColorS(int i, int j)
+{
+    if (LeeColor(i,j)==Qt::magenta)
+    {
+        return "MAGENTA";
+    }
+    else if (LeeColor(i,j)==Qt::black)
+    {
+        return "NEGRO";
+    }
+    else
+        return "NUSE";
+
+
+}
+
+bool PrincipalModel::HayListaDatos()
+{
+    return datos.size()>0;
 }

@@ -481,8 +481,14 @@
      </property>
      <addaction name="actionExportarFIEBCD"/>
     </widget>
+    <widget class="QMenu" name="menuAbrir_reciente">
+     <property name="title">
+      <string>Abrir reciente</string>
+     </property>
+    </widget>
     <addaction name="actionNuevo"/>
     <addaction name="actionAbrir"/>
+    <addaction name="menuAbrir_reciente"/>
     <addaction name="actionCerrar"/>
     <addaction name="separator"/>
     <addaction name="actionGuardar"/>
@@ -498,7 +504,6 @@
     <addaction name="actionObra_3"/>
     <addaction name="actionObra_4"/>
     <addaction name="actionObra_5"/>
-    <addaction name="separator"/>
     <addaction name="action_Salir"/>
     <addaction name="separator"/>
    </widget>
@@ -892,6 +897,11 @@
    </property>
    <property name="visible">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionD">
+   <property name="text">
+    <string>d</string>
    </property>
   </action>
  </widget>

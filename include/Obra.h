@@ -115,13 +115,15 @@ public:
     /**********seleccionar entre medicion y certificacion********/
     void cambiarEntreMedYCert();
     /***************************varias de consulta********************/
-    bool hayDescomposicion();
-    bool hayMedicion() const;
-    bool hayMedicionPartidaActual() const;
-    bool hayCertificacion() const;
+    bool HayDescomposicion();
+    bool PartidaConDescomposicion(const pArista& A);
+    bool PartidaConMedicion(const pArista& A);
+    bool HayMedicion() const;
+    bool HayMedicionPartidaActual() const;
+    bool HayCertificacion() const;
     bool EsPartidaVacia() const;
-    pNodo existeConcepto(const TEXTO& codigo);
-    bool existeHermano(const TEXTO& codigo);
+    pNodo ExisteConcepto(const TEXTO& codigo);
+    bool ExisteHermano(const TEXTO& codigo);
     bool NivelCero() const;
     bool NivelUno();
     bool NivelUno(pNodo nodo);
@@ -153,11 +155,7 @@ private:
     pArista aristaActual;
     std::stack <pArista>pilaAristas;
     //objeto usado para asignar la naturaleza del concepto
-    Codificacion codificacion;
-    //lista auxiliar para el copiado de conceptos
-    std::list<std::pair<pArista,pNodo>>nodosParaCopiar;
-    //elementos auxiliares para el copiapega de mediciones
-    std::list<LineaMedicion*> listaAuxiliar;//lista para almacenar lineas de medicion
+    Codificacion codificacion;  
     //miembros para la certificacion
     Certificacion Cert;
     int selectorMedCer;

@@ -1,6 +1,7 @@
 Tareas pendientes:
 
-1.- Implementar el borrado de filas no contiguas
+1.- Implementar el borrado de filas no contiguas						*
 2.- Implementar fórmulas
-3.- Fijar un valor en algún campo numérico de las columnas de medición
+3.- Fijar un valor en algún campo numérico de las columnas de medición	
+4.- Eliminar descomposicion si cambio una partida a un concepto simple
 

@@ -69,8 +69,8 @@ void Obra::CrearPartida (TEXTO CodPadre, float cantidad, TEXTO CodHijo)
 
 void Obra::CrearPartida (TEXTO CodPadre, MedCert med, TEXTO CodHijo)
 {
-    pNodo padre = existeConcepto(CodPadre);
-    pNodo hijo = existeConcepto(CodHijo);
+    pNodo padre = ExisteConcepto(CodPadre);
+    pNodo hijo = ExisteConcepto(CodHijo);
     if (!padre)
     {
         padre = DefinirConcepto(CodPadre);
@@ -90,7 +90,7 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
     //int N=Codificacion::Partida;//en principio la inicializo como partida
     int N=nat;
     //ahora toca ver si se trata de un porcentaje
-    pNodo nuevoNodo = existeConcepto(Cod);
+    pNodo nuevoNodo = ExisteConcepto(Cod);
     if (!nuevoNodo)
     {
         nuevoNodo = DefinirConcepto(Cod,Res,precio,ud,nat);
@@ -113,7 +113,7 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
 void Obra::CrearPartida(TEXTO CodigoHijo, int posicion)
 {
     qDebug()<<"Insertar por posicion en: "<<posicion;
-    pNodo nuevoNodo = existeConcepto(CodigoHijo);
+    pNodo nuevoNodo = ExisteConcepto(CodigoHijo);
     if (!nuevoNodo)
     {
        nuevoNodo = DefinirConcepto(CodigoHijo);       
@@ -492,7 +492,7 @@ void Obra::BorrarLineasMedicion(int pos, int numLineas)
 
 void Obra::borrarTodaMedicionOCertificacion()
 {
-    if (hayMedicion())
+    if (HayMedicion())
     {
         aristaActual->datoarista.ModificaMedCer(selectorMedCer).BorrarMedicion();
         Actualizar(aristaPadre->destino);
@@ -501,7 +501,7 @@ void Obra::borrarTodaMedicionOCertificacion()
 
 void Obra::borrarTodaMedicion()
 {
-    if (hayMedicion())
+    if (HayMedicion())
     {
         aristaActual->datoarista.ModificaMedCer(MedCert::MEDICION).BorrarMedicion();
         Actualizar(aristaPadre->destino);
@@ -510,7 +510,7 @@ void Obra::borrarTodaMedicion()
 
 void Obra::borrarTodaCertificacion()
 {
-    if (hayMedicion())
+    if (HayMedicion())
     {
         aristaActual->datoarista.ModificaMedCer(MedCert::CERTIFICACION).BorrarMedicion();
         Actualizar(aristaPadre->destino);
@@ -960,12 +960,41 @@ int Obra::verNumCertificaciones()
     return Cert.tamanno();
 }
 
-bool Obra::hayDescomposicion()
+bool Obra::HayDescomposicion()
 {
-    return aristaActual->destino->adyacente;
+    if (aristaActual)
+    {
+        return aristaActual->destino->adyacente;
+    }
+    return false;
 }
 
-bool Obra::hayMedicion() const
+bool Obra::PartidaConDescomposicion(const pArista &A)
+{
+    if (A)
+    {
+        return A->destino->adyacente;
+    }
+    return false;
+}
+
+bool Obra::PartidaConMedicion(const pArista& A)
+{
+    {
+        if (A->datoarista.LeeMedicion().hayMedicion())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        return A->datoarista.LeeMedicion().hayMedicion();
+    }
+    return false;
+}
+
+bool Obra::HayMedicion() const
 {
     //if (aristaActual)
     {            
@@ -973,7 +1002,7 @@ bool Obra::hayMedicion() const
     }   
 }
 
-bool Obra::hayMedicionPartidaActual() const
+bool Obra::HayMedicionPartidaActual() const
 {
     if (aristaActual)
     {
@@ -982,7 +1011,7 @@ bool Obra::hayMedicionPartidaActual() const
     return false;
 }
 
-bool Obra::hayCertificacion() const
+bool Obra::HayCertificacion() const
 {
     //return aristaActual->datoarista.LeeCertificacion().hayMedicion();
     return aristaPadre->datoarista.LeeCertificacion().hayMedicion();
@@ -997,7 +1026,7 @@ bool Obra::EsPartidaVacia() const
     return false;
 }
 
-pNodo Obra::existeConcepto(const TEXTO &codigo)
+pNodo Obra::ExisteConcepto(const TEXTO &codigo)
 {   
     auto it = mapaNodos.find(codigo);
     if (it!=mapaNodos.end())
@@ -1007,7 +1036,7 @@ pNodo Obra::existeConcepto(const TEXTO &codigo)
     return nullptr;
 }
 
-bool Obra::existeHermano(const TEXTO &codigo)
+bool Obra::ExisteHermano(const TEXTO &codigo)
 {
     pNodo hijo=nullptr;
     std::list<pNodo> lista = G.recorrerNodos();
@@ -1102,7 +1131,7 @@ void Obra::EscribeResumenObra(TEXTO resumen)
 
 void Obra::EscribeRaiz(TEXTO nombreRaiz)
 {
-    pNodo raiz = existeConcepto(nombreRaiz);
+    pNodo raiz = ExisteConcepto(nombreRaiz);
     G.escribeRaiz(raiz);
 }
 

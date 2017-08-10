@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QList>
 #include <QDir>
+#include <QSettings>
 
 #include "interfazobra.h"
 #include "Dialogos/dialogodatoscodigoresumen.h"
@@ -24,12 +25,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void updateRecentFileActions();
     QString strippedName(const QString &fullFileName);
 
 private slots:
     void ActionNuevo();
-    void ActionAbrir();
+    bool ActionAbrir();
     bool ActionGuardar();
     bool ActionGuardarComo();
     void ActionCerrar();
@@ -43,6 +43,11 @@ private slots:
     void CambiarObraActual(int indice);
     void CambiarMedCert(int indice);
 
+    void AbrirArchivo(const QString& nombrefichero);
+    bool ActionAbrirDesdeReciente();
+    void updateArchivosRecientesActions();
+
+
 private:
 
     struct MetaObra
@@ -55,12 +60,12 @@ private:
     std::list<MetaObra>ListaObras;
     std::list<MetaObra>::iterator obraActual;    
     QString rutaarchivo;
-
+    //menu abrir reciente
     QStringList recentFiles;
     enum { MaxRecentFiles = 5 };
     QAction *recentFileActions[MaxRecentFiles];
     QAction *separatorAction;
-
+    //fin de menu abrir reciente
     Ui::MainWindow *ui;
 
     bool ConfirmarContinuar();
@@ -75,6 +80,9 @@ private:
     //listas para copiar y pegar
     std::list<std::pair<pArista,pNodo>>ListaNodosCopiarPegar;
     Medicion ListaMedicionCopiarPegar;
+
+    void writeSettings();
+    void readSettings();
 };
 
 #endif // MAINWINDOW_H

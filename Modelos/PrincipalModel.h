@@ -18,6 +18,13 @@
 #include "../iconos.h"
 #include "../defs.h"
 
+struct DatoCelda
+{
+    QString valor;
+    QColor color;
+};
+Q_DECLARE_METATYPE(DatoCelda)
+
 
 class PrincipalModel : public QAbstractTableModel
 {
@@ -27,8 +34,8 @@ public:
 
     typedef std::list<std::pair<pNodo,pArista>> ListaNodosAristas;
     typedef std::list<std::pair<pArista,pNodo>> ListaAristasNodos;
-    enum class tipoprecio{NORMAL,BLOQUEADO,DESCOMPUESTO};
-
+    enum eTipoDato{NORMAL,BLOQUEADO,DESCOMPUESTO};
+    QColor Colores[3];
 
     PrincipalModel(Obra* O, QObject* parent=nullptr);
     ~PrincipalModel();
@@ -46,6 +53,7 @@ public:
     bool removeRows(int filaInicial, int numFilas, const QModelIndex& parent);
     bool HayFilaVacia();
     int FilaVacia();
+    bool HayListaDatos();
     void ActualizarDatos();
     bool esColumnaNumerica(int columna) const;
     void QuitarIndicadorFilaVacia();
@@ -59,18 +67,14 @@ public:
     bool EditarUnidad(const QModelIndex & index, TEXTO unidad);
     /*****************************************************************/
     void VerActual();
-    QStringList RellenaLinea(pNodo nodo, pArista arista);
+    QList <DatoCelda> RellenaDatoLinea(pNodo nodo, pArista arista);
+    QColor LeeColor(int i, int j);
+    QString LeeColorS(int i, int j);
     TEXTO CalculaCantidad(pNodo n, pArista A);
 
-
-/*signals:
-    void EditarCampoTexto (int, QString);
-    void EditarCampoNumerico(int,float);
-    void EditarNaturaleza (int);*/
-
 private:
-    QList <QStringList> datos;
-    QList<QList<bool>>mapaDeBool;
+
+    QList<QList<DatoCelda>>datos;
     QStringList cabecera;
     QString LeyendasCabecera[11];
     Obra* miobra;

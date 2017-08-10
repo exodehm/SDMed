@@ -6,7 +6,7 @@ Certificacion::~Certificacion(){}
 
 void Certificacion::anadir()
 {
-    std::pair<bool,Fecha>nuevacertificacion;
+    cert nuevacertificacion;
     nuevacertificacion.first=true;
     if (!certificaciones.empty())//si no es la primera insercion
     {
