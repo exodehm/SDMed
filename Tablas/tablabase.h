@@ -15,7 +15,7 @@
 #include "../Delegados/delegadomedicionesestandar.h"
 #include "../Delegados/delegadoiconos.h"
 #include "../Delegados/delegadoeditornumeros.h"
-#include "../Modelos/MedicionesModel.h"
+#include "../Modelos/MedCertModel.h"
 #include "../Modelos/PrincipalModel.h"
 #include "../filter.h"
 
@@ -49,6 +49,7 @@ signals:
     void CopiarMedicion();
     void PegarPartidas();
     void PegarMedicion();
+    void CertificarLineasMedicion();
 
 protected:
     QHeaderView* cabeceraHorizontal;

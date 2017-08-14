@@ -4,13 +4,25 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    label = new QLabel("Ver:");
+    //seccion ver medicion/certificacion
+    labelVerMedCert = new QLabel("Ver:");
     comboMedCert = new QComboBox;
     comboMedCert->addItem(tr("Medicion"));
     comboMedCert->addItem(tr("Certificación"));
-    ui->toolBar->addWidget(label);
-    ui->toolBar->addWidget(comboMedCert);
+    comboMedCert->setEnabled(false);//lo inicio desactivado mientras no haya una obra activa
+    ui->CertBar->addWidget(labelVerMedCert);
+    ui->CertBar->addWidget(comboMedCert);
+    //seccion annadir nueva certificacion
+    botonNuevaCertificacion = new QPushButton(tr("Añadir Certificacion"));
+    botonNuevaCertificacion->setEnabled(false);
+    ui->CertBar->addWidget(botonNuevaCertificacion);
+    //seccion certificacion actual
+    labelCertificacionActual = new QLabel(tr("Cert. actual"));
+    comboCertificacionActual = new QComboBox;
+    ui->CertBar->addWidget(labelCertificacionActual);
+    ui->CertBar->addWidget(comboCertificacionActual);
     setupActions();
+
 
     //establezco la ruta incial para localizar archivos
     ruta = QDir::currentPath();
@@ -43,6 +55,8 @@ void MainWindow::ActionNuevo()
     }
     delete cuadro;
     ui->actionGuardar->setEnabled(true);
+    comboMedCert->setEnabled(true);
+    botonNuevaCertificacion->setEnabled(true);
 }
 
 bool MainWindow::ActionAbrir()
@@ -75,7 +89,7 @@ bool MainWindow::ActionAbrir()
         AbrirArchivo(nombrefichero);
         ruta.setPath(nombrefichero);
         rutaarchivo=ruta.canonicalPath();
-        ui->actionGuardar->setEnabled(true);
+        ui->actionGuardar->setEnabled(true);        
         return true;
     }
     return false;
@@ -142,7 +156,9 @@ void MainWindow::AbrirArchivo(const QString &nombrefichero)
     MetaObra NuevaObra;
     NuevaObra.nombrefichero = nombrefichero;
     NuevaObra.miobra = new InterfazObra(nombrefichero);
-    AnadirObraAVentanaPrincipal(NuevaObra);    
+    AnadirObraAVentanaPrincipal(NuevaObra);
+    comboMedCert->setEnabled(true);
+    botonNuevaCertificacion->setEnabled(true);
 }
 
 
@@ -220,6 +236,8 @@ void MainWindow::ActionCerrar()
     if (ListaObras.empty())
     {
         ui->actionGuardar->setEnabled(false);
+        comboMedCert->setEnabled(false);
+        botonNuevaCertificacion->setEnabled(false);
     }
 }
 
@@ -307,6 +325,33 @@ void MainWindow::ActionAtras()
     obraActual->miobra->Retroceder();
 }
 
+void MainWindow::NuevaCertificacion()
+{
+    DialogoNuevaCertificacion d;
+    if (d.exec())
+    {
+        if (obraActual->miobra->LeeObra()->anadirCertificacion(d.LeeFecha()))
+        {
+            qDebug()<<"Nueva certificacion añadida con exito";
+            int nuevacert = obraActual->miobra->LeeObra()->verNumCertificaciones();
+            comboCertificacionActual->addItem(QString::number(nuevacert));
+            comboCertificacionActual->setCurrentIndex(nuevacert-1);
+        }
+        else
+        {
+            QMessageBox::warning(this, tr("Aviso"),
+                                           tr("La fecha ha de ser posterior a la de la última certificación"),
+                                 QMessageBox::Ok);
+        }
+    }
+}
+
+
+void MainWindow::CambiarCertificacionActual(int actual)
+{
+    obraActual->miobra->LeeObra()->EstablecerCertificacionActual(actual);
+}
+
 bool MainWindow::ConfirmarContinuar()
 {
     if (isWindowModified())
@@ -365,5 +410,7 @@ void MainWindow::setupActions()
     QObject::connect(ui->tabPrincipal,SIGNAL(currentChanged(int)),this,SLOT(CambiarObraActual(int)));
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
-    QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarMedCert(int)));    
+    QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarMedCert(int)));
+    QObject::connect(botonNuevaCertificacion,SIGNAL(pressed()),this,SLOT(NuevaCertificacion()));
+    QObject::connect(comboCertificacionActual,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarCertificacionActual(int)));
 }

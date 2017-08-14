@@ -15,9 +15,10 @@
 
 #include "./include/Obra.h"
 #include "./include/AbrirGuardar.h"
+
 #include "./Modelos/PrincipalModel.h"
-#include "./Modelos/MedicionesModel.h"
-//#include "./Tablas/tablabase.h"
+#include "./Modelos/MedCertModel.h"
+
 #include "./Tablas/tablaprincipal.h"
 #include "./Tablas/tablamedcert.h"
 #include "./Editor/editor.h"
@@ -60,6 +61,8 @@ public slots:
     void CopiarPartidasPortapapeles(const QModelIndexList &lista);
     void CopiarMedicion(Medicion& listaMedicionCopiarPegar);
     void PegarMedicion(const Medicion& ListaMedicion);
+    void Certificar();
+    void CambiarEntreMedicionYCertificacion(int n);
     void GuardarBC3(QString fileName);  
 
 signals:
@@ -71,7 +74,8 @@ signals:
 private:
     QHeaderView* cabeceraTablaP;
     PrincipalModel* modeloTablaP;
-    MedicionesModel* modeloTablaMC;
+    MedCertModel* modeloTablaMed;
+    MedCertModel* modeloTablaCert;
 
     QVBoxLayout* lienzoGlobal;
     QVBoxLayout* lienzoSuperior;
@@ -82,8 +86,8 @@ private:
     QTabWidget* separadorTablasMedicion;
 
     TablaBase* tablaPrincipal;
-    TablaBase* tablaMediciones;    
-
+    TablaBase* tablaMediciones;
+    TablaBase* tablaCertificaciones;
     Editor* editor;
 
     QModelIndex *indice;    

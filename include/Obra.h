@@ -86,7 +86,7 @@ public:
     void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar, bool ultimafila = false);
     void EditarCodificacion(int n);
     /*****funciones relacionadas con la medicion o certificacion de la partida********/
-    void InsertarLineasVaciasMedicion(int pos, int num);
+    void InsertarLineasVaciasMedicion(int tabla, int pos, int num);
     void inicializarActual();
     void Medir_O_Certificar();
     void AnadirMedicionCertificacion();
@@ -104,16 +104,16 @@ public:
     void PegarMedicion(int fila, const Medicion& ListaMedicion);
     void bloquearColumna(int nColumna, float fValor);
     void Desbloquear();
-    void Certificar();
-    void anadirCertificacion();
+    void Certificar(const Medicion& listaParaCertificar);
+    bool anadirCertificacion(TEXTO tFecha);
     void borrarCertificacion(int n);
     int verNumCertificaciones();
     int CertificacionActiva();
-    void SeleccionarCertificacion(int n);
+    void EstablecerCertificacionActual(int n);
     void cambiarFechaCertificacion(std::string fecha);
-    const float& LeeTotalMedicion() const;
+    const float& LeeTotalMedicion(int tabla) const;
     /**********seleccionar entre medicion y certificacion********/
-    void cambiarEntreMedYCert();
+    void cambiarEntreMedYCert(int n);
     /***************************varias de consulta********************/
     bool HayDescomposicion();
     bool PartidaConDescomposicion(const pArista& A);

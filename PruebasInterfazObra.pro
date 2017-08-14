@@ -31,7 +31,6 @@ SOURCES += main.cpp\
     src/Precio.cpp \
     src/Redondeos.cpp \
     src/Unidades.cpp \
-    Modelos/MedicionesModel.cpp \
     src/Codificacion.cpp \
     filter.cpp \
     Tablas/tablamedcert.cpp \
@@ -48,12 +47,13 @@ SOURCES += main.cpp\
     Delegados/delegadobase.cpp \
     Delegados/delegadoeditornumeros.cpp \
     mainwindow.cpp \
-    Dialogos/dialogodatoscodigoresumen.cpp
+    Dialogos/dialogodatoscodigoresumen.cpp \
+    Dialogos/dialogonuevacertificacion.cpp \
+    Modelos/MedCertModel.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
-    Editor/ui_editor.h \
-    Modelos/PrincipalModel.h \
+    Editor/ui_editor.h \    
     defs.h \
     Calc/include/Calc.h \
     Calc/include/nodocalc.h \
@@ -75,8 +75,7 @@ HEADERS  += interfazobra.h \
     include/Obra.h \
     include/Precio.h \
     include/Redondeos.h \
-    include/Unidades.h \
-    Modelos/MedicionesModel.h \
+    include/Unidades.h \    
     include/Codificacion.h \
     filter.h \
     Tablas/tablamedcert.h \
@@ -93,14 +92,18 @@ HEADERS  += interfazobra.h \
     Delegados/delegadobase.h \
     Delegados/delegadoeditornumeros.h \
     mainwindow.h \
-    Dialogos/dialogodatoscodigoresumen.h
+    Dialogos/dialogodatoscodigoresumen.h \
+    Modelos/PrincipalModel.h \
+    Dialogos/dialogonuevacertificacion.h \
+    Modelos/MedCertModel.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \
     Dialogos/dialogoprecio.ui \
     Ui/mainwindow.ui \
     Ui/dialogodatosgenerales.ui \
-    Ui/dialogodatoscodigoresumen.ui
+    Ui/dialogodatoscodigoresumen.ui \
+    Ui/dialogonuevacertificacion.ui
 
 RESOURCES += \
     Editor/iconosEditor.qrc \

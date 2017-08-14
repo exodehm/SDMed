@@ -123,13 +123,13 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
         {
             if (indice.row()>0)//si estoy en la segunda fila o mas
             {
-                //QModelIndex ind = table->model()->index(indice.row()-1,indice.column(), QModelIndex());
-                QModelIndex ind = table->model()->index(indice.row()-1,indice.column(), QModelIndex());
+                QModelIndex ind = table->model()->index(indice.row()-1,indice.column());
                 qDebug()<<"Fila: "<<ind.row()<<" - Columna: "<<ind.column();
                 emit table->CambiaFila(ind);
                 table->setCurrentIndex(ind);
                 return true;
             }
+            break;
         }
         case (Qt::Key_Down):
         {
@@ -143,7 +143,7 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             else
             {
                 QModelIndex ind = table->model()->index(indice.row()+1,indice.column(), QModelIndex());
-                qDebug()<<"Fila: "<<ind.row()<<" - Columna: "<<ind.column();
+                //qDebug()<<"Fila: "<<ind.row()<<" - Columna: "<<ind.column();
                 emit table->CambiaFila(ind);
                 table->setCurrentIndex(ind);
                 return true;
@@ -200,7 +200,7 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
                 qDebug()<<table->selectionModel()->selectedRows().size();
                 //table->model()->insertRows(indice.row(),table->selectionModel()->selectedRows().size());
                 table->model()->insertRow(table->currentIndex().row());
-                QModelIndex ind = table->model()->index(indice.row(),0);
+                QModelIndex ind = table->model()->index(indice.row(),tipoColumna::COMENTARIO);
                 table->setCurrentIndex(ind);
                 return true;
             }

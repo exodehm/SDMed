@@ -4,18 +4,25 @@ Certificacion::Certificacion(){}
 
 Certificacion::~Certificacion(){}
 
-void Certificacion::anadir()
+bool Certificacion::anadir(Fecha fecha)
 {
-    cert nuevacertificacion;
-    nuevacertificacion.first=true;
-    if (!certificaciones.empty())//si no es la primera insercion
+    Fecha fecha2 = verFechaCertificacion(certificaciones.size()-1);
+    if (tamanno() == 0 || fecha > fecha2)
     {
-        for (auto it=certificaciones.begin(); it!=certificaciones.end(); ++it)
+        cert nuevacertificacion;
+        nuevacertificacion.first=true;
+        nuevacertificacion.second=fecha;
+        if (!certificaciones.empty())//si no es la primera insercion
         {
-            (*it).first=false;//poner a 0 las anteriores
+            for (auto it=certificaciones.begin(); it!=certificaciones.end(); ++it)
+            {
+                (*it).first=false;//poner a 0 las anteriores
+            }
         }
+        certificaciones.push_back(nuevacertificacion);
+        return true;
     }
-    certificaciones.push_back(nuevacertificacion);
+    return false;
 }
 
 void Certificacion::eliminar(unsigned int posicion)
@@ -59,6 +66,13 @@ Fecha Certificacion::verFechaCertificacionActual()
     return 0;
 }
 
+Fecha Certificacion::verFechaCertificacion(int numCertificacion)
+{
+    auto it =certificaciones.begin();
+    std::advance(it,numCertificacion);
+    return it->second;
+}
+
 void Certificacion::cambiarCertificacionActual(unsigned int actual)
 {
     auto it=certificaciones.begin();
@@ -70,7 +84,8 @@ void Certificacion::cambiarCertificacionActual(unsigned int actual)
             (*it).first=false;//pongo a 0
         }
         it=certificaciones.begin();
-        advance(it,actual-1);
+        //advance(it,actual-1);
+        advance(it,actual);
         (*it).first=true;
     }
 }

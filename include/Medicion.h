@@ -39,7 +39,7 @@ public:
     //funciones miembro
     void Insertar (int fila, TEXTO comentario="", float unidades=0, float longitud=0, float latitud=0, float altura=0, TEXTO formula="", TipoLinea tipo = TipoLinea::NORMAL);
     void Insertar(int fila, LineaMedicion lineamed);
-    void InsertarLineasVacias(int pos, int num);
+    void InsertarLineasVacias(int pos, int num, int fase = 1);
     void EliminarLineas(int pos, int numLineas);
     void BorrarMedicion();
     void MostrarMedicion();

@@ -11,18 +11,18 @@ Dia::Dia()
 
     int Dia = tiempo->tm_mday;
     if (Dia<10)
-        {
-            dia[0]='0';
-            iss<<Dia;
-            iss>>dia[1];
-        }
+    {
+        dia[0]='0';
+        iss<<Dia;
+        iss>>dia[1];
+    }
     else
-        {
-            iss<<Dia/10;
-            iss>>dia[0];
-            iss<<Dia%10;
-            iss>>dia[1];
-        }
+    {
+        iss<<Dia/10;
+        iss>>dia[0];
+        iss<<Dia%10;
+        iss>>dia[1];
+    }
     dia[2]='\0';
 }
 
@@ -50,22 +50,22 @@ void Dia::EscribeDia(const char* d)
         dia[2]='\0';
     }
     else if (strlen(d)==1)//un digito
-        {
-            dia[0]='0';
-            dia[1]=d[0];
-            dia[2]=d[1];
-        }
+    {
+        dia[0]='0';
+        dia[1]=d[0];
+        dia[2]=d[1];
+    }
     else
-        {
-            dia[0]=d[0];
-            dia[1]=d[1];
-            dia[2]='\0';
-        }
+    {
+        dia[0]=d[0];
+        dia[1]=d[1];
+        dia[2]='\0';
+    }
 }
 
 void Dia::EscribeDia(const std::string d)
 {
-   EscribeDia(d.c_str());
+    EscribeDia(d.c_str());
 }
 
 void Dia::EscribeDia(const Dia& d)
@@ -77,10 +77,40 @@ void Dia::EscribeDia(const Dia& d)
 Dia& Dia::operator=(const Dia& d)
 {
     if (this!=&d)
-        {
-            strncpy(dia,d.dia,3);
-        }
+    {
+        strncpy(dia,d.dia,3);
+    }
     return *this;
+}
+
+bool Dia::operator<= (Dia& d)
+{
+    int dia1, dia2;
+    std::stringstream sdia1(this->LeeDia());
+    std::stringstream sdia2(d.LeeDia());
+    sdia1 >> dia1;
+    sdia2 >> dia2;
+    return dia1 <= dia2;
+}
+
+bool Dia::operator > (Dia& d)
+{
+    int dia1, dia2;
+    std::stringstream sdia1(this->LeeDia());
+    std::stringstream sdia2(d.LeeDia());
+    sdia1 >> dia1;
+    sdia2 >> dia2;
+    return dia1 > dia2;
+}
+
+bool Dia::operator < (Dia& d)
+{
+    int dia1, dia2;
+    std::stringstream sdia1(this->LeeDia());
+    std::stringstream sdia2(d.LeeDia());
+    sdia1 >> dia1;
+    sdia2 >> dia2;
+    return dia1 < dia2;;
 }
 
 std::ostream& operator <<(std::ostream& os, const Dia& d)
@@ -105,18 +135,18 @@ Mes::Mes()
     tiempo=localtime(&fecha_sistema);
     int Mes = tiempo->tm_mon + 1;
     if (Mes<10)
-        {
-            mes[0]='0';
-            iss<<Mes;
-            iss>>mes[1];
-        }
+    {
+        mes[0]='0';
+        iss<<Mes;
+        iss>>mes[1];
+    }
     else
-        {
-            iss<<Mes/10;
-            iss>>mes[0];
-            iss<<Mes%10;
-            iss>>mes[1];
-        }
+    {
+        iss<<Mes/10;
+        iss>>mes[0];
+        iss<<Mes%10;
+        iss>>mes[1];
+    }
     mes[2]='\0';
 }
 
@@ -138,23 +168,23 @@ const char* Mes::LeeMes() const
 void Mes::EscribeMes(const char* m)
 {
     if (strlen(m)==0)
-        {
-            mes[0]='0';
-            mes[1]='0';
-            mes[2]='\0';
-        }
+    {
+        mes[0]='0';
+        mes[1]='0';
+        mes[2]='\0';
+    }
     else if (strlen(m)==1)//un digito
-        {
-            mes[0]='0';
-            mes[1]=m[0];
-            mes[2]=m[1];
-        }
+    {
+        mes[0]='0';
+        mes[1]=m[0];
+        mes[2]=m[1];
+    }
     else
-        {
-            mes[0]=m[0];
-            mes[1]=m[1];
-            mes[2]=m[2];
-        }
+    {
+        mes[0]=m[0];
+        mes[1]=m[1];
+        mes[2]=m[2];
+    }
 }
 
 void Mes::EscribeMes(const std::string m)
@@ -170,10 +200,39 @@ void Mes::EscribeMes(const Mes& m)
 Mes& Mes::operator=(const Mes& m)
 {
     if (this!=&m)
-        {
-            strncpy(mes,m.mes,3);
-        }
+    {
+        strncpy(mes,m.mes,3);
+    }
     return *this;
+}
+
+bool Mes:: operator <= (Mes& m)
+{
+    int mes1, mes2;
+    std::stringstream smes1(this->LeeMes());
+    std::stringstream smes2(m.LeeMes());
+    smes1 >> mes1;
+    smes2 >> mes2;
+    return mes1 <= mes2;
+
+}
+bool Mes::operator > (Mes& m)
+{
+    int mes1, mes2;
+    std::stringstream smes1(this->LeeMes());
+    std::stringstream smes2(m.LeeMes());
+    smes1 >> mes1;
+    smes2 >> mes2;
+    return mes1 > mes2;
+}
+bool Mes::operator < (Mes& m)
+{
+    int mes1, mes2;
+    std::stringstream smes1(this->LeeMes());
+    std::stringstream smes2(m.LeeMes());
+    smes1 >> mes1;
+    smes2 >> mes2;
+    return mes1 < mes2;
 }
 
 std::ostream& operator <<(std::ostream& os, const Mes& m)
@@ -214,9 +273,9 @@ Anno::Anno()
 Anno::Anno(char* a)
 {
     for (int i=0; i<=4; i++)
-        {
-            anno[i]=a[i];
-        }
+    {
+        anno[i]=a[i];
+    }
 }
 
 Anno::Anno(std::string a)
@@ -232,30 +291,30 @@ const char* Anno::LeeAnno() const
 void Anno::EscribeAnno(const char* a)
 {
     if (strlen(a)==2)
+    {
+        if (a[0]>='8')
         {
-            if (a[0]>='8')
-                {
-                    anno[0]='1';
-                    anno[1]='9';
-                }
-            else
-                {
-                    anno[0]='2';
-                    anno[1]='0';
+            anno[0]='1';
+            anno[1]='9';
+        }
+        else
+        {
+            anno[0]='2';
+            anno[1]='0';
 
-                }
-            anno[2]=a[0];
-            anno[3]=a[1];
-            anno[4]='\0';
         }
+        anno[2]=a[0];
+        anno[3]=a[1];
+        anno[4]='\0';
+    }
     else
-        {
-            anno[0]=a[0];
-            anno[1]=a[1];
-            anno[2]=a[2];
-            anno[3]=a[3];
-            anno[4]='\0';
-        }
+    {
+        anno[0]=a[0];
+        anno[1]=a[1];
+        anno[2]=a[2];
+        anno[3]=a[3];
+        anno[4]='\0';
+    }
 }
 
 void Anno::EscribeAnno (const std::string a)
@@ -271,10 +330,40 @@ void Anno::EscribeAnno (const Anno& a)
 Anno& Anno::operator=(const Anno& a)
 {
     if (this!=&a)
-        {
-            strncpy(anno,a.anno,5);
-        }
+    {
+        strncpy(anno,a.anno,5);
+    }
     return *this;
+}
+
+bool Anno::operator<= (Anno& a)
+{
+    int anno1, anno2;
+    std::stringstream sanno1(this->LeeAnno());
+    std::stringstream sanno2(a.LeeAnno());
+    sanno1 >> anno1;
+    sanno2 >> anno2;
+    return anno1 <= anno2;
+}
+
+bool Anno::operator > (Anno& a)
+{
+    int anno1, anno2;
+    std::stringstream sanno1(this->LeeAnno());
+    std::stringstream sanno2(a.LeeAnno());
+    sanno1 >> anno1;
+    sanno2 >> anno2;
+    return anno1 > anno2;
+}
+
+bool Anno::operator < (Anno& a)
+{
+    int anno1, anno2;
+    std::stringstream sanno1(this->LeeAnno());
+    std::stringstream sanno2(a.LeeAnno());
+    sanno1 >> anno1;
+    sanno2 >> anno2;
+    return anno1 < anno2;
 }
 
 std::ostream& operator <<(std::ostream& os, const Anno& a)
@@ -299,9 +388,9 @@ Fecha::Fecha (const Fecha& f)
     anno=f.anno;
 }
 
-Fecha::Fecha(const Dia& d,const Mes& m,const Anno& a):dia(d),mes(m),anno(a){}
+Fecha::Fecha(const Dia& d,const Mes& m,const Anno& a):dia(d),mes(m),anno(a) {}
 
-Fecha::Fecha(std::string& f)
+Fecha::Fecha(std::string f)
 {
     EscribeFecha(f);
 }
@@ -316,11 +405,11 @@ Fecha::Fecha(const char* c)
 Fecha& Fecha::operator=(const Fecha& f)
 {
     if (this!=&f)
-        {
-            dia=f.dia;
-            mes=f.mes;
-            anno=f.anno;
-        }
+    {
+        dia=f.dia;
+        mes=f.mes;
+        anno=f.anno;
+    }
     return *this;
 }
 
@@ -328,47 +417,47 @@ Fecha& Fecha::operator=(const Fecha& f)
 void Fecha::EscribeFecha(std::string f)
 {
     if (f.size()==8)
-        {
-            dia.EscribeDia(f.substr(0,2).c_str());
-            mes.EscribeMes(f.substr(2,2).c_str());
-            anno.EscribeAnno(f.substr(4,4).c_str());
-        }
+    {
+        dia.EscribeDia(f.substr(0,2).c_str());
+        mes.EscribeMes(f.substr(2,2).c_str());
+        anno.EscribeAnno(f.substr(4,4).c_str());
+    }
     else if (f.size()==7)
-        {
-            dia.EscribeDia(f.substr(0,1).c_str());
-            mes.EscribeMes(f.substr(1,2).c_str());
-            anno.EscribeAnno(f.substr(3,4).c_str());
-        }
+    {
+        dia.EscribeDia(f.substr(0,1).c_str());
+        mes.EscribeMes(f.substr(1,2).c_str());
+        anno.EscribeAnno(f.substr(3,4).c_str());
+    }
     else if (f.size()==6)
-        {
-            dia.EscribeDia(f.substr(0,2).c_str());
-            mes.EscribeMes(f.substr(2,2).c_str());
-            anno.EscribeAnno(f.substr(4,2).c_str());
-        }
+    {
+        dia.EscribeDia(f.substr(0,2).c_str());
+        mes.EscribeMes(f.substr(2,2).c_str());
+        anno.EscribeAnno(f.substr(4,2).c_str());
+    }
     else if (f.size()==5)
-        {
-            dia.EscribeDia(f.substr(0,1).c_str());
-            mes.EscribeMes(f.substr(1,2).c_str());
-            anno.EscribeAnno(f.substr(3,2).c_str());
-        }
+    {
+        dia.EscribeDia(f.substr(0,1).c_str());
+        mes.EscribeMes(f.substr(1,2).c_str());
+        anno.EscribeAnno(f.substr(3,2).c_str());
+    }
     else if (f.size()==4)
-        {
-            dia.EscribeDia(f.substr(0,0).c_str());
-            mes.EscribeMes(f.substr(0,2).c_str());
-            anno.EscribeAnno(f.substr(2,2).c_str());
-        }
+    {
+        dia.EscribeDia(f.substr(0,0).c_str());
+        mes.EscribeMes(f.substr(0,2).c_str());
+        anno.EscribeAnno(f.substr(2,2).c_str());
+    }
     else if (f.size()==3)
-        {
-            dia.EscribeDia(f.substr(0,0).c_str());
-            mes.EscribeMes(f.substr(0,1).c_str());
-            anno.EscribeAnno(f.substr(1,2).c_str());
-        }
+    {
+        dia.EscribeDia(f.substr(0,0).c_str());
+        mes.EscribeMes(f.substr(0,1).c_str());
+        anno.EscribeAnno(f.substr(1,2).c_str());
+    }
     else if (f.size()==2)
-        {
-            dia.EscribeDia(f.substr(0,0).c_str());
-            mes.EscribeMes(f.substr(0,0).c_str());
-            anno.EscribeAnno(f.substr(0,2).c_str());
-        }
+    {
+        dia.EscribeDia(f.substr(0,0).c_str());
+        mes.EscribeMes(f.substr(0,0).c_str());
+        anno.EscribeAnno(f.substr(0,2).c_str());
+    }
 }
 
 Dia Fecha::LeeDia() const
@@ -413,6 +502,67 @@ std::string Fecha::PasarAString()
     std::stringstream ss;
     ss<<dia<<mes<<anno;
     return ss.str();
+}
+bool Fecha::operator<=(Fecha &f)
+{
+    //return f.LeeAnno()<=this->LeeAnno();
+    /*int anno1, anno2;
+    stringstream sanno1(f.LeeAnno());
+    stringstream sanno2(anno2);
+    sanno1 >> anno1;
+    sanno2 >> anno2;
+    std::cout<<LeeAnno()<<"vs"<<f.LeeAnno();*/
+    Anno anno1 = LeeAnno();
+    Anno anno2 = f.LeeAnno();
+    return anno1<=anno2;
+}
+
+bool Fecha::operator > (Fecha &f)
+{
+    //return f.LeeAnno()<=this->LeeAnno();
+    /*int anno1, anno2;
+    stringstream sanno1(f.LeeAnno());
+    stringstream sanno2(anno2);
+    sanno1 >> anno1;
+    sanno2 >> anno2;
+    std::cout<<LeeAnno()<<"vs"<<f.LeeAnno();*/
+    Anno anno1 = LeeAnno();
+    Anno anno2 = f.LeeAnno();
+    if(anno1 > anno2)
+    {
+        return true;
+    }
+    else if(anno1 < anno2)
+    {
+        return false;
+    }
+    else
+    {
+        Mes mes1 = LeeMes();
+        Mes mes2 = f.LeeMes();
+        if (mes1 > mes2)
+        {
+            return true;
+        }
+        else if (mes1 < mes2)
+        {
+            return false;
+        }
+        else
+        {
+            Dia dia1 = LeeDia();
+            Dia dia2 = f.LeeDia();
+            if (dia1 > dia2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+    return false;
 }
 
 /*

@@ -12,6 +12,7 @@
 
 #include "interfazobra.h"
 #include "Dialogos/dialogodatoscodigoresumen.h"
+#include "Dialogos/dialogonuevacertificacion.h"
 
 
 namespace Ui {
@@ -42,6 +43,8 @@ private slots:
     void ActionAtras();
     void CambiarObraActual(int indice);
     void CambiarMedCert(int indice);
+    void NuevaCertificacion();
+    void CambiarCertificacionActual(int actual);
 
     void AbrirArchivo(const QString& nombrefichero);
     bool ActionAbrirDesdeReciente();
@@ -72,9 +75,15 @@ private:
     void setupActions();
     void AnadirObraAVentanaPrincipal(MetaObra& nuevaobra);
     bool GuardarObra(QString nombreFichero);
+    //combo ver medicion/certificacion
     //el combo he de annadirlo a mano porque no se puede insertar un widget a una qToolBar desde QtDesigner
-    QLabel* label;
+    QLabel* labelVerMedCert;
     QComboBox* comboMedCert;
+    //boton nueva certificacion
+    QPushButton* botonNuevaCertificacion;
+    //combo certificacion actual
+    QLabel* labelCertificacionActual;
+    QComboBox* comboCertificacionActual;
 
     QDir ruta;
     //listas para copiar y pegar

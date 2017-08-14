@@ -47,6 +47,7 @@ void TablaMedCert::MostrarMenuLateralTabla(QPoint pos)
     if (indexes.size()==0)
     {
         AccionCopiar->setEnabled(false);
+        AccionCertificar->setEnabled(false);
     }
     menu->addAction(AccionCopiar);
     menu->addAction(AccionPegar);

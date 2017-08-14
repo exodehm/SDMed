@@ -1,5 +1,5 @@
-#ifndef MEDICIONESMODEL_H
-#define MEDICIONESMODEL_H
+#ifndef MEDCERTMODELBASE_H
+#define MEDCERTMODELBASE_H
 
 #include <QAbstractTableModel>
 #include <QStandardItemModel>
@@ -20,13 +20,13 @@
 
 
 
-class MedicionesModel : public QAbstractTableModel
+class MedCertModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
-    MedicionesModel(Obra* O, QObject* parent=nullptr);
-    ~MedicionesModel();
+    MedCertModel(Obra* O, int tablaorigen, QObject* parent=nullptr);
+    ~MedCertModel();
 
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;
@@ -45,10 +45,12 @@ signals:
     void EditarCampoLineaMedicion (QModelIndex, float, QString);
 
 
-private:
+protected:
     Obra* miobra;
     QList<QStringList>datos;
-    QStringList LeyendasCabecera;    
+    QStringList LeyendasCabecera;
+    int tabla;
 };
 
-#endif
+
+#endif // MEDCERTMODELBASE_H

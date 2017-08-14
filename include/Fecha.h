@@ -24,6 +24,10 @@ public:
     void EscribeDia (const Dia& d);
 
     Dia& operator=(const Dia& d);
+    bool operator <= (Dia& m);
+    bool operator > (Dia& m);
+    bool operator < (Dia& m);
+
 
     friend std::ostream& operator <<(std::ostream& os, const Dia& d);
     friend std::istream& operator >>(std::istream& is, Dia& d);
@@ -46,6 +50,9 @@ public:
     void EscribeMes (const Mes& m);
 
     Mes& operator=(const Mes& m);
+    bool operator <= (Mes& m);
+    bool operator > (Mes& m);
+    bool operator < (Mes& m);
 
     friend std::ostream& operator <<(std::ostream& os, const Mes& m);
     friend std::istream& operator >>(std::istream& is, Mes& m);
@@ -66,7 +73,10 @@ public:
     void EscribeAnno (const std::string a);
     void EscribeAnno (const Anno& a);
 
-    Anno& operator=(const Anno& a);
+    Anno& operator = (const Anno& a);
+    bool operator <= (Anno& a);
+    bool operator > (Anno& a);
+    bool operator < (Anno& a);
 
     friend std::ostream& operator <<(std::ostream& os, const Anno& a);
     friend std::istream& operator >>(std::istream& is, Anno& a);
@@ -78,7 +88,7 @@ public:
     //constructores
     Fecha();//construye una fecha con la fecha actual
     Fecha (const Fecha& f);
-    Fecha(std::string& f);//construye una fecha a partir de una cadena
+    Fecha(std::__cxx11::string f);//construye una fecha a partir de una cadena
     Fecha (const char* c);
     Fecha(const Dia& d,const Mes& m,const Anno& a);
     Fecha& operator=(const Fecha& f);
@@ -95,6 +105,9 @@ public:
     void EscribeAnno(const Anno& a);
     void EscribeFecha(std::string f);
     std::string PasarAString();
+    //operadores
+    bool operator <= (Fecha &);
+    bool operator > (Fecha &);
     //funciones miembro
     /*void imprimir();
     bool valid() const;

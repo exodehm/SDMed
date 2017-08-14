@@ -18,11 +18,12 @@ class Certificacion
     Certificacion();
     ~Certificacion();
 
-    void anadir();
+    bool anadir(Fecha fecha);
     void eliminar(unsigned int posicion);
     int tamanno();
     unsigned int verCertificacionActual();
     Fecha verFechaCertificacionActual();
+    Fecha verFechaCertificacion(int numCertificacion);
 
     void cambiarCertificacionActual(unsigned int actual);
     void cambiarFecha(std::string nuevafecha);

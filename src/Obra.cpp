@@ -1,8 +1,9 @@
 #include "../include/Obra.h"
 
-Obra::Obra():G(),selectorMedCer(0),Redondeos() {}
+Obra::Obra():G(),selectorMedCer(MedCert::MEDICION),Redondeos() {}
 
-Obra::Obra(TEXTO Cod, TEXTO Res, int ud, int CuadroDePrecios):G(),codificacion(CuadroDePrecios),selectorMedCer(0),Redondeos()
+Obra::Obra(TEXTO Cod, TEXTO Res, int ud, int CuadroDePrecios):G(),codificacion(CuadroDePrecios),
+    selectorMedCer(MedCert::MEDICION),Redondeos()
 {
     Concepto* conceptoRaiz=new Concepto(Cod,ud,Res);
     IniciarObra(*conceptoRaiz);
@@ -584,9 +585,18 @@ void Obra::CopiarMedicion(Medicion& ListaMedicion, const QList<int> &listaIndice
     //return listaMediciones;
 }*/
 
-void Obra::InsertarLineasVaciasMedicion(int pos, int num)
+void Obra::InsertarLineasVaciasMedicion(int tabla, int pos, int num)
 {
-    aristaPadre->datoarista.ModificaMedCer().InsertarLineasVacias(pos,num);
+    qDebug()<<"Insertando linea vacia en tabla: "<<selectorMedCer;
+    qDebug()<<"Certificacion actual: "<<Cert.verCertificacionActual();
+    if (tabla==MedCert::CERTIFICACION)
+    {
+        aristaPadre->datoarista.ModificaMedCer(tabla).InsertarLineasVacias(pos,num,Cert.verCertificacionActual());
+    }
+    else
+    {
+        aristaPadre->datoarista.ModificaMedCer(tabla).InsertarLineasVacias(pos,num);
+    }
 }
 
 void Obra::inicializarActual()
@@ -635,31 +645,26 @@ void Obra::Desbloquear()
     //aristaPadre->datoarista.LeeMedCer(selectorMedCer).DesbloquearTodo();
 }
 
-void Obra::Certificar()
+void Obra::Certificar(const Medicion &listaParaCertificar)
 {
-    /* copiarMedicion();
-     auto it=listaAuxiliar.begin();
-     int fasedemedicion=(*it)->LeeFase();//salvo la fase actual de medicion
-     //cambiamos la fase a la actual
-     for (it=listaAuxiliar.begin(); it!=listaAuxiliar.end(); ++it)
-     {
-         //en este paso estoy cambiando la fase de la medicion, lo que no me interesa
-         //por eso salvo ese dato al principio, para luego volver a cambiarlo...ya ya...terrible ñapa
-         (*it)->EscribeFase(Cert.verCertificacionActual());
-     }
-     std::cout<<std::endl;
-     aristaPadre->datoarista.LeeMedCer(MedCert::CERTIFICACION).Pegar(&listaAuxiliar);
-     //una vez copiadas las lineas de medicion con su nueva fase, reestablezco la antigua
-     for (it=listaAuxiliar.begin(); it!=listaAuxiliar.end(); ++it)
-     {
-         (*it)->EscribeFase(fasedemedicion);
-     }
-     Actualizar(aristaPadre->destino);*/
+    //if (aristaPadre->destino->datonodo.LeeNat()==Codificacion::Partida)//solo esta permitido que tengan medicion las partidas
+    {
+        int fila = 0;
+        for (auto it =listaParaCertificar.LeeLista().begin();it!=listaParaCertificar.LeeLista().end();++it)
+        {
+            LineaMedicion linea = (*it);
+            linea.EscribeFase(CertificacionActiva());
+            aristaPadre->datoarista.ModificaMedCer(MedCert::CERTIFICACION).Insertar(fila,(linea));
+            fila++;
+        }
+        Actualizar(aristaPadre->destino);
+    }
 }
 
-void Obra::anadirCertificacion()
+bool Obra::anadirCertificacion(TEXTO tFecha)
 {
-    Cert.anadir();
+    Fecha fecha(tFecha.toStdString());
+    return Cert.anadir(fecha);
 }
 
 void Obra::borrarCertificacion(int n)
@@ -672,7 +677,7 @@ int Obra::CertificacionActiva()
     return Cert.verCertificacionActual();
 }
 
-void Obra::SeleccionarCertificacion(int n)
+void Obra::EstablecerCertificacionActual(int n)
 {
     Cert.cambiarCertificacionActual(n);
 }
@@ -883,13 +888,14 @@ void Obra::EditarCertificacionPorc(float porcentaje)
 
 void Obra::EditarLineaMedicion (int fila, int columna, float valor, TEXTO comentario)
 {
+    qDebug()<<"Estoy en la tabla: "<<selectorMedCer;
     aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EditarCampo (fila, columna, valor, comentario);
     Actualizar(aristaPadre->destino);
 }
 
-const float& Obra::LeeTotalMedicion() const
+const float& Obra::LeeTotalMedicion(int tabla) const
 {
-    return aristaPadre->datoarista.LeeMedCer().LeeTotal();
+    return aristaPadre->datoarista.LeeMedCer(tabla).LeeTotal();
 }
 
 void Obra::CopiarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosSeleccionados, const QList<int> &listaIndices)
@@ -943,16 +949,10 @@ void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar,
     //std::cout<<"Implementando el pegado"<<std::endl;
 }
 
-void Obra::cambiarEntreMedYCert()
+void Obra::cambiarEntreMedYCert(int n)
 {
-    if (selectorMedCer==0)
-    {
-        selectorMedCer=1;
-    }
-    else
-    {
-        selectorMedCer=0;
-    }
+   selectorMedCer = n;
+   qDebug()<<"Estoy en la tabla: "<<n;
 }
 
 int Obra::verNumCertificaciones()

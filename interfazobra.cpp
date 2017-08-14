@@ -41,12 +41,17 @@ void InterfazObra::GenerarUI()
     separadorPrincipal->addWidget(tablaPrincipal);
 
     //tabla mediciones
-    modeloTablaMC = new MedicionesModel(O);
-    tablaMediciones =  new TablaMedCert(modeloTablaMC->columnCount(QModelIndex()), this);
-    tablaMediciones->setModel(modeloTablaMC);
+    modeloTablaMed = new MedCertModel(O, MedCert::MEDICION);
+    tablaMediciones =  new TablaMedCert(modeloTablaMed->columnCount(QModelIndex()), this);
+    tablaMediciones->setModel(modeloTablaMed);
+    //tabla certificaciones
+    modeloTablaCert = new MedCertModel(O, MedCert::CERTIFICACION);
+    tablaCertificaciones =  new TablaMedCert(modeloTablaCert->columnCount(QModelIndex()), this);
+    tablaCertificaciones->setModel(modeloTablaCert);
+    //tab para las tablas de mediciones y certificaciones
     separadorTablasMedicion = new QTabWidget;
     separadorTablasMedicion->addTab(tablaMediciones,QString(tr("Medicion")));
-    separadorTablasMedicion->addTab(new QWidget(),"+");
+    separadorTablasMedicion->addTab(tablaCertificaciones,QString(tr("Certificacion")));
 
     separadorPrincipal->addWidget(separadorTablasMedicion);
 
@@ -58,7 +63,8 @@ void InterfazObra::GenerarUI()
     lienzoGlobal->addWidget(separadorPrincipal);
 
     RefrescarVista(QModelIndex(),QModelIndex());
-    MostrarDeSegun(0);   
+    MostrarDeSegun(0);
+    O->cambiarEntreMedYCert(MedCert::MEDICION);
 
     /************signals y slots*****************/
     QObject::connect(tablaPrincipal,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
@@ -70,12 +76,12 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal,SIGNAL(PegarPartidas()),this,SLOT(PegarPartidasTablaP()));
     QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicionTablaM()));
     QObject::connect(tablaMediciones,SIGNAL(PegarMedicion()),this,SLOT(PegarMedicionTablaM()));
+    QObject::connect(tablaMediciones,SIGNAL(CertificarLineasMedicion()),this,SLOT(Certificar()));
     //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
     QObject::connect(modeloTablaP, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
-    QObject::connect(modeloTablaMC, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
-
-
-    //QObject::connect(tabMedCert,SIGNAL(currentChanged(int)),this,SLOT(CambiarMedCert(int)));
+    QObject::connect(modeloTablaMed, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
+    QObject::connect(modeloTablaCert, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
+    QObject::connect(separadorTablasMedicion,SIGNAL(currentChanged(int)),this,SLOT(CambiarEntreMedicionYCertificacion(int)));
 }
 
 Obra* InterfazObra::LeeObra()
@@ -155,7 +161,8 @@ void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
     Q_UNUSED (indice2);
 
     modeloTablaP->ActualizarDatos();
-    modeloTablaMC->ActualizarDatos();
+    modeloTablaMed->ActualizarDatos();
+    modeloTablaCert->ActualizarDatos();
     if (modeloTablaP->rowCount(QModelIndex())==0)
     {
         modeloTablaP->insertRow(0);
@@ -164,13 +171,12 @@ void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
     EscribirTexto();
     //MostrarTexto();
     modeloTablaP->layoutChanged();
-    modeloTablaMC->layoutChanged();
+    modeloTablaMed->layoutChanged();
+    modeloTablaCert->layoutChanged();
     tablaPrincipal->resizeColumnsToContents();
     tablaMediciones->resizeColumnsToContents();
+    tablaCertificaciones->resizeColumnsToContents();
     separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
-
-    //AjustarAltura();
-    //MostrarTablasMyC();
 }
 
 void InterfazObra::EscribirTexto()
@@ -314,7 +320,7 @@ void InterfazObra::CopiarMedicionPortapapeles(const QModelIndexList& lista)
         if (i!=0 && (i-10)%10!=0 && (i-9)%9!=0) //excluyo de los datos a copiar la primera y ultima columna (Fase e Id)
         {
             QModelIndex index = lista.at(i);
-            textoACopiar.append(modeloTablaMC->data(index).toString());
+            textoACopiar.append(modeloTablaMed->data(index).toString());
             textoACopiar.append('\t');
         }
     }    
@@ -342,6 +348,18 @@ void InterfazObra::PegarMedicion(const Medicion& ListaMedicion)
     QModelIndex indice = tablaMediciones->currentIndex();
     O->PegarMedicion(indice.row(),ListaMedicion);//indice.row() es la fila de la tabla a partir de la cual pego
     RefrescarVista(QModelIndex(),QModelIndex());
+}
+
+void InterfazObra::Certificar()
+{
+    Medicion listaParaCertificar;
+    CopiarMedicion(listaParaCertificar);
+    O->Certificar(listaParaCertificar);
+}
+
+void InterfazObra::CambiarEntreMedicionYCertificacion(int n)
+{
+    O->cambiarEntreMedYCert(n);
 }
 
 void InterfazObra::GuardarBC3(QString fileName)

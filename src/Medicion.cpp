@@ -54,9 +54,9 @@ void Medicion::Insertar(int fila, LineaMedicion lineamed)
     }
 }
 
-void Medicion::InsertarLineasVacias(int pos, int num)
+void Medicion::InsertarLineasVacias(int pos, int num, int fase)
 {
-    LineaMedicion lineavacia;
+    LineaMedicion lineavacia(fase);
     actual=lm.begin();
     std::advance(actual,pos);
     lm.insert(actual, num,lineavacia);

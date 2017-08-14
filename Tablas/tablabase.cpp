@@ -61,7 +61,7 @@ void TablaBase::Copiar()
 {
     qDebug()<<sender()->parent();
     TablaBase* tabla = qobject_cast<TablaBase*>(sender()->parent());
-    if (MedicionesModel* mod = qobject_cast<MedicionesModel*>(tabla->model()))
+    if (MedCertModel* mod = qobject_cast<MedCertModel*>(tabla->model()))
     {
         emit CopiarMedicion();
     }
@@ -75,7 +75,7 @@ void TablaBase::Pegar()
 {
     qDebug()<<sender()->parent();
     TablaBase* tabla = qobject_cast<TablaBase*>(sender()->parent());
-    if (MedicionesModel* mod = qobject_cast<MedicionesModel*>(tabla->model()))
+    if (MedCertModel* mod = qobject_cast<MedCertModel*>(tabla->model()))
     {
         emit PegarMedicion();
     }
@@ -86,8 +86,8 @@ void TablaBase::Pegar()
 }
 
 void TablaBase::Certificar()
-{
-    qDebug()<<"Certificar fila: ";
+{    
+    emit CertificarLineasMedicion();
 }
 
 QHeaderView* TablaBase::CabeceraDeTabla()
