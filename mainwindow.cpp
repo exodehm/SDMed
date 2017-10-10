@@ -7,13 +7,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     //seccion ver medicion/certificacion
     labelVerMedCert = new QLabel("Ver:");
     comboMedCert = new QComboBox;
-    comboMedCert->addItem(tr("Medicion"));
+    comboMedCert->addItem(tr("Medición"));
     comboMedCert->addItem(tr("Certificación"));
     comboMedCert->setEnabled(false);//lo inicio desactivado mientras no haya una obra activa
     ui->CertBar->addWidget(labelVerMedCert);
     ui->CertBar->addWidget(comboMedCert);
     //seccion annadir nueva certificacion
-    botonNuevaCertificacion = new QPushButton(tr("Añadir Certificacion"));
+    botonNuevaCertificacion = new QPushButton(tr("Añadir Certificación"));
     botonNuevaCertificacion->setEnabled(false);
     ui->CertBar->addWidget(botonNuevaCertificacion);
     //seccion certificacion actual
@@ -101,11 +101,13 @@ void MainWindow::AnadirObraAVentanaPrincipal(MetaObra &nuevaobra)
     QObject::connect(nuevaobra.miobra,SIGNAL(PegarP()),this,SLOT(ActionPegar()));
     QObject::connect(nuevaobra.miobra,SIGNAL(CopiarM()),this,SLOT(ActionCopiar()));
     QObject::connect(nuevaobra.miobra,SIGNAL(PegarM()),this,SLOT(ActionPegar()));
+    QObject::connect(nuevaobra.miobra,SIGNAL(ActivarBoton(int)),this,SLOT(ActivarDesactivarBotonesUndoRedo(int)));
     ui->tabPrincipal->addTab(nuevaobra.miobra,nuevaobra.miobra->LeeObra()->LeeResumenObra());
     ui->tabPrincipal->setCurrentIndex(ui->tabPrincipal->currentIndex()+1);
     ListaObras.push_back(nuevaobra);
     obraActual=ListaObras.begin();
     std::advance(obraActual,ListaObras.size()-1);
+    ActivarDesactivarBotonesUndoRedo(obraActual->miobra->Pila()->index());
     QString leyenda = QString(tr("Creada la obra %1").arg(obraActual->miobra->LeeObra()->LeeResumenObra()));
     statusBar()->showMessage(leyenda,5000);
 }
@@ -118,6 +120,7 @@ void MainWindow::CambiarObraActual(int indice)
         {
             obraActual=ListaObras.begin();
             std::advance(obraActual,indice);
+            ActivarDesactivarBotonesUndoRedo(obraActual->miobra->Pila()->index());
         }
     }
 }
@@ -315,14 +318,43 @@ void MainWindow::ActionCortar()
     qDebug()<<"Accion Cortar";
 }
 
+void MainWindow::ActionUndo()
+{
+    if (HayObra())
+    {
+        obraActual->miobra->Undo();
+    }
+}
+
+void MainWindow::ActionRedo()
+{
+    if (HayObra())
+    {
+        obraActual->miobra->Redo();
+    }
+}
+
+void MainWindow::ActivarDesactivarBotonesUndoRedo(int indice)
+{
+    qDebug()<<"ActivarDesactivarBotonesUndoRedo(): "<<indice;
+    ui->actionDeshacer->setEnabled(indice!=0);
+    ui->actionRehacer->setEnabled(indice<obraActual->miobra->Pila()->count());
+}
+
 void MainWindow::ActionAdelante()
 {
-    obraActual->miobra->Avanzar();
+    if (HayObra())
+    {
+        obraActual->miobra->Avanzar();
+    }
 }
 
 void MainWindow::ActionAtras()
 {
-    obraActual->miobra->Retroceder();
+    if (HayObra())
+    {
+        obraActual->miobra->Retroceder();
+    }
 }
 
 void MainWindow::NuevaCertificacion()
@@ -345,7 +377,6 @@ void MainWindow::NuevaCertificacion()
         }
     }
 }
-
 
 void MainWindow::CambiarCertificacionActual(int actual)
 {
@@ -372,6 +403,11 @@ bool MainWindow::ConfirmarContinuar()
         }
     }
     return true;
+}
+
+bool MainWindow::HayObra()
+{
+    return ListaObras.size()>0;
 }
 
 void MainWindow::readSettings()
@@ -407,10 +443,12 @@ void MainWindow::setupActions()
     QObject::connect(ui->actionCopiar,SIGNAL(triggered(bool)),this,SLOT(ActionCopiar()));
     QObject::connect(ui->actionCortar,SIGNAL(triggered(bool)),this,SLOT(ActionCortar()));
     QObject::connect(ui->actionPegar,SIGNAL(triggered(bool)),this,SLOT(ActionPegar()));
+    QObject::connect(ui->actionDeshacer,SIGNAL(triggered(bool)),this,SLOT(ActionUndo()));
+    QObject::connect(ui->actionRehacer,SIGNAL(triggered(bool)),this,SLOT(ActionRedo()));
     QObject::connect(ui->tabPrincipal,SIGNAL(currentChanged(int)),this,SLOT(CambiarObraActual(int)));
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
     QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarMedCert(int)));
     QObject::connect(botonNuevaCertificacion,SIGNAL(pressed()),this,SLOT(NuevaCertificacion()));
-    QObject::connect(comboCertificacionActual,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarCertificacionActual(int)));
+    QObject::connect(comboCertificacionActual,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarCertificacionActual(int)));    
 }

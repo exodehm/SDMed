@@ -39,6 +39,9 @@ private slots:
     void ActionPegar();
     void ActionCortar();
 
+    void ActionUndo();
+    void ActionRedo();
+
     void ActionAdelante();
     void ActionAtras();
     void CambiarObraActual(int indice);
@@ -49,6 +52,8 @@ private slots:
     void AbrirArchivo(const QString& nombrefichero);
     bool ActionAbrirDesdeReciente();
     void updateArchivosRecientesActions();
+
+    void ActivarDesactivarBotonesUndoRedo(int indice);
 
 
 private:
@@ -75,6 +80,8 @@ private:
     void setupActions();
     void AnadirObraAVentanaPrincipal(MetaObra& nuevaobra);
     bool GuardarObra(QString nombreFichero);
+
+    bool HayObra();
     //combo ver medicion/certificacion
     //el combo he de annadirlo a mano porque no se puede insertar un widget a una qToolBar desde QtDesigner
     QLabel* labelVerMedCert;

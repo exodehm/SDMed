@@ -8,6 +8,7 @@
 #include <QItemSelectionModel>
 #include <QList>
 #include <QStringList>
+#include <QUndoStack>
 #include <QVariant>
 #include <QDebug>
 #include <QTextStream>
@@ -16,6 +17,7 @@
 #include <iostream>
 
 #include "../include/Obra.h"
+#include "../Undo/editarmediciontextocommand.h"
 #include "../defs.h"
 
 
@@ -25,7 +27,7 @@ class MedCertModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    MedCertModel(Obra* O, int tablaorigen, QObject* parent=nullptr);
+    MedCertModel(Obra* O, int tablaorigen, QUndoStack* p, QObject* parent=nullptr);
     ~MedCertModel();
 
     int rowCount(const QModelIndex& parent) const;
@@ -50,6 +52,8 @@ protected:
     QList<QStringList>datos;
     QStringList LeyendasCabecera;
     int tabla;
+
+    QUndoStack* pila;
 };
 
 

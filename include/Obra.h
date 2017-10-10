@@ -67,6 +67,7 @@ public:
     void Actualizar(pNodo n);
     void Recalcular();
     void AjustarPrecio(float nuevoprecio);
+    float Redondear(float numero, int precision);
     /**********funciones de precio*************/
     void BloquearPrecio (float precio); //escribe un precio bloqueado y no considera el descompuesto
     void DesbloquearPrecio();           //anula el bloqueo y suma el descompuesto
@@ -128,13 +129,13 @@ public:
     bool NivelUno();
     bool NivelUno(pNodo nodo);
     bool EsPartida();
-    /************************Codigo y Resumen de la obra*************/
+    /************************Codigo, Resumen y Fecha de la obra*************/
     const TEXTO LeeCodigoObra() const;
     const TEXTO LeeCodigoPartida() const;
     const TEXTO LeeCodigoActual() const;
-    const TEXTO LeeResumenObra() const;
+    const TEXTO LeeResumenObra() const;    
     float LeePrecioObra() const;
-    const TEXTO LeeFecha() const;
+    const TEXTO LeeFechaObra() const;
     void EscribeCodigoObra(TEXTO codigo);
     void EscribeResumenObra(TEXTO resumen);
     void EscribeRaiz(TEXTO nombreRaiz);

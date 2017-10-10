@@ -12,5 +12,7 @@
         <file>images/close.png</file>
         <file>images/Adelante.png</file>
         <file>images/Atras.png</file>
+		<file>images/deshacer.png</file>
+		<file>images/rehacer.png</file>
     </qresource>
 </RCC>

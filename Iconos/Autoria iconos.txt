@@ -6,3 +6,4 @@ folder.png->Madebyoliver
 file.png->Madebyoliver
 truck.png->Freepik
 delete.png->Freepik
+deshacer y rehacer->Freepik 

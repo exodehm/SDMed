@@ -417,8 +417,10 @@ void Obra:: SumarHijos(pNodo padre)
             {
                 elem.second->datonodo.EscribeImportePres(sumapres/100.0);
             }
-            sumapres+=precio * medicion;
-            sumacert+=precio * certificacion;
+            sumapres+=Redondear(precio * medicion,3);
+            sumacert+=Redondear(precio * certificacion,3);
+            qDebug()<<"sumapres: "<<sumapres;
+            qDebug()<<"sumacert: "<<sumacert;
         }
         padre->datonodo.EscribeImportePres(sumapres);
         padre->datonodo.EscribeImporteCert(sumacert);
@@ -764,6 +766,11 @@ void Obra::AjustarPrecio(float nuevoprecio)
          Actualizar(*Iterador);
      }*/
     std::cout<<std::endl;
+}
+
+float Obra::Redondear(float numero, int precision)
+{
+    return (floor((numero * pow(10, precision) + 0.5)) / pow(10, precision));
 }
 
 void Obra::DesbloquearPrecio()
@@ -1114,7 +1121,7 @@ float Obra::LeePrecioObra() const
     return G.LeeRaiz()->datonodo.LeeImportePres();
 }
 
-const TEXTO Obra::LeeFecha() const
+const TEXTO Obra::LeeFechaObra() const
 {
     return G.LeeRaiz()->datonodo.LeeFecha();
 }

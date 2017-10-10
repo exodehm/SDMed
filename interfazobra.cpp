@@ -7,9 +7,7 @@ InterfazObra::InterfazObra(QString nombrefichero, QWidget *parent):QWidget(paren
     O = A->Leer(nombrefichero);
     if (O)
     {
-        O->IrAInicio();
-        O->MostrarHijos();
-        GenerarUI();
+        IniciarObra();
     }
 }
 
@@ -18,10 +16,16 @@ InterfazObra::InterfazObra(QString codigo, QString resumen,QWidget *parent):QWid
     O= new Obra(codigo,resumen);
     if (O)
     {
-        O->IrAInicio();
-        O->MostrarHijos();
-        GenerarUI();
+       IniciarObra();
     }
+}
+
+void InterfazObra::IniciarObra()
+{
+    O->IrAInicio();
+    O->MostrarHijos();
+    pila = new QUndoStack(this);
+    GenerarUI();
 }
 
 InterfazObra::~InterfazObra()
@@ -37,17 +41,20 @@ void InterfazObra::GenerarUI()
     //tabla principal
     modeloTablaP = new PrincipalModel(O);
     tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()), separadorPrincipal);
+    tablaPrincipal->setObjectName("TablaP");
     tablaPrincipal->setModel(modeloTablaP);
     separadorPrincipal->addWidget(tablaPrincipal);
 
     //tabla mediciones
-    modeloTablaMed = new MedCertModel(O, MedCert::MEDICION);
+    modeloTablaMed = new MedCertModel(O, MedCert::MEDICION, pila);
     tablaMediciones =  new TablaMedCert(modeloTablaMed->columnCount(QModelIndex()), this);
+    tablaMediciones->setObjectName("TablaMC");
     tablaMediciones->setModel(modeloTablaMed);
     //tabla certificaciones
-    modeloTablaCert = new MedCertModel(O, MedCert::CERTIFICACION);
+    modeloTablaCert = new MedCertModel(O, MedCert::CERTIFICACION, pila);
     tablaCertificaciones =  new TablaMedCert(modeloTablaCert->columnCount(QModelIndex()), this);
     tablaCertificaciones->setModel(modeloTablaCert);
+    tablaCertificaciones->setEnabled(false);
     //tab para las tablas de mediciones y certificaciones
     separadorTablasMedicion = new QTabWidget;
     separadorTablasMedicion->addTab(tablaMediciones,QString(tr("Medicion")));
@@ -82,11 +89,18 @@ void InterfazObra::GenerarUI()
     QObject::connect(modeloTablaMed, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
     QObject::connect(modeloTablaCert, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
     QObject::connect(separadorTablasMedicion,SIGNAL(currentChanged(int)),this,SLOT(CambiarEntreMedicionYCertificacion(int)));
+
+    QObject::connect(pila,SIGNAL(indexChanged(int)),this,SLOT(ActivarDesactivarUndoRedo(int)));
 }
 
 Obra* InterfazObra::LeeObra()
 {
     return O;
+}
+
+QUndoStack* InterfazObra::Pila()
+{
+    return pila;
 }
 
 void InterfazObra::MostrarDeSegun(int indice)
@@ -146,13 +160,20 @@ void InterfazObra::Retroceder()
 {
     modeloTablaP->QuitarIndicadorFilaVacia();
     GuardarTextoPartida();
-    O->Anterior();
-    //O->MostrarHijos();
-    /*if (!O->HayHijos() && (O->EsPartida() || O->EsCapitulo()))
-    {
-        InsertarFilaVacia();
-    }*/
+    O->Anterior();   
     RefrescarVista(QModelIndex(),QModelIndex());
+}
+
+void InterfazObra::Undo()
+{
+    qDebug()<<"Undo en: "<<O->LeeResumenObra();
+    pila->undo();
+}
+
+void InterfazObra::Redo()
+{
+    qDebug()<<"Redo en: "<<O->LeeResumenObra();
+    pila->redo();
 }
 
 void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
@@ -348,6 +369,11 @@ void InterfazObra::PegarMedicion(const Medicion& ListaMedicion)
     QModelIndex indice = tablaMediciones->currentIndex();
     O->PegarMedicion(indice.row(),ListaMedicion);//indice.row() es la fila de la tabla a partir de la cual pego
     RefrescarVista(QModelIndex(),QModelIndex());
+}
+
+void InterfazObra::ActivarDesactivarUndoRedo(int indice)
+{
+    ActivarBoton(indice);
 }
 
 void InterfazObra::Certificar()

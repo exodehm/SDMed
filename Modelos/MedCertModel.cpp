@@ -1,6 +1,6 @@
 #include "MedCertModel.h"
 
-MedCertModel::MedCertModel(Obra *O, int tablaorigen, QObject* parent):tabla(tablaorigen),QAbstractTableModel(parent)
+MedCertModel::MedCertModel(Obra *O, int tablaorigen, QUndoStack *p, QObject* parent):tabla(tablaorigen),pila(p),QAbstractTableModel(parent)
 {
     if (tabla==MedCert::MEDICION)
     {
@@ -103,9 +103,11 @@ bool MedCertModel::setData(const QModelIndex & index, const QVariant& value, int
         }
         else if (index.column()==tipoColumna::N || index.column()==tipoColumna::LONGITUD || index.column()==tipoColumna::ANCHURA || index.column()==tipoColumna::ALTURA)
         {
-            QString valor = value.toString().replace(",",".");
+            //QString valor = value.toString().replace(",",".");
             miobra->EditarLineaMedicion(index.row(), index.column(),value.toDouble(),"");//mando el valor numerico y el string vacío
         }
+        QString cadenaundo = "Editar texto de medicion";
+        pila->push(new EditarMedicionTextoCommand(cadenaundo));
         ActualizarDatos();
         emit dataChanged(index, index);
         return true;

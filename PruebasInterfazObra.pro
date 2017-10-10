@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     mainwindow.cpp \
     Dialogos/dialogodatoscodigoresumen.cpp \
     Dialogos/dialogonuevacertificacion.cpp \
-    Modelos/MedCertModel.cpp
+    Modelos/MedCertModel.cpp \
+    Undo/editarmediciontextocommand.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -95,7 +96,8 @@ HEADERS  += interfazobra.h \
     Dialogos/dialogodatoscodigoresumen.h \
     Modelos/PrincipalModel.h \
     Dialogos/dialogonuevacertificacion.h \
-    Modelos/MedCertModel.h
+    Modelos/MedCertModel.h \
+    Undo/editarmediciontextocommand.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \

@@ -12,6 +12,7 @@
 #include <QSplitter>
 #include <QPushButton>
 #include <QTabWidget>
+#include <QUndoStack>
 
 #include "./include/Obra.h"
 #include "./include/AbrirGuardar.h"
@@ -32,9 +33,12 @@ public:
     explicit InterfazObra(QString codigo, QString resumen, QWidget *parent=nullptr);
     ~InterfazObra();
 
+    void IniciarObra();
     void GenerarUI();
     void EscribirTexto();
     void GuardarTextoPartida();
+
+    QUndoStack* Pila();
 
 public slots:
 
@@ -49,6 +53,8 @@ public slots:
     void MostrarDeSegun(int indice);
     void Avanzar();
     void Retroceder();
+    void Undo();
+    void Redo();
     void RefrescarVista(QModelIndex indice1, QModelIndex indice2);
     //void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
     void CopiarPartidasTablaP();
@@ -63,13 +69,16 @@ public slots:
     void PegarMedicion(const Medicion& ListaMedicion);
     void Certificar();
     void CambiarEntreMedicionYCertificacion(int n);
-    void GuardarBC3(QString fileName);  
+    void GuardarBC3(QString fileName);
+    void ActivarDesactivarUndoRedo(int indice);
 
 signals:
     void CopiarP();
     void PegarP();
     void CopiarM();
     void PegarM();
+    void ActivarBoton(int);
+
 
 private:
     QHeaderView* cabeceraTablaP;
@@ -90,7 +99,9 @@ private:
     TablaBase* tablaCertificaciones;
     Editor* editor;
 
-    QModelIndex *indice;    
+    QModelIndex *indice;
+
+    QUndoStack* pila;
 
     Obra* O;
 };
