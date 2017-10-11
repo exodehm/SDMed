@@ -18,6 +18,7 @@
 
 #include "../include/Obra.h"
 #include "../Undo/editarmediciontextocommand.h"
+#include "../Undo/editarmedicionnumerocommand.h"
 #include "../defs.h"
 
 
@@ -42,6 +43,7 @@ public:
     bool filaVacia(const QStringList& linea);
     void ActualizarDatos();
     void VerMedCert(QList<QStringList>&datos);
+    void emitDataChanged(const QModelIndex &index);
 
 signals:
     void EditarCampoLineaMedicion (QModelIndex, float, QString);

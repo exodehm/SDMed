@@ -2,19 +2,30 @@
 #define EDITARMEDICIONTEXTOCOMMAND_H
 
 #include <QUndoCommand>
+#include <QModelIndex>
 #include <QDebug>
+
+#include "./include/Obra.h"
+#include "./Modelos/MedCertModel.h"
+
+class MedCertModel;
 
 
 class EditarMedicionTextoCommand : public QUndoCommand
 {
 public:
-    EditarMedicionTextoCommand(QString descripcion, QUndoCommand* parent = nullptr);
+    EditarMedicionTextoCommand(Obra* O, MedCertModel* M,  QModelIndex I, QVariant V, QString descripcion, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
+
+private:
+
+    Obra* obra;
+    MedCertModel* modelo;
+    int fila, columna;
+    QVariant valorAntiguo;
+    QVariant valorNuevo;
 };
 
 #endif // EDITARMEDICIONTEXTOCOMMAND_H
-
-//CambiaValorCommand(const QModelIndex &indiceAnterior, const QModelIndex &indiceActual, const QVariant &value, MiModel* m, );
-

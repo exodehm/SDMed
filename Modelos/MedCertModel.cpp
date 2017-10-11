@@ -94,22 +94,22 @@ Qt::ItemFlags MedCertModel::flags(const QModelIndex &index) const
 
 bool MedCertModel::setData(const QModelIndex & index, const QVariant& value, int role)
 {
-    if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
+    if (index.isValid() && (role == Qt::EditRole/* || role == Qt::DisplayRole*/))
     {
         if (index.column()==tipoColumna::COMENTARIO || index.column()==tipoColumna::FORMULA)
         {
             qDebug()<<"Actualizando comentario o formula...";
-            miobra->EditarLineaMedicion(index.row(), index.column(),0, value.toString());//mando el string y el valor numerico a 0
+            QString cadenaundo = "Editar comentario o formula de medicion";
+            pila->push(new EditarMedicionTextoCommand(miobra, this, index, value, cadenaundo));
         }
         else if (index.column()==tipoColumna::N || index.column()==tipoColumna::LONGITUD || index.column()==tipoColumna::ANCHURA || index.column()==tipoColumna::ALTURA)
         {
-            //QString valor = value.toString().replace(",",".");
-            miobra->EditarLineaMedicion(index.row(), index.column(),value.toDouble(),"");//mando el valor numerico y el string vacío
-        }
-        QString cadenaundo = "Editar texto de medicion";
-        pila->push(new EditarMedicionTextoCommand(cadenaundo));
-        ActualizarDatos();
-        emit dataChanged(index, index);
+            QString cadenaundo = "Editar campo numerico de medicion";
+            pila->push(new EditarMedicionNumeroCommand(miobra, this, index, value, cadenaundo));
+            //miobra->EditarLineaMedicion(index.row(), index.column(),value.toDouble(),"");//mando el valor numerico y el string vacío
+        }        
+        //ActualizarDatos();//las quito por que estas funciones seran llamadas por la pila
+        //emit dataChanged(index, index);//las quito por que estas funciones seran llamadas por la pila
         return true;
     }
     return false;
@@ -149,6 +149,11 @@ bool MedCertModel::filaVacia(const QStringList& linea)
         i++;
     }
     return true;
+}
+
+void MedCertModel::emitDataChanged(const QModelIndex &index)
+{
+     emit dataChanged(index, index);
 }
 
 void MedCertModel::ActualizarDatos()
