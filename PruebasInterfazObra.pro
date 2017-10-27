@@ -50,8 +50,13 @@ SOURCES += main.cpp\
     Dialogos/dialogodatoscodigoresumen.cpp \
     Dialogos/dialogonuevacertificacion.cpp \
     Modelos/MedCertModel.cpp \
-    Undo/editarmediciontextocommand.cpp \
-    Undo/editarmedicionnumerocommand.cpp
+    Undo/undomedicion.cpp \
+    Undo/undomover.cpp \
+    Undo/undoeditartextopartida.cpp \
+    Undo/undoprincipal.cpp \
+    Undo/undoeditarprecio.cpp \
+    Undo/undoeditarcantidad.cpp \
+    Undo/undoeditarresumen.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -98,8 +103,13 @@ HEADERS  += interfazobra.h \
     Modelos/PrincipalModel.h \
     Dialogos/dialogonuevacertificacion.h \
     Modelos/MedCertModel.h \
-    Undo/editarmediciontextocommand.h \
-    Undo/editarmedicionnumerocommand.h
+    Undo/undomedicion.h \
+    Undo/undomover.h \
+    Undo/undoeditartextopartida.h \
+    Undo/undoprincipal.h \
+    Undo/undoeditarprecio.h \
+    Undo/undoeditarcantidad.h \
+    Undo/undoeditarresumen.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \

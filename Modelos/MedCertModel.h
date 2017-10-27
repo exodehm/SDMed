@@ -14,11 +14,11 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QLocale>
+#include <QModelIndex>
 #include <iostream>
 
 #include "../include/Obra.h"
-#include "../Undo/editarmediciontextocommand.h"
-#include "../Undo/editarmedicionnumerocommand.h"
+#include "../Undo/undomedicion.h"
 #include "../defs.h"
 
 
@@ -44,9 +44,11 @@ public:
     void ActualizarDatos();
     void VerMedCert(QList<QStringList>&datos);
     void emitDataChanged(const QModelIndex &index);
+    QModelIndex IndiceAnterior();
 
 signals:
     void EditarCampoLineaMedicion (QModelIndex, float, QString);
+    void Posicionar (QModelIndex indice);
 
 
 protected:

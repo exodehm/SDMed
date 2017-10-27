@@ -9,10 +9,16 @@
 #include <QDebug>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QUndoStack>
 
 #include "../include/Obra.h"
 #include "../Dialogos/dialogosuprimirmedicion.h"
 #include "../Dialogos/dialogoprecio.h"
+
+#include "../Undo/undoprincipal.h"
+#include "../Undo/undoeditarprecio.h"
+#include "../Undo/undoeditarcantidad.h"
+#include "../Undo/undoeditarresumen.h"
 
 
 #include "../iconos.h"
@@ -37,7 +43,7 @@ public:
     enum eTipoDato{NORMAL,BLOQUEADO,DESCOMPUESTO};
     QColor Colores[3];
 
-    PrincipalModel(Obra* O, QObject* parent=nullptr);
+    PrincipalModel(Obra* O, QUndoStack* p, QObject* parent=nullptr);
     ~PrincipalModel();
 
     static const int IconIndexRole = Qt::UserRole + 1;
@@ -58,6 +64,7 @@ public:
     bool esColumnaNumerica(int columna) const;
     void QuitarIndicadorFilaVacia();
     Obra* LeeObra() const;
+    bool ModificarPrecioExistente(QModelIndex indice, float precio);
     /***********FUNCIONES DE EDICION**********************************/
     bool EditarCodigo(const QModelIndex & index, TEXTO codigo);
     bool EditarResumen(const QModelIndex & index, TEXTO resumen);
@@ -72,6 +79,8 @@ public:
     QString LeeColorS(int i, int j);
     TEXTO CalculaCantidad(pNodo n, pArista A);
 
+    void emitDataChanged(const QModelIndex &index);
+
 private:
 
     QList<QList<DatoCelda>>datos;
@@ -80,6 +89,7 @@ private:
     Obra* miobra;
     bool hayFilaVacia;
     int filavacia;
+    QUndoStack* pila;
 };
 
 #endif // PRINCIPALMODEL_H

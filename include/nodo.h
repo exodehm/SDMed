@@ -50,7 +50,7 @@ struct nodo
 
     void InsertarHijo(pNodo& hijo, pArista& nueva, pArista& precedente)
     {
-        //std::cout<<"INSERTAR NODO"<<std::endl;
+        //std::cout<<"INSERTAR NODO "<<hijo->datonodo<<std::endl;
         nueva->origen=this;
         nueva->destino=hijo;
 
@@ -76,7 +76,7 @@ struct nodo
             }
             precedente->siguiente=nueva;
         }
-        //std::cout<<"NODO INSERTADO CON EXITO"<<std::endl;
+        std::cout<<"NODO INSERTADO CON EXITO"<<std::endl;
     }
 };
 

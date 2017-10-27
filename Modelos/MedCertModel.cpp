@@ -96,20 +96,9 @@ bool MedCertModel::setData(const QModelIndex & index, const QVariant& value, int
 {
     if (index.isValid() && (role == Qt::EditRole/* || role == Qt::DisplayRole*/))
     {
-        if (index.column()==tipoColumna::COMENTARIO || index.column()==tipoColumna::FORMULA)
-        {
-            qDebug()<<"Actualizando comentario o formula...";
-            QString cadenaundo = "Editar comentario o formula de medicion";
-            pila->push(new EditarMedicionTextoCommand(miobra, this, index, value, cadenaundo));
-        }
-        else if (index.column()==tipoColumna::N || index.column()==tipoColumna::LONGITUD || index.column()==tipoColumna::ANCHURA || index.column()==tipoColumna::ALTURA)
-        {
-            QString cadenaundo = "Editar campo numerico de medicion";
-            pila->push(new EditarMedicionNumeroCommand(miobra, this, index, value, cadenaundo));
-            //miobra->EditarLineaMedicion(index.row(), index.column(),value.toDouble(),"");//mando el valor numerico y el string vacío
-        }        
-        //ActualizarDatos();//las quito por que estas funciones seran llamadas por la pila
-        //emit dataChanged(index, index);//las quito por que estas funciones seran llamadas por la pila
+        QModelIndex indiceantiguo= IndiceAnterior();       
+        QString cadenaundo = "Editar linea de medicion con el valor " + index.data().toString();
+        pila->push(new UndoMedicion(miobra,this,indiceantiguo,index,value,cadenaundo));
         return true;
     }
     return false;
@@ -185,4 +174,22 @@ void MedCertModel::VerMedCert(QList<QStringList> &datos)
             qDebug()<<dato;
         }*/
     }
+}
+
+QModelIndex MedCertModel::IndiceAnterior()
+{
+    int fila=0,columna=0;
+    const QUndoCommand* com = nullptr;
+    if (pila->count()-1>=0)
+    {
+        com = pila->command(pila->count()-1);
+    }
+    const UndoMedicion* com1 = dynamic_cast<const UndoMedicion*>(com);
+    if (com1 && pila->count()-1>=0)
+    {
+        fila = com1->LeeFila();
+        columna = com1->LeeColumna();
+    }
+    QModelIndex indiceantiguo= this->index(fila,columna);
+    return indiceantiguo;
 }

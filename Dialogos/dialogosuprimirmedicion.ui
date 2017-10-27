@@ -28,7 +28,7 @@
        <item>
         <widget class="QRadioButton" name="radioButton_Suprimir">
          <property name="text">
-          <string>Suprimir fases y líneas de medición</string>
+          <string>Eliminar medición</string>
          </property>
         </widget>
        </item>

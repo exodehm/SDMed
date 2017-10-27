@@ -1,6 +1,6 @@
 #include "PrincipalModel.h"
 
-PrincipalModel::PrincipalModel (Obra *O, QObject* parent):QAbstractTableModel(parent)
+PrincipalModel::PrincipalModel (Obra *O, QUndoStack *p, QObject* parent):pila(p), QAbstractTableModel(parent)
 {
     LeyendasCabecera[0]=QObject::tr("Código\n");
     LeyendasCabecera[1]=QObject::tr("Nat\n");
@@ -132,45 +132,38 @@ Qt::ItemFlags PrincipalModel::flags(const QModelIndex &index) const
 
 bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, int role)
 {
-    if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole) && value.toString()!=index.data().toString())
+    if (index.isValid() && (role == Qt::EditRole /*|| role == Qt::DisplayRole*/) && value.toString()!=index.data().toString())
     {
         switch (index.column())
         {
         case tipoColumna::CODIGO:
-        {
             qDebug()<<"editando código";
-            return EditarCodigo(index,value.toString());
-        }
+            EditarCodigo(index,value.toString());
+            break;
         case tipoColumna::NATURALEZA:
-        {
             qDebug()<<"editando naturaleza";
-            return EditarNaturaleza(index, value.toInt());
-        }
+            EditarNaturaleza(index,value.toInt());
+            break;
         case tipoColumna::UD:
-        {
             qDebug()<<"editando unidad";
-            return EditarUnidad(index, value.toString());
-        }
+            EditarUnidad(index,value.toString());
+            break;
         case tipoColumna::RESUMEN:
-        {
             qDebug()<<"editando resumen";
-            return EditarResumen(index, value.toString());
-        }
+            EditarResumen(index,value.toString());
+            break;
         case tipoColumna::CANPRES:
-        {
             qDebug()<<"editando cantidad";
-            return EditarCantidad(index,value.toFloat());
-        }
+            EditarCantidad(index,value.toFloat());
+            break;
         case tipoColumna::PRPRES:
-        {
             qDebug()<<"editando precio";
-            return EditarPrecio(index,value.toFloat());
-        }
+            EditarPrecio(index, value.toFloat());
+            break;
         default:
-        {
-            return false;
+            break;
         }
-        }
+        return true;
     }
     return false;
 }
@@ -263,8 +256,10 @@ bool PrincipalModel::EditarCodigo(const QModelIndex & index, TEXTO codigo)
 
 bool PrincipalModel::EditarResumen(const QModelIndex &index, TEXTO resumen)
 {
-    miobra->EditarResumen(resumen);
-    emit dataChanged(index, index);
+    //miobra->EditarResumen(resumen);
+    //emit dataChanged(index,index);
+    QString descripcion = "Editar resumen";
+    pila->push(new UndoEditarResumen(miobra,this,index,resumen,descripcion));
     return true;
 }
 
@@ -287,20 +282,13 @@ bool PrincipalModel::EditarCantidad(const QModelIndex & index, float cantidad)
     if (miobra->HayMedicionPartidaActual())
     {
         DialogoSuprimirMedicion* d = new DialogoSuprimirMedicion(miobra->LeeCodigoObra());
-        if (d->exec()==QDialog::Accepted && d->Suprimir())
-        {
-            miobra->EditarCantidad(cantidad);
-        }
-        else
+        if (d->exec()==QDialog::Rejected || d->Suprimir()==false)
         {
             return false;
         }
     }
-    else
-    {
-        miobra->EditarCantidad(cantidad);
-    }
-    emit dataChanged(index, index);
+    QString descripcion = "Editar cantidad " + QString::number(cantidad);
+    pila->push(new UndoEditarCantidad(miobra,this,index,cantidad,descripcion));
     return true;
 }
 
@@ -308,48 +296,51 @@ bool PrincipalModel::EditarPrecio(const QModelIndex & index, float precio)
 {
     if (miobra->HayDescomposicion())
     {
-        DialogoPrecio* d = new DialogoPrecio(miobra->LeeCodigoActual());
-        if (d->exec()==QDialog::Accepted)
-        {
-            switch (d->Respuesta())
-            {
-            case 1:
-            {
-                qDebug()<<"Suprimir descomposicion";
-                miobra->SuprimirDescomposicion();
-                miobra->EditarPrecio(precio);
-                break;
-            }
-            case 2:
-            {
-                qDebug()<<"Bloquear precio";
-                miobra->BloquearPrecio(precio);
-                break;
-            }
-            case 3:
-            {
-                qDebug()<<"Ajustar";
-                break;
-            }
-            default:
-                return false;
-                break;
-            }
-            emit dataChanged(index, index);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return ModificarPrecioExistente(index, precio);
     }
     else
     {
-        miobra->EditarPrecio(precio);
-        emit dataChanged(index, index);
+        QString descripcion = "Editar precio";
+        pila->push(new UndoEditarPrecio(miobra,this,index,precio,precio::MODIFICAR, descripcion));
+        //emit dataChanged(index, index);
         return true;
     }
     return false;
+}
+
+bool PrincipalModel::ModificarPrecioExistente(QModelIndex indice, float precio)
+{
+    DialogoPrecio* d = new DialogoPrecio(miobra->LeeCodigoActual());
+    if (d->exec()==QDialog::Accepted)
+    {
+        QString descripcion = "Editar precio";
+        switch (d->Respuesta())
+        {
+        case precio::SUPRIMIR:
+        {
+            pila->push(new UndoEditarPrecio(miobra,this,indice, precio, precio::SUPRIMIR, descripcion));
+            break;
+        }
+        case precio::BLOQUEAR:
+        {
+            pila->push(new UndoEditarPrecio(miobra,this,indice, precio, precio::BLOQUEAR, descripcion));
+            break;
+        }
+        case precio::AJUSTAR:
+        {
+            pila->push(new UndoEditarPrecio(miobra,this,indice, precio, precio::AJUSTAR, descripcion));
+            break;
+        }
+        default:
+            return false;
+            break;
+        }       
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 TEXTO PrincipalModel::CalculaCantidad(pNodo n, pArista A)
@@ -485,4 +476,8 @@ QString PrincipalModel::LeeColorS(int i, int j)
 bool PrincipalModel::HayListaDatos()
 {
     return datos.size()>0;
+}
+void PrincipalModel::emitDataChanged(const QModelIndex &index)
+{
+     emit dataChanged(index, index);
 }

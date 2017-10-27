@@ -49,7 +49,8 @@ public:
     void DuplicarPartida(TEXTO codigo);    
     /*****moverse por la obra**********/
     void BajarNivel();
-    void SubirNivel();
+    //void SubirNivel();
+    int SubirNivel();
     void Siguiente();
     void Anterior();
     void HijoSiguiente();
@@ -84,8 +85,10 @@ public:
     void EditarCertificacionCant(float cantidad);
     void EditarCertificacionPorc(float porcentaje);
     void CopiarPartidas(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, const QList<int> &listaIndices);
-    void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar, bool ultimafila = false);
-    void EditarCodificacion(int n);
+    void CopiarPartidas(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, Grafo<datonodo_t,datoarista_t>&grafo);
+    void Pegar(Grafo<datonodo_t,datoarista_t> grafo);
+    void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar, bool ultimafila = false);    
+    void EditarCodificacion(int n);    
     /*****funciones relacionadas con la medicion o certificacion de la partida********/
     void InsertarLineasVaciasMedicion(int tabla, int pos, int num);
     void inicializarActual();
@@ -103,6 +106,7 @@ public:
     void selecDeselecTodo();
     void CopiarMedicion(Medicion& ListaMedicion, const QList<int> &listaIndices);
     void PegarMedicion(int fila, const Medicion& ListaMedicion);
+    void PegarMedicion(int fila, const Medicion& ListaMedicion, pArista A);
     void bloquearColumna(int nColumna, float fValor);
     void Desbloquear();
     void Certificar(const Medicion& listaParaCertificar);
@@ -112,6 +116,7 @@ public:
     int CertificacionActiva();
     void EstablecerCertificacionActual(int n);
     void cambiarFechaCertificacion(std::string fecha);
+    const Medicion LeeListaMedicion(int tabla) const;
     const float& LeeTotalMedicion(int tabla) const;
     /**********seleccionar entre medicion y certificacion********/
     void cambiarEntreMedYCert(int n);
@@ -145,6 +150,12 @@ public:
     pArista AristaPadre();
     pArista AristaActual();
     std::list<std::pair<pArista,pNodo>>LeeDecompuesto();
+    /***********varias***********************************/
+    Grafo<datonodo_t,datoarista_t> GrafoAPartirDeNodo(pNodo nodo);
+    Grafo<datonodo_t,datoarista_t> LeeGrafo()
+    {
+        return G;
+    }
 
 
 private:

@@ -39,7 +39,7 @@ void InterfazObra::GenerarUI()
     separadorPrincipal = new QSplitter(Qt::Vertical);
 
     //tabla principal
-    modeloTablaP = new PrincipalModel(O);
+    modeloTablaP = new PrincipalModel(O, pila);
     tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()), separadorPrincipal);
     tablaPrincipal->setObjectName("TablaP");
     tablaPrincipal->setModel(modeloTablaP);
@@ -79,6 +79,7 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaMediciones,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
+    QObject::connect(modeloTablaMed,SIGNAL(Posicionar(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(CopiarPartidasTablaP()));
     QObject::connect(tablaPrincipal,SIGNAL(PegarPartidas()),this,SLOT(PegarPartidasTablaP()));
     QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicionTablaM()));
@@ -90,7 +91,7 @@ void InterfazObra::GenerarUI()
     QObject::connect(modeloTablaCert, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
     QObject::connect(separadorTablasMedicion,SIGNAL(currentChanged(int)),this,SLOT(CambiarEntreMedicionYCertificacion(int)));
 
-    QObject::connect(pila,SIGNAL(indexChanged(int)),this,SLOT(ActivarDesactivarUndoRedo(int)));
+    QObject::connect(pila,SIGNAL(indexChanged(int)),this,SLOT(ActivarDesactivarUndoRedo(int)));    
 }
 
 Obra* InterfazObra::LeeObra()
@@ -122,46 +123,39 @@ void InterfazObra::MostrarDeSegun(int indice)
 
 void InterfazObra::SubirNivel()
 {   
-    tablaPrincipal->clearSelection();
-    modeloTablaP->QuitarIndicadorFilaVacia();
-    GuardarTextoPartida();
-    O->SubirNivel();
-    RefrescarVista(QModelIndex(),QModelIndex());
-    //O->MostrarHijos();
-    //qDebug()<<"Subir nivel";
+    /*GuardarTextoPartida();*/
+    GuardarTextoPartidaInicial();
+    QString cadenaundo = tr("Subir nivel");
+    pila->push(new UndoMover(movimiento::ARRIBA,this,cadenaundo));
 }
 
 void InterfazObra::BajarNivel(QModelIndex indice)
 {
     Q_UNUSED (indice);
-    modeloTablaP->QuitarIndicadorFilaVacia();
-    GuardarTextoPartida();
-    O->BajarNivel();
-    /*if (!O->HayHijos() && (O->EsPartida() || O->EsCapitulo()))
-        {
-            InsertarFilaVacia();
-            QModelIndex posicionActual = modeloTablaP->index(0, 0, QModelIndex());
-            tablaP->setCurrentIndex(posicionActual);
-        }*/
-    RefrescarVista(QModelIndex(),QModelIndex());
-    //}
-    //qDebug()<<"Bajar nivel";
+    GuardarTextoPartidaInicial();
+    GuardarTextoPartidaModificada();
+    QString cadenaundo = tr("Bajar nivel");
+    pila->push(new UndoMover(movimiento::ABAJO, this,cadenaundo));
 }
 
 void InterfazObra::Avanzar()
 {
-    modeloTablaP->QuitarIndicadorFilaVacia();
+    /*
     GuardarTextoPartida();
-    O->Siguiente();
-    RefrescarVista(QModelIndex(),QModelIndex());
+    */
+    GuardarTextoPartidaInicial();
+    QString cadenaundo = tr("Avanzar");
+    pila->push(new UndoMover(movimiento::DERECHA,this,cadenaundo));
 }
 
 void InterfazObra::Retroceder()
 {
-    modeloTablaP->QuitarIndicadorFilaVacia();
+    /*
     GuardarTextoPartida();
-    O->Anterior();   
-    RefrescarVista(QModelIndex(),QModelIndex());
+    */
+    GuardarTextoPartidaInicial();
+    QString cadenaundo = tr("Retroceder");
+    pila->push(new UndoMover(movimiento::IZQUIERDA,this,cadenaundo));
 }
 
 void InterfazObra::Undo()
@@ -195,6 +189,7 @@ void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
     modeloTablaMed->layoutChanged();
     modeloTablaCert->layoutChanged();
     tablaPrincipal->resizeColumnsToContents();
+    //tablaPrincipal->setCurrentIndex(indiceActual);
     tablaMediciones->resizeColumnsToContents();
     tablaCertificaciones->resizeColumnsToContents();
     separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
@@ -215,20 +210,34 @@ void InterfazObra::PosicionarTablaP(QModelIndex indice)
             linea = indice.row()-1;
         }
     }
+    indiceActual=indice;
     O->PosicionarAristaActual(linea);
 }
 
 void InterfazObra::PosicionarTablaM(QModelIndex indice)
 {
     O->PosicionarLineaActualMedicion(indice.row());
+    
 }
 
-void InterfazObra::GuardarTextoPartida()
+void InterfazObra::GuardarTextoPartidaModificada()
 {
     if (editor->HayCambios())
     {
+        QString cadenaundo = ("Cambiar texto de partida a " + editor->LeeContenido());
+        pila->push(new UndoEditarTextoPartida(O,cadenaundo));
         O->EditarTexto(editor->LeeContenido());
     }
+}
+
+void InterfazObra::GuardarTextoPartidaInicial()
+{
+    textoPartidaActual = editor->LeeContenido();
+}
+
+TEXTO InterfazObra::TextoPartidaInicial()
+{
+    return textoPartidaActual;
 }
 
 void InterfazObra::CopiarPartidasTablaP()
@@ -398,4 +407,14 @@ void InterfazObra::GuardarBC3(QString fileName)
         ficheroBC3.close();
         delete bc3;
     }
+}
+
+PrincipalModel* InterfazObra::ModeloTablaPrincipal()
+{
+    return modeloTablaP;
+}
+
+TablaBase* InterfazObra::LeeTablaPrincipal()
+{
+    return tablaPrincipal;
 }

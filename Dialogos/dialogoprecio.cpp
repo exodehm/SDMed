@@ -18,15 +18,15 @@ int DialogoPrecio::Respuesta()
 {
     if (ui->radioButton_Suprimir->isChecked())
     {
-        return 1;
+        return precio::SUPRIMIR;
     }
     else if (ui->radioButton_Bloquear->isChecked())
     {
-        return 2;
+        return precio::BLOQUEAR;
     }
     else if(ui->radioButton_Ajustar->isChecked())
     {
-        return 3;
+        return precio::AJUSTAR;
     }
     return 0;
 }

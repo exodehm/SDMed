@@ -51,7 +51,8 @@ Obra::~Obra()
 void Obra::IniciarObra (Concepto conceptoRaiz)
 {
     pNodo primero=new nodo<Concepto,MedCert> (conceptoRaiz);
-    G.InsertarHijo(primero,primero, 1);
+    pArista aristaInicial=new arista<MedCert,Concepto>(1);
+    G.Insertar(primero,primero, aristaInicial);
     //mapaNodos.insert(std::pair<const TEXTO,pNodo>(primero->datonodo.LeeCodigo(),primero));
     mapaNodos.insert(primero->datonodo.LeeCodigo(),primero);
     padre=primero;
@@ -195,10 +196,10 @@ void Obra::DuplicarPartida(TEXTO codigo)
     //creo el nuevo nodo
     pNodo Nuevo = new nodo<Concepto,MedCert>(*NuevoConcepto);
     //creo una nueva arista con valor 0
-    //pArista aux= new arista<MedCert,Concepto>(0);
+    pArista aux= new arista<MedCert,Concepto>(0);
     //la inserto bajo el mismo padre que el nodo que estoy copiando
-    //G.InsertarHijo(padre,Nuevo, aristaActual, aux);
-    G.InsertarHijo(padre,Nuevo, 0);
+    G.Insertar(padre,Nuevo, aux);
+    //G.Insertar(padre,Nuevo, 0);
     //ahora ligo el nuevo nodo con los hijos del nodo que he copiado
     if (aristaActual->destino->adyacente)//si tiene hijos
     {
@@ -206,12 +207,12 @@ void Obra::DuplicarPartida(TEXTO codigo)
         while (auxiliar->siguiente)//mientras haya aristas que copiar
         {
             pArista nueva=new arista<MedCert,Concepto>(auxiliar->datoarista);
-            G.InsertarHijo(Nuevo, auxiliar->destino,nueva, aristaActual);
+            //G.Insertar(Nuevo, auxiliar->destino,nueva, aristaActual);
             auxiliar=auxiliar->siguiente;
         }
         //ultimo elemento
         pArista nueva=new arista<MedCert,Concepto>(auxiliar->datoarista);
-        G.InsertarHijo(Nuevo, auxiliar->destino,nueva, aristaActual);
+        //G.Insertar(Nuevo, auxiliar->destino,nueva, aristaActual);
         auxiliar=auxiliar->siguiente;
     }
     Actualizar(aristaActual->destino);
@@ -228,18 +229,41 @@ void Obra::BajarNivel()
     }    
 }
 
-void Obra::SubirNivel()
+/*void Obra::SubirNivel()
 {
     if (pilaAristas.size()>1)
     {
+        pArista aux = pilaAristas.top();
         pilaAristas.pop();
         aristaPadre=pilaAristas.top();
         padre=pilaAristas.top()->destino;
+        aristaActual=aux;
     }
     if (padre->adyacente)
     {
-        aristaActual=padre->adyacente;
+        //aristaActual=padre->adyacente;
+        //aristaActual=kk;
     }
+}*/
+
+int Obra::SubirNivel()
+{
+    if (pilaAristas.size()>1)
+    {
+        pArista aux = pilaAristas.top();
+        pilaAristas.pop();
+        aristaPadre=pilaAristas.top();
+        padre=pilaAristas.top()->destino;
+        aristaActual=aux;
+    }
+    pArista aux = padre->adyacente;
+    int pos=0;
+    while (aux!=aristaActual)
+    {
+        aux=aux->siguiente;
+        pos++;
+    }
+    return pos;
 }
 
 void Obra::Siguiente()
@@ -612,15 +636,19 @@ void Obra::inicializarActual()
 
 void Obra::PegarMedicion(int fila, const Medicion& ListaMedicion)
 {
-    if (aristaPadre->destino->datonodo.LeeNat()==Codificacion::Partida)//solo esta permitido que tengan medicion las partidas
-        for (auto it =ListaMedicion.LeeLista().begin();it!=ListaMedicion.LeeLista().end();++it)
-        {
-            aristaPadre->datoarista.ModificaMedCer().Insertar(fila,(*it));
-            fila++;
-        }
-        Actualizar(aristaPadre->destino);
+    PegarMedicion(fila, ListaMedicion, aristaPadre);
 }
 
+void Obra::PegarMedicion(int fila, const Medicion& ListaMedicion, pArista A)
+{
+    if (A->destino->datonodo.LeeNat()==Codificacion::Partida)//solo esta permitido que tengan medicion las partidas
+        for (auto it =ListaMedicion.LeeLista().begin();it!=ListaMedicion.LeeLista().end();++it)
+        {
+            A->datoarista.ModificaMedCer().Insertar(fila,(*it));
+            fila++;
+        }
+        Actualizar(A->destino);
+}
 
 void Obra::EditarCodificacion(int n)
 {
@@ -900,6 +928,12 @@ void Obra::EditarLineaMedicion (int fila, int columna, float valor, TEXTO coment
     Actualizar(aristaPadre->destino);
 }
 
+const Medicion Obra::LeeListaMedicion(int tabla) const
+{
+    //return aristaPadre->datoarista.LeeMedCer(tabla);
+    return aristaActual->datoarista.LeeMedCer(tabla);
+}
+
 const float& Obra::LeeTotalMedicion(int tabla) const
 {
     return aristaPadre->datoarista.LeeMedCer(tabla).LeeTotal();
@@ -920,6 +954,34 @@ void Obra::CopiarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosSelec
     {
         qDebug()<<elem.second->datonodo.LeeCodigo();
     }
+}
+void Obra::CopiarPartidas(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, Grafo<datonodo_t,datoarista_t>&grafo)
+{
+    pNodo nodo = grafo.LeeRaiz();
+    std::list<std::pair<pArista,pNodo>>listaNodos=grafo.recorrerHijos(nodo);
+    auto iterator = listaNodos.begin();
+    while(iterator!=listaNodos.end())
+    {
+        listaNodosSeleccionados.push_back(*iterator);
+        iterator++;
+    }
+    /*for (auto elem:listaIndices)
+    {
+        qDebug()<<"Numero de fila: "<<elem;
+        std::advance(iterator,elem);
+        listaNodosSeleccionados.push_back(*iterator);
+        iterator = listaNodos.begin();
+    }*/
+    for (auto elem : listaNodosSeleccionados)
+    {
+        qDebug()<<elem.second->datonodo.LeeCodigo();
+    }
+}
+
+void Obra::Pegar(Grafo<datonodo_t, datoarista_t> grafo)
+{
+    std::list<std::pair<pArista,pNodo>> lista = grafo.recorrerHijos(grafo.LeeRaiz());
+    Pegar(lista);
 }
 
 void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar, bool ultimafila)
@@ -1160,4 +1222,9 @@ pArista Obra::AristaActual()
 std::list<std::pair<pArista,pNodo>>Obra::LeeDecompuesto()
 {
     return G.recorrerHijos(padre);
+}
+
+Grafo<datonodo_t,datoarista_t> Obra::GrafoAPartirDeNodo(pNodo nodo)
+{
+    return G.CrearGrafoAPartirDeNodo(nodo);
 }
