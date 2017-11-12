@@ -708,11 +708,8 @@
    <property name="text">
     <string>Copiar</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
    <property name="shortcutContext">
-    <enum>Qt::WindowShortcut</enum>
+    <enum>Qt::WidgetShortcut</enum>
    </property>
   </action>
   <action name="actionCortar">
@@ -723,8 +720,8 @@
    <property name="text">
     <string>Cortar</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
+   <property name="shortcutContext">
+    <enum>Qt::WidgetWithChildrenShortcut</enum>
    </property>
   </action>
   <action name="actionPegar">
@@ -735,11 +732,8 @@
    <property name="text">
     <string>Pegar</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
-   </property>
    <property name="shortcutContext">
-    <enum>Qt::WindowShortcut</enum>
+    <enum>Qt::WidgetWithChildrenShortcut</enum>
    </property>
   </action>
   <action name="actionMover">
@@ -931,9 +925,6 @@
    <property name="text">
     <string>Deshacer</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Z</string>
-   </property>
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
    </property>
@@ -948,9 +939,6 @@
    </property>
    <property name="text">
     <string>Rehacer</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>

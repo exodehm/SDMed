@@ -56,7 +56,8 @@ SOURCES += main.cpp\
     Undo/undoprincipal.cpp \
     Undo/undoeditarprecio.cpp \
     Undo/undoeditarcantidad.cpp \
-    Undo/undoeditarresumen.cpp
+    Undo/undoeditarresumen.cpp \
+    Undo/undoeditarcodigo.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -109,7 +110,8 @@ HEADERS  += interfazobra.h \
     Undo/undoprincipal.h \
     Undo/undoeditarprecio.h \
     Undo/undoeditarcantidad.h \
-    Undo/undoeditarresumen.h
+    Undo/undoeditarresumen.h \
+    Undo/undoeditarcodigo.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \
@@ -117,7 +119,8 @@ FORMS    += \
     Ui/mainwindow.ui \
     Ui/dialogodatosgenerales.ui \
     Ui/dialogodatoscodigoresumen.ui \
-    Ui/dialogonuevacertificacion.ui
+    Ui/dialogonuevacertificacion.ui \
+    Editor/editor.ui
 
 RESOURCES += \
     Editor/iconosEditor.qrc \

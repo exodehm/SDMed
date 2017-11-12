@@ -18,7 +18,11 @@ namespace movimiento {
 }
 
 namespace precio {
-    enum eRespuesta{MODIFICAR, SUPRIMIR, BLOQUEAR, AJUSTAR};
+    enum {MODIFICAR, SUPRIMIR, BLOQUEAR, AJUSTAR};
+}
+
+namespace codigo {
+    enum {NUEVO, CAMBIAR, DUPLICAR};
 }
 
 

@@ -238,26 +238,14 @@ bool PrincipalModel::esColumnaNumerica(int columna) const
 }
 
 bool PrincipalModel::EditarCodigo(const QModelIndex & index, TEXTO codigo)
-{
-    if (index.row()==filavacia && HayFilaVacia())//insertar partida nueva
-    {
-        qDebug()<<"Insertando codigo en la fila "<<index.row();
-        miobra->CrearPartida(codigo,filavacia);
-    }
-    else
-    {
-        miobra->EditarCodigo(codigo);
-    }
-    emit dataChanged(index, index);
-    hayFilaVacia=false;
-    emit dataChanged(index, index);//repito la orden una vez quitada la fila vacia para eliminar la fila sobrante
+{   
+    QString descripcion = "Editar codigo " + codigo;
+    pila->push(new UndoEditarCodigo(miobra,this,index,codigo,descripcion));
     return true;
 }
 
 bool PrincipalModel::EditarResumen(const QModelIndex &index, TEXTO resumen)
 {
-    //miobra->EditarResumen(resumen);
-    //emit dataChanged(index,index);
     QString descripcion = "Editar resumen";
     pila->push(new UndoEditarResumen(miobra,this,index,resumen,descripcion));
     return true;

@@ -23,17 +23,7 @@ UndoMedicion::UndoMedicion(Obra* O, MedCertModel* M,  QModelIndex indiceAnterior
         fValorAntiguo=datoAntiguo.toFloat();
         sValorNuevo="";
         sValorAntiguo="";
-    }
-
-    /*if (columna == 0 && fila == modelo->lineavacia && modelo->haylineavacia)
-    {
-        esNuevoDato = true;
-        qDebug()<<"ES NUEVO DATO";
-    }
-    else
-    {
-        esNuevoDato = false;
-    }*/
+    } 
     setText(text());
     qDebug()<<"valor antiguo:"<<datoAntiguo.toString()<<"- valor nuevo: "<<datoNuevo.toString();
 

@@ -4,7 +4,6 @@
 #include "../defs.h"
 #include "tablabase.h"
 
-
 class TablaMedCert : public TablaBase
 {
      Q_OBJECT

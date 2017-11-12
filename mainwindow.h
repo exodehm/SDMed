@@ -14,7 +14,6 @@
 #include "Dialogos/dialogodatoscodigoresumen.h"
 #include "Dialogos/dialogonuevacertificacion.h"
 
-
 namespace Ui {
 class MainWindow;
 }
@@ -90,7 +89,7 @@ private:
     QPushButton* botonNuevaCertificacion;
     //combo certificacion actual
     QLabel* labelCertificacionActual;
-    QComboBox* comboCertificacionActual;
+    QComboBox* comboCertificacionActual;    
 
     QDir ruta;
     //listas para copiar y pegar

@@ -27,6 +27,8 @@
 #include "./Undo/undomover.h"
 #include "./Undo/undoeditartextopartida.h"
 
+#include "filter.h"
+
 class InterfazObra : public QWidget
 {
     Q_OBJECT
@@ -112,7 +114,7 @@ private:
     QUndoStack* pila;
 
     Obra* O;
-    TEXTO textoPartidaActual;
+    TEXTO textoPartidaActual;   
 };
 
 #endif // INTERFAZOBRA_H

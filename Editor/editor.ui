@@ -93,9 +93,6 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>&amp;Undo</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Z</string>
-   </property>
   </action>
   <action name="action_Copiar">
    <property name="icon">
@@ -104,9 +101,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Copy</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
    </property>
   </action>
   <action name="actionCut">
@@ -117,9 +111,6 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>Cut</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
   </action>
   <action name="actionPaste">
    <property name="icon">
@@ -129,14 +120,6 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>Paste</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
-   </property>
-  </action>
-  <action name="actionInfo">
-   <property name="text">
-    <string>Info</string>
-   </property>
   </action>
   <action name="actionRedo">
    <property name="icon">
@@ -145,9 +128,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Redo</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
   <action name="actionFuente">

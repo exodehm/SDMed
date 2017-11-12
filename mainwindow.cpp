@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->CertBar->addWidget(comboCertificacionActual);
     setupActions();
 
-
     //establezco la ruta incial para localizar archivos
     ruta = QDir::currentPath();
     rutaarchivo = ruta.canonicalPath();
@@ -302,6 +301,7 @@ void MainWindow::ActionCopiar()
 void MainWindow::ActionPegar()
 {
     QWidget* w = qApp->focusWidget();
+    qDebug()<<"Accion Pegar";
     qDebug()<<w->metaObject()->className();
     if (strcmp(w->metaObject()->className(),"TablaPrincipal")==0)
     {
@@ -385,7 +385,7 @@ void MainWindow::CambiarCertificacionActual(int actual)
 
 bool MainWindow::ConfirmarContinuar()
 {
-    if (isWindowModified())
+    if (obraActual->miobra->Pila()->count()>0)
     {
         int r = QMessageBox::warning(this, tr("SDMed"),
                                      tr("La obra ha sido modificada.\n"

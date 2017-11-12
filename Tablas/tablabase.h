@@ -35,11 +35,13 @@ public:
 
 private slots:
     void Bloquear(int columna);
+
+
+public slots:    
     void Copiar();
     void Pegar();
     void Certificar();
 
-public slots:
     virtual void MostrarMenuCabecera(QPoint pos)=0;
     virtual void MostrarMenuLateralTabla(QPoint pos)=0;
 

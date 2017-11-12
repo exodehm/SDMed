@@ -19,6 +19,7 @@
 #include "../Undo/undoeditarprecio.h"
 #include "../Undo/undoeditarcantidad.h"
 #include "../Undo/undoeditarresumen.h"
+#include "../Undo/undoeditarcodigo.h"
 
 
 #include "../iconos.h"

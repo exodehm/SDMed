@@ -12,6 +12,7 @@ UndoEditarResumen::UndoEditarResumen(Obra* O, PrincipalModel* M,  QModelIndex I,
 void UndoEditarResumen::undo()
 {
     qDebug()<<"UndoEditarResumen";
+    obra->PosicionarAristaActual(fila);
     obra->EditarResumen(resumenAntiguo);
     modelo->emitDataChanged(indice);
     //modelo->ActualizarDatos();
@@ -21,6 +22,7 @@ void UndoEditarResumen::undo()
 void UndoEditarResumen::redo()
 {
     qDebug()<<"RedoEditarResumen";
+    obra->PosicionarAristaActual(fila);
     obra->EditarResumen(resumenNuevo);
     modelo->emitDataChanged(indice);
     //modelo->ActualizarDatos();
