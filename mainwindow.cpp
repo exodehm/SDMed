@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     rutaarchivo = ruta.canonicalPath();
     //cargo los settings
     readSettings();
-    //archivos recientes
+    //archivos recientes    
     for (int i=0;i<MaxRecentFiles;i++)
     {
         recentFileActions[i] = new QAction(this);
@@ -149,6 +149,12 @@ bool MainWindow::ActionAbrirDesdeReciente()
         }
         indice++;
     }
+    if (recentFiles.contains(nombrefichero))
+    {
+        recentFiles.removeAll(nombrefichero);
+    }
+    recentFiles.prepend(nombrefichero);
+    updateArchivosRecientesActions();
     AbrirArchivo(nombrefichero);
     return true;
 }
@@ -225,13 +231,17 @@ void MainWindow::ActionCerrar()
 {   
     if (!ListaObras.empty())
     {
-        std::list<MetaObra>::iterator obraBorrar = obraActual;
+        if (ConfirmarContinuar())
         {
-            obraActual = ListaObras.erase(obraActual);
-            delete obraBorrar->miobra;
-            if ( obraActual == ListaObras.end() && !ListaObras.empty())
+            std::list<MetaObra>::iterator obraBorrar = obraActual;
             {
-                obraActual = std::prev(obraActual);
+                qDebug()<<"Borrando la obra actual-> "<<obraBorrar->miobra->LeeObra()->LeeResumenObra();
+                obraActual = ListaObras.erase(obraActual);
+                delete obraBorrar->miobra;
+                if ( obraActual == ListaObras.end() && !ListaObras.empty())
+                {
+                    obraActual = std::prev(obraActual);
+                }
             }
         }
     }
@@ -249,7 +259,7 @@ void MainWindow::updateArchivosRecientesActions()
     {
         recentFiles.removeLast();
     }
-    qDebug()<<"Numero de archivos recientes : "<<recentFiles.count();
+    qDebug()<<"Numero de archivos recientes : "<<recentFiles.count();    
     QMutableStringListIterator i(recentFiles);
     while (i.hasNext()) {
         if (!QFile::exists(i.next()))
@@ -279,9 +289,24 @@ QString MainWindow::strippedName(const QString &fullFileName)
 
 void MainWindow::ActionSalir()
 {
-    writeSettings();
-    qDebug()<<"Salir";
-    qApp->quit();
+    while (!ListaObras.empty())
+    {
+        ui->tabPrincipal->setCurrentIndex(0);
+        emit ui->tabPrincipal->currentChanged(0);
+        ActionCerrar();
+    }
+    if (ListaObras.empty())
+    {
+        writeSettings();
+        qDebug()<<"Salir";
+        qApp->quit();
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    ActionSalir();
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::ActionCopiar()
@@ -336,7 +361,7 @@ void MainWindow::ActionRedo()
 
 void MainWindow::ActivarDesactivarBotonesUndoRedo(int indice)
 {
-    qDebug()<<"ActivarDesactivarBotonesUndoRedo(): "<<indice;
+    //fcurrenqDebug()<<"ActivarDesactivarBotonesUndoRedo(): "<<indice;
     ui->actionDeshacer->setEnabled(indice!=0);
     ui->actionRehacer->setEnabled(indice<obraActual->miobra->Pila()->count());
 }
@@ -387,9 +412,9 @@ bool MainWindow::ConfirmarContinuar()
 {
     if (obraActual->miobra->Pila()->count()>0)
     {
+        QString cadena = tr("La obra  <b>%1</b> ha sido modificada.<br>¿Quieres guardar los cambios?").arg(obraActual->miobra->LeeObra()->LeeResumenObra());
         int r = QMessageBox::warning(this, tr("SDMed"),
-                                     tr("La obra ha sido modificada.\n"
-                                        "¿Quieres guardar los cambios?"),
+                                     cadena,
                                      QMessageBox::Yes | QMessageBox::Default,
                                      QMessageBox::No,
                                      QMessageBox::Cancel | QMessageBox::Escape);
@@ -450,5 +475,5 @@ void MainWindow::setupActions()
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
     QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarMedCert(int)));
     QObject::connect(botonNuevaCertificacion,SIGNAL(pressed()),this,SLOT(NuevaCertificacion()));
-    QObject::connect(comboCertificacionActual,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarCertificacionActual(int)));    
+    QObject::connect(comboCertificacionActual,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarCertificacionActual(int)));
 }

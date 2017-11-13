@@ -18,6 +18,8 @@ namespace Ui {
 class MainWindow;
 }
 
+struct MetaObra;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -54,6 +56,8 @@ private slots:
 
     void ActivarDesactivarBotonesUndoRedo(int indice);
 
+protected:
+    void closeEvent(QCloseEvent* event);
 
 private:
 

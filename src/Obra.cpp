@@ -60,7 +60,7 @@ void Obra::IniciarObra (Concepto conceptoRaiz)
     aristaPadre->destino=padre;
     pilaAristas.push(aristaPadre);
     aristaActual=nullptr;
-    CI=1.10;
+    CI=1.00;
 }
 
 void Obra::CrearPartida (TEXTO CodPadre, float cantidad, TEXTO CodHijo)
@@ -817,6 +817,11 @@ void Obra::EditarPrecio(float precio)
 {
     aristaActual->destino->datonodo.EscribePrecio(precio);
     Actualizar(aristaActual->destino);
+}
+
+void Obra::EditarCostesIndirectos(float coste)
+{
+    CI=coste;
 }
 
 void Obra::Recalcular()

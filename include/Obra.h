@@ -74,6 +74,7 @@ public:
     void DesbloquearPrecio();           //anula el bloqueo y suma el descompuesto
     bool esPrecioBloqueado();           //consulta para saber si un precio esta bloqueado
     void EditarPrecio(float precio);  //escribe un precio si no hay descompuesto
+    void EditarCostesIndirectos(float coste);
     /*********funciones de edicion***********/
     void EditarCodigo (TEXTO codigo);
     void EditarResumen (TEXTO resumen);
@@ -87,8 +88,8 @@ public:
     void CopiarPartidas(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, const QList<int> &listaIndices);
     void CopiarPartidas(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, Grafo<datonodo_t,datoarista_t>&grafo);
     void Pegar(Grafo<datonodo_t,datoarista_t> grafo);
-    void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar, bool ultimafila = false);    
-    void EditarCodificacion(int n);    
+    void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar, bool ultimafila = false);
+    void EditarCodificacion(int n);
     /*****funciones relacionadas con la medicion o certificacion de la partida********/
     void InsertarLineasVaciasMedicion(int tabla, int pos, int num);
     void inicializarActual();
