@@ -126,7 +126,10 @@ void InterfazObra::SubirNivel()
     /*GuardarTextoPartida();*/
     GuardarTextoPartidaInicial();
     QString cadenaundo = tr("Subir nivel");
-    pila->push(new UndoMover(movimiento::ARRIBA,this,cadenaundo));
+    //pila->push(new UndoMover(movimiento::ARRIBA,this,cadenaundo));
+    O->SubirNivel();
+    modeloTablaP->QuitarIndicadorFilaVacia();
+    RefrescarVista(QModelIndex(),QModelIndex());
 }
 
 void InterfazObra::BajarNivel(QModelIndex indice)
@@ -135,7 +138,9 @@ void InterfazObra::BajarNivel(QModelIndex indice)
     GuardarTextoPartidaInicial();
     GuardarTextoPartidaModificada();
     QString cadenaundo = tr("Bajar nivel");
-    pila->push(new UndoMover(movimiento::ABAJO, this,cadenaundo));
+    //pila->push(new UndoMover(movimiento::ABAJO, this,cadenaundo));
+    O->BajarNivel();
+    RefrescarVista(QModelIndex(),QModelIndex());
 }
 
 void InterfazObra::Avanzar()
@@ -145,7 +150,9 @@ void InterfazObra::Avanzar()
     */
     GuardarTextoPartidaInicial();
     QString cadenaundo = tr("Avanzar");
-    pila->push(new UndoMover(movimiento::DERECHA,this,cadenaundo));
+    //pila->push(new UndoMover(movimiento::DERECHA,this,cadenaundo));
+    O->Siguiente();
+    RefrescarVista(QModelIndex(),QModelIndex());
 }
 
 void InterfazObra::Retroceder()
@@ -155,7 +162,9 @@ void InterfazObra::Retroceder()
     */
     GuardarTextoPartidaInicial();
     QString cadenaundo = tr("Retroceder");
-    pila->push(new UndoMover(movimiento::IZQUIERDA,this,cadenaundo));
+    //pila->push(new UndoMover(movimiento::IZQUIERDA,this,cadenaundo));
+    O->Anterior();
+    RefrescarVista(QModelIndex(),QModelIndex());
 }
 
 void InterfazObra::Undo()

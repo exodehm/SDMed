@@ -22,7 +22,7 @@ namespace precio {
 }
 
 namespace codigo {
-    enum {NUEVO, CAMBIAR, DUPLICAR};
+    enum {NUEVO, CAMBIAR, DUPLICAR, NADA};
 }
 
 

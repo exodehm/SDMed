@@ -87,8 +87,7 @@ bool MainWindow::ActionAbrir()
         updateArchivosRecientesActions();
         AbrirArchivo(nombrefichero);
         ruta.setPath(nombrefichero);
-        rutaarchivo=ruta.canonicalPath();
-        ui->actionGuardar->setEnabled(true);        
+        rutaarchivo=ruta.canonicalPath();              
         return true;
     }
     return false;
@@ -100,13 +99,13 @@ void MainWindow::AnadirObraAVentanaPrincipal(MetaObra &nuevaobra)
     QObject::connect(nuevaobra.miobra,SIGNAL(PegarP()),this,SLOT(ActionPegar()));
     QObject::connect(nuevaobra.miobra,SIGNAL(CopiarM()),this,SLOT(ActionCopiar()));
     QObject::connect(nuevaobra.miobra,SIGNAL(PegarM()),this,SLOT(ActionPegar()));
-    QObject::connect(nuevaobra.miobra,SIGNAL(ActivarBoton(int)),this,SLOT(ActivarDesactivarBotonesUndoRedo(int)));
+    QObject::connect(nuevaobra.miobra,SIGNAL(ActivarBoton(int)),this,SLOT(ActivarDesactivarBotonesPila(int)));
     ui->tabPrincipal->addTab(nuevaobra.miobra,nuevaobra.miobra->LeeObra()->LeeResumenObra());
     ui->tabPrincipal->setCurrentIndex(ui->tabPrincipal->currentIndex()+1);
     ListaObras.push_back(nuevaobra);
     obraActual=ListaObras.begin();
     std::advance(obraActual,ListaObras.size()-1);
-    ActivarDesactivarBotonesUndoRedo(obraActual->miobra->Pila()->index());
+    ActivarDesactivarBotonesPila(obraActual->miobra->Pila()->index());
     QString leyenda = QString(tr("Creada la obra %1").arg(obraActual->miobra->LeeObra()->LeeResumenObra()));
     statusBar()->showMessage(leyenda,5000);
 }
@@ -119,7 +118,7 @@ void MainWindow::CambiarObraActual(int indice)
         {
             obraActual=ListaObras.begin();
             std::advance(obraActual,indice);
-            ActivarDesactivarBotonesUndoRedo(obraActual->miobra->Pila()->index());
+            ActivarDesactivarBotonesPila(obraActual->miobra->Pila()->index());
         }
     }
 }
@@ -209,6 +208,7 @@ bool MainWindow::ActionGuardarComo()
 
 bool MainWindow::GuardarObra(QString nombreFichero)
 {
+    bool toReturn=false;
     qDebug()<<"Nombrefichero: "<<nombreFichero;
     QString extension = nombreFichero.right(4);
     qDebug()<<"La extension del archivo a guardar es "<<extension;
@@ -217,14 +217,16 @@ bool MainWindow::GuardarObra(QString nombreFichero)
     {
         obraActual->miobra->GuardarBC3(nombreFichero);
         qDebug()<<"Guardada la obra "<<nombreFichero<<" con exito";
-        return true;
+        toReturn = true;
     }
     if (extension == ".sdm" || extension == ".SDM")
     {
         qDebug()<<"Guardando en formato SDM";
-        return true;
+        toReturn = true;
     }
-    return false;
+    //qDebug()<<"Borrar Pila";
+    obraActual->miobra->Pila()->clear();
+    return toReturn;
 }
 
 void MainWindow::ActionCerrar()
@@ -289,7 +291,7 @@ QString MainWindow::strippedName(const QString &fullFileName)
 
 void MainWindow::ActionSalir()
 {
-    while (!ListaObras.empty())
+    //while (!ListaObras.empty())
     {
         ui->tabPrincipal->setCurrentIndex(0);
         emit ui->tabPrincipal->currentChanged(0);
@@ -359,11 +361,12 @@ void MainWindow::ActionRedo()
     }
 }
 
-void MainWindow::ActivarDesactivarBotonesUndoRedo(int indice)
+void MainWindow::ActivarDesactivarBotonesPila(int indice)
 {
-    //fcurrenqDebug()<<"ActivarDesactivarBotonesUndoRedo(): "<<indice;
+    //qDebug()<<"ActivarDesactivarBotonesUndoRedo(): "<<indice;
     ui->actionDeshacer->setEnabled(indice!=0);
     ui->actionRehacer->setEnabled(indice<obraActual->miobra->Pila()->count());
+    ui->actionGuardar->setEnabled(indice!=0);
 }
 
 void MainWindow::ActionAdelante()
@@ -410,7 +413,7 @@ void MainWindow::CambiarCertificacionActual(int actual)
 
 bool MainWindow::ConfirmarContinuar()
 {
-    if (obraActual->miobra->Pila()->count()>0)
+    if (obraActual->miobra->Pila()->index()>0)
     {
         QString cadena = tr("La obra  <b>%1</b> ha sido modificada.<br>¿Quieres guardar los cambios?").arg(obraActual->miobra->LeeObra()->LeeResumenObra());
         int r = QMessageBox::warning(this, tr("SDMed"),

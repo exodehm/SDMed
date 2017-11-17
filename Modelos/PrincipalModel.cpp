@@ -138,7 +138,7 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
         {
         case tipoColumna::CODIGO:
             qDebug()<<"editando código";
-            EditarCodigo(index,value.toString());
+            EditarCodigo(index,value);
             break;
         case tipoColumna::NATURALEZA:
             qDebug()<<"editando naturaleza";
@@ -154,11 +154,11 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
             break;
         case tipoColumna::CANPRES:
             qDebug()<<"editando cantidad";
-            EditarCantidad(index,value.toFloat());
+            EditarCantidad(index,value);
             break;
         case tipoColumna::PRPRES:
             qDebug()<<"editando precio";
-            EditarPrecio(index, value.toFloat());
+            EditarPrecio(index, value);
             break;
         default:
             break;
@@ -237,14 +237,14 @@ bool PrincipalModel::esColumnaNumerica(int columna) const
             columna==tipoColumna:: IMPCERT;
 }
 
-bool PrincipalModel::EditarCodigo(const QModelIndex & index, TEXTO codigo)
+bool PrincipalModel::EditarCodigo(const QModelIndex & index, QVariant codigo)
 {   
-    QString descripcion = "Editar codigo " + codigo;
+    QString descripcion = "Editar codigo " + codigo.toString();
     pila->push(new UndoEditarCodigo(miobra,this,index,codigo,descripcion));
     return true;
 }
 
-bool PrincipalModel::EditarResumen(const QModelIndex &index, TEXTO resumen)
+bool PrincipalModel::EditarResumen(const QModelIndex &index, QVariant resumen)
 {
     QString descripcion = "Editar resumen";
     pila->push(new UndoEditarResumen(miobra,this,index,resumen,descripcion));
@@ -265,7 +265,7 @@ bool PrincipalModel::EditarUnidad(const QModelIndex & index, TEXTO unidad)
     return true;
 }
 
-bool PrincipalModel::EditarCantidad(const QModelIndex & index, float cantidad)
+bool PrincipalModel::EditarCantidad(const QModelIndex & index, QVariant cantidad)
 {
     if (miobra->HayMedicionPartidaActual())
     {
@@ -275,12 +275,12 @@ bool PrincipalModel::EditarCantidad(const QModelIndex & index, float cantidad)
             return false;
         }
     }
-    QString descripcion = "Editar cantidad " + QString::number(cantidad);
+    QString descripcion = "Editar cantidad " + cantidad.toString();
     pila->push(new UndoEditarCantidad(miobra,this,index,cantidad,descripcion));
     return true;
 }
 
-bool PrincipalModel::EditarPrecio(const QModelIndex & index, float precio)
+bool PrincipalModel::EditarPrecio(const QModelIndex & index, QVariant precio)
 {
     if (miobra->HayDescomposicion())
     {
@@ -296,7 +296,7 @@ bool PrincipalModel::EditarPrecio(const QModelIndex & index, float precio)
     return false;
 }
 
-bool PrincipalModel::ModificarPrecioExistente(QModelIndex indice, float precio)
+bool PrincipalModel::ModificarPrecioExistente(QModelIndex indice, QVariant precio)
 {
     DialogoPrecio* d = new DialogoPrecio(miobra->LeeCodigoActual());
     if (d->exec()==QDialog::Accepted)
@@ -342,7 +342,7 @@ TEXTO PrincipalModel::CalculaCantidad(pNodo n, pArista A)
         float factor=1;
         if (miobra->NivelUno(/*A->destino*/)&& A!=miobra->AristaPadre())
         {
-            factor=1.1;//para reflejar el coste indirecto en la columna ImpPres
+            factor=1;//1.1;//para reflejar el coste indirecto en la columna ImpPres
         }
         return QString::number(n->datonodo.LeeImportePres()*A->datoarista.LeeMedicion().LeeTotal()*factor,'f',3);
     }

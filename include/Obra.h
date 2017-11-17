@@ -151,13 +151,17 @@ public:
     pArista AristaPadre();
     pArista AristaActual();
     std::list<std::pair<pArista,pNodo>>LeeDecompuesto();
+    std::stack<pArista> LeePilaAristas();
+    void DefinePilaAristas(const std::stack<pArista> &pila);
+    void DefineAristaPadre(const pArista& ap);
+    void DefineNodoPadre(const pNodo& np);
+    void DefineAristaActual(const pArista& aa);
     /***********varias***********************************/
     Grafo<datonodo_t,datoarista_t> GrafoAPartirDeNodo(pNodo nodo);
     Grafo<datonodo_t,datoarista_t> LeeGrafo()
     {
         return G;
     }
-
 
 private:
     Grafo<datonodo_t,datoarista_t> G;

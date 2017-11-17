@@ -24,7 +24,6 @@
 #include "./Tablas/tablamedcert.h"
 #include "./Editor/editor.h"
 
-#include "./Undo/undomover.h"
 #include "./Undo/undoeditartextopartida.h"
 
 #include "filter.h"
@@ -55,14 +54,14 @@ public slots:
     Obra* LeeObra();
     void SubirNivel();
     void BajarNivel(QModelIndex indice);
+    void Avanzar();
+    void Retroceder();
     /*void lineaMas();
     void lineaMenos();
     void PosicionarTablaP();*/
     void PosicionarTablaP(QModelIndex indice);
     void PosicionarTablaM(QModelIndex indice);
-    void MostrarDeSegun(int indice);
-    void Avanzar();
-    void Retroceder();
+    void MostrarDeSegun(int indice);    
     void Undo();
     void Redo();
     void RefrescarVista(QModelIndex indice1, QModelIndex indice2);
@@ -88,7 +87,6 @@ signals:
     void CopiarM();
     void PegarM();
     void ActivarBoton(int);
-
 
 private:
     QHeaderView* cabeceraTablaP;

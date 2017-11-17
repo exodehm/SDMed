@@ -1229,6 +1229,31 @@ std::list<std::pair<pArista,pNodo>>Obra::LeeDecompuesto()
     return G.recorrerHijos(padre);
 }
 
+std::stack<pArista> Obra::LeePilaAristas()
+{
+    return pilaAristas;
+}
+
+void Obra::DefinePilaAristas(const std::stack<pArista> &pila)
+{
+    pilaAristas = pila;
+}
+
+void Obra::DefineAristaPadre(const pArista& ap)
+{
+    aristaPadre = ap;
+}
+
+void Obra::DefineNodoPadre(const pNodo& np)
+{
+    padre = np;
+}
+
+void Obra::DefineAristaActual(const pArista& aa)
+{
+    aristaActual=aa;
+}
+
 Grafo<datonodo_t,datoarista_t> Obra::GrafoAPartirDeNodo(pNodo nodo)
 {
     return G.CrearGrafoAPartirDeNodo(nodo);

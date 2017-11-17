@@ -54,7 +54,7 @@ private slots:
     bool ActionAbrirDesdeReciente();
     void updateArchivosRecientesActions();
 
-    void ActivarDesactivarBotonesUndoRedo(int indice);
+    void ActivarDesactivarBotonesPila(int indice);
 
 protected:
     void closeEvent(QCloseEvent* event);

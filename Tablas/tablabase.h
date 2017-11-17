@@ -40,7 +40,7 @@ private slots:
 public slots:    
     void Copiar();
     void Pegar();
-    void Certificar();
+    void Certificar();    
 
     virtual void MostrarMenuCabecera(QPoint pos)=0;
     virtual void MostrarMenuLateralTabla(QPoint pos)=0;
@@ -51,7 +51,7 @@ signals:
     void CopiarMedicion();
     void PegarPartidas();
     void PegarMedicion();
-    void CertificarLineasMedicion();
+    void CertificarLineasMedicion();    
 
 protected:
     QHeaderView* cabeceraHorizontal;

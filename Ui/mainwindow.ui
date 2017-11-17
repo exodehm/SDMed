@@ -925,6 +925,9 @@
    <property name="text">
     <string>Deshacer</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
    </property>
@@ -939,6 +942,12 @@
    </property>
    <property name="text">
     <string>Rehacer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
    </property>
   </action>
  </widget>

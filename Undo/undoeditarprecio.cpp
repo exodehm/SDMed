@@ -1,6 +1,6 @@
 #include "undoeditarprecio.h"
 
-UndoEditarPrecio::UndoEditarPrecio(Obra* O, PrincipalModel* M,  QModelIndex I, float D, int A, QString descripcion, QUndoCommand* parent):
+UndoEditarPrecio::UndoEditarPrecio(Obra* O, PrincipalModel* M,  QModelIndex I, QVariant D, int A, QString descripcion, QUndoCommand* parent):
     obra(O),modelo(M),indice(I),precioNuevo(D), accion(A), QUndoCommand(descripcion,parent)
 {
     precioAntiguo = indice.data().toFloat() ;

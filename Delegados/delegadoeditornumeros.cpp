@@ -43,12 +43,12 @@ void DelegadoEditorNumeros::setModelData(QWidget * editor, QAbstractItemModel * 
 
 void DelegadoEditorNumeros::paint( QPainter *painter,const QStyleOptionViewItem &option, const QModelIndex &index ) const
 { 
-    /*QAbstractItemModel *model =const_cast<QAbstractItemModel *>(index.model());
+    QAbstractItemModel *model =const_cast<QAbstractItemModel *>(index.model());
     PrincipalModel* modelo=qobject_cast<PrincipalModel*>(model);
-    if (modelo && /*modelo->LeeObra()->HayDescomposicion() && modelo->HayListaDatos() && index.isValid())
+    if (modelo && modelo->LeeObra()->HayDescomposicion() && modelo->HayListaDatos() && index.isValid())
     {              
         QModelIndex indice = index;
-        qDebug()<<"indice 1: "<<indice.row()<<"--"<<indice.column();
+        //qDebug()<<"indice 1: "<<indice.row()<<"--"<<indice.column();
         if (modelo->HayFilaVacia() && modelo->HayListaDatos())
         {
             if (index.row()>=modelo->FilaVacia())
@@ -58,23 +58,24 @@ void DelegadoEditorNumeros::paint( QPainter *painter,const QStyleOptionViewItem 
                 //indice.row() = indice.row()-1;
             }
         }
-        qDebug()<<"indice 2: "<<indice.row()<<"##"<<indice.column();
+        //qDebug()<<"indice 2: "<<indice.row()<<"##"<<indice.column();
 
         painter->save();
         painter->setPen(modelo->LeeColor(indice.row()+1,indice.column()));
-        qDebug()<<"El dato en: "<<indice.row()<<","<<indice.column()<<" es: "<<indice.data()<<" y el color es: "<<modelo->LeeColorS(indice.row()+1,indice.column());
+        //qDebug()<<"El dato en: "<<indice.row()<<","<<indice.column()<<" es: "<<indice.data()<<" y el color es: "<<modelo->LeeColorS(indice.row()+1,indice.column());
         painter->drawText(option.rect, Qt::AlignCenter, displayText(indice.data(), QLocale::system()));
         painter->restore();
     }
-    else*/
+    else
     {
         //painter->drawText(option.rect, Qt::AlignCenter, displayText(index.data(), QLocale::system()));
-        QStyledItemDelegate::paint(painter, option, index);
-    }    
+        DelegadoBase::paint(painter, option, index);
+    }
 }
 
 QSize DelegadoEditorNumeros::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(index)
     //return QSize( 45, 15);
     return option.rect.size();
 }

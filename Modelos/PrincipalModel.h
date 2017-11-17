@@ -9,18 +9,11 @@
 #include <QDebug>
 #include <QTextStream>
 #include <QMessageBox>
-#include <QUndoStack>
 
 #include "../include/Obra.h"
 #include "../Dialogos/dialogosuprimirmedicion.h"
 #include "../Dialogos/dialogoprecio.h"
-
-#include "../Undo/undoprincipal.h"
-#include "../Undo/undoeditarprecio.h"
-#include "../Undo/undoeditarcantidad.h"
-#include "../Undo/undoeditarresumen.h"
-#include "../Undo/undoeditarcodigo.h"
-
+#include "../Undo/undoeditarprincipal.h"
 
 #include "../iconos.h"
 #include "../defs.h"
@@ -65,13 +58,13 @@ public:
     bool esColumnaNumerica(int columna) const;
     void QuitarIndicadorFilaVacia();
     Obra* LeeObra() const;
-    bool ModificarPrecioExistente(QModelIndex indice, float precio);
+    bool ModificarPrecioExistente(QModelIndex indice, QVariant precio);
     /***********FUNCIONES DE EDICION**********************************/
-    bool EditarCodigo(const QModelIndex & index, TEXTO codigo);
-    bool EditarResumen(const QModelIndex & index, TEXTO resumen);
+    bool EditarCodigo(const QModelIndex & index, QVariant codigo);
+    bool EditarResumen(const QModelIndex & index, QVariant resumen);
     bool EditarNaturaleza(const QModelIndex & index, int naturaleza);
-    bool EditarCantidad(const QModelIndex & index, float cantidad);
-    bool EditarPrecio(const QModelIndex & index, float precio);
+    bool EditarCantidad(const QModelIndex & index, QVariant cantidad);
+    bool EditarPrecio(const QModelIndex & index, QVariant precio);
     bool EditarUnidad(const QModelIndex & index, TEXTO unidad);
     /*****************************************************************/
     void VerActual();
