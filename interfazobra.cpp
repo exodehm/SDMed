@@ -74,7 +74,7 @@ void InterfazObra::GenerarUI()
     O->cambiarEntreMedYCert(MedCert::MEDICION);
 
     /************signals y slots*****************/
-    QObject::connect(tablaPrincipal,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel(QModelIndex)));
+    QObject::connect(tablaPrincipal,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel()));
     QObject::connect(tablaPrincipal->CabeceraDeTabla(),SIGNAL(sectionDoubleClicked(int)),this,SLOT(SubirNivel()));
     QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
@@ -123,47 +123,77 @@ void InterfazObra::MostrarDeSegun(int indice)
 
 void InterfazObra::SubirNivel()
 {   
-    /*GuardarTextoPartida();*/
+    /*GuardarTextoPartida();
     GuardarTextoPartidaInicial();
     QString cadenaundo = tr("Subir nivel");
     //pila->push(new UndoMover(movimiento::ARRIBA,this,cadenaundo));
     O->SubirNivel();
     modeloTablaP->QuitarIndicadorFilaVacia();
-    RefrescarVista(QModelIndex(),QModelIndex());
+    RefrescarVista(QModelIndex(),QModelIndex());*/
+    Mover(movimiento::ARRIBA);
 }
 
-void InterfazObra::BajarNivel(QModelIndex indice)
+void InterfazObra::BajarNivel()
 {
-    Q_UNUSED (indice);
+    /*Q_UNUSED (indice);
     GuardarTextoPartidaInicial();
     GuardarTextoPartidaModificada();
     QString cadenaundo = tr("Bajar nivel");
     //pila->push(new UndoMover(movimiento::ABAJO, this,cadenaundo));
     O->BajarNivel();
-    RefrescarVista(QModelIndex(),QModelIndex());
+    RefrescarVista(QModelIndex(),QModelIndex());*/
+    Mover(movimiento::ABAJO);
 }
 
-void InterfazObra::Avanzar()
+/*void InterfazObra::Avanzar()
 {
-    /*
     GuardarTextoPartida();
-    */
     GuardarTextoPartidaInicial();
     QString cadenaundo = tr("Avanzar");
     //pila->push(new UndoMover(movimiento::DERECHA,this,cadenaundo));
     O->Siguiente();
     RefrescarVista(QModelIndex(),QModelIndex());
-}
+}*/
 
-void InterfazObra::Retroceder()
+/*void InterfazObra::Retroceder()
 {
-    /*
     GuardarTextoPartida();
-    */
     GuardarTextoPartidaInicial();
     QString cadenaundo = tr("Retroceder");
     //pila->push(new UndoMover(movimiento::IZQUIERDA,this,cadenaundo));
     O->Anterior();
+    RefrescarVista(QModelIndex(),QModelIndex());
+}
+*/
+
+void InterfazObra::Mover(int tipomovimiento)
+{
+    switch (tipomovimiento)
+    {
+    case movimiento::ARRIBA:
+    {
+        O->SubirNivel();
+        break;
+    }
+    case movimiento::ABAJO:
+    {
+        O->BajarNivel();
+        break;
+    }
+    case movimiento::DERECHA:
+    {
+        O->Siguiente();
+        break;
+    }
+    case movimiento::IZQUIERDA:
+    {
+        O->Anterior();
+        break;
+    }
+    default:
+        break;
+    }
+    modeloTablaP->QuitarIndicadorFilaVacia();
     RefrescarVista(QModelIndex(),QModelIndex());
 }
 

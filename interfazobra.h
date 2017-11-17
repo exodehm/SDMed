@@ -48,14 +48,15 @@ public:
     TablaBase* LeeTablaPrincipal();
 
     QUndoStack* Pila();
+    void Mover(int tipomovimiento);
 
 public slots:
 
     Obra* LeeObra();
     void SubirNivel();
-    void BajarNivel(QModelIndex indice);
-    void Avanzar();
-    void Retroceder();
+    void BajarNivel();
+    /*void Avanzar();
+    void Retroceder();*/
     /*void lineaMas();
     void lineaMenos();
     void PosicionarTablaP();*/

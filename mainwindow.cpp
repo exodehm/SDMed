@@ -373,7 +373,7 @@ void MainWindow::ActionAdelante()
 {
     if (HayObra())
     {
-        obraActual->miobra->Avanzar();
+        obraActual->miobra->Mover(movimiento::DERECHA);
     }
 }
 
@@ -381,7 +381,7 @@ void MainWindow::ActionAtras()
 {
     if (HayObra())
     {
-        obraActual->miobra->Retroceder();
+        obraActual->miobra->Mover(movimiento::IZQUIERDA);
     }
 }
 
