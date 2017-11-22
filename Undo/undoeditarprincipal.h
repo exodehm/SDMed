@@ -48,6 +48,26 @@ private:
     int accion;
 };
 
+//#############################NATURALEZA#############################//
+class UndoEditarNaturaleza : public UndoEditarPrincipal
+{
+public:
+    UndoEditarNaturaleza(Obra* O, PrincipalModel* M,  QModelIndex I, QVariant D, QString descripcion, QUndoCommand* parent = nullptr);
+
+    void undo();
+    void redo();
+};
+
+//#############################UNIDAD#############################//
+class UndoEditarUnidad : public UndoEditarPrincipal
+{
+public:
+    UndoEditarUnidad(Obra* O, PrincipalModel* M,  QModelIndex I, QVariant D, QString descripcion, QUndoCommand* parent = nullptr);
+
+    void undo();
+    void redo();
+};
+
 //#############################RESUMEN#############################//
 class UndoEditarResumen : public UndoEditarPrincipal
 {

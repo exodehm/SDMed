@@ -145,8 +145,8 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
             EditarCodigo(index,value);
             break;
         case tipoColumna::NATURALEZA:
-            qDebug()<<"editando naturaleza";
-            EditarNaturaleza(index,value.toInt());
+            qDebug()<<"editando naturaleza: "<<value.toString();
+            EditarNaturaleza(index,value);
             break;
         case tipoColumna::UD:
             qDebug()<<"editando unidad";
@@ -154,7 +154,7 @@ bool PrincipalModel::setData(const QModelIndex & index, const QVariant& value, i
             break;
         case tipoColumna::RESUMEN:
             qDebug()<<"editando resumen";
-            EditarResumen(index,value.toString());
+            EditarResumen(index,value);
             break;
         case tipoColumna::CANPRES:
             qDebug()<<"editando cantidad";
@@ -255,17 +255,17 @@ bool PrincipalModel::EditarResumen(const QModelIndex &index, QVariant resumen)
     return true;
 }
 
-bool PrincipalModel::EditarNaturaleza(const QModelIndex & index, int naturaleza)
+bool PrincipalModel::EditarNaturaleza(const QModelIndex & index, QVariant naturaleza)
 {
-    miobra->EditarNaturaleza(naturaleza);
-    emit dataChanged(index, index);
+    QString descripcion = "Editar naturaleza";
+    pila->push(new UndoEditarNaturaleza(miobra,this,index,naturaleza,descripcion));
     return true;
 }
 
 bool PrincipalModel::EditarUnidad(const QModelIndex & index, TEXTO unidad)
 {
-    miobra->EditarUnidad(unidad);
-    emit dataChanged(index, index);
+    QString descripcion = "Editar unidad";
+    pila->push(new UndoEditarUnidad(miobra,this,index,unidad,descripcion));
     return true;
 }
 
@@ -379,7 +379,7 @@ void PrincipalModel::ActualizarDatos(const std::list<std::list<Dato> > &datosStd
             }
             datoC.color=Colores[it2->color];
             lineaDatos.append(datoC);
-            qDebug()<<"dato: "<<datoC.valor<<"--"<<datoC.color;
+            //qDebug()<<"dato: "<<datoC.valor<<"--"<<datoC.color;
         }
         datos.append(lineaDatos);
         lineaDatos.clear();
@@ -394,7 +394,7 @@ QColor PrincipalModel::LeeColor(int fila, int columna)
 {
     if (fila>datos.size()-1)
     {
-        return Qt::black;
+        return QColor();
     }
     else
     {

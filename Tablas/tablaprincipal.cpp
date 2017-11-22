@@ -14,7 +14,9 @@ TablaPrincipal::TablaPrincipal(int nColumnas, QWidget *parent): TablaBase(nColum
     setItemDelegateForColumn(tipoColumna::UD,dlgBA);
     setItemDelegateForColumn(tipoColumna::RESUMEN,dlgBA);
     setItemDelegateForColumn(tipoColumna::CANPRES,dlgEN);
+    setItemDelegateForColumn(tipoColumna::CANCERT,dlgEN);
     setItemDelegateForColumn(tipoColumna::PRPRES,dlgEN);
+    setItemDelegateForColumn(tipoColumna::PRCERT,dlgEN);
     setItemDelegateForColumn(tipoColumna::PORCERTPRES,dlgEN);
     setItemDelegateForColumn(tipoColumna::IMPPRES,dlgCB);
     setItemDelegateForColumn(tipoColumna::IMPCERT,dlgCB);

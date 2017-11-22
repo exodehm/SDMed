@@ -61,11 +61,12 @@ void TablaBase::Copiar()
 {
     qDebug()<<sender()->parent();
     TablaBase* tabla = qobject_cast<TablaBase*>(sender()->parent());
-    if (MedCertModel* mod = qobject_cast<MedCertModel*>(tabla->model()))
+    MedCertModel* mod = qobject_cast<MedCertModel*>(tabla->model());//pruebo a castear a modelo de tabla medicion
+    if (mod)
     {
         emit CopiarMedicion();
     }
-    else if (PrincipalModel* mod = qobject_cast<PrincipalModel*>(tabla->model()))
+    else
     {
         emit CopiarPartidas();
     }
@@ -75,11 +76,12 @@ void TablaBase::Pegar()
 {
     qDebug()<<sender()->parent();
     TablaBase* tabla = qobject_cast<TablaBase*>(sender()->parent());
-    if (MedCertModel* mod = qobject_cast<MedCertModel*>(tabla->model()))
+    MedCertModel* mod = qobject_cast<MedCertModel*>(tabla->model());//pruebo a castear a modelo de tabla medicion
+    if (mod)
     {
         emit PegarMedicion();
     }
-    else if (PrincipalModel* mod = qobject_cast<PrincipalModel*>(tabla->model()))
+    else
     {
         emit PegarPartidas();
     }

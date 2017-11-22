@@ -31,6 +31,7 @@ void UndoEditarPrincipal::Posicionar()
 }
 
 //#############################CODIGO#############################//
+
 UndoEditarCodigo::UndoEditarCodigo(Obra* O, PrincipalModel* M,  QModelIndex I, QVariant D, QString descripcion, QUndoCommand* parent):
     UndoEditarPrincipal(O,M,I,D,descripcion,parent)
 {
@@ -83,8 +84,67 @@ void UndoEditarCodigo::redo()
     modelo->layoutChanged();
 }
 
-//#############################RESUMEN#############################//
+//#############################NATURALEZA#############################//
 
+UndoEditarNaturaleza::UndoEditarNaturaleza(Obra* O, PrincipalModel* M,  QModelIndex I, QVariant D, QString descripcion, QUndoCommand* parent):
+    UndoEditarPrincipal(O,M,I,D,descripcion,parent)
+{
+    qDebug()<<"DatoAntiguo: "<<datoAntiguo;
+    qDebug()<<"DatoNuevo: "<<datoNuevo;
+}
+
+void UndoEditarNaturaleza::undo()
+{
+    qDebug()<<"UndoEditarNaturaleza";
+    Posicionar();
+    obra->EditarNaturaleza(datoAntiguo.toInt());
+    modelo->QuitarIndicadorFilaVacia();
+    modelo->emitDataChanged(indice);
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
+    modelo->layoutChanged();
+}
+
+void UndoEditarNaturaleza::redo()
+{
+    qDebug()<<"RedoEditarNaturaleza";
+    obra->PosicionarAristaActual(indice.row());
+    obra->EditarNaturaleza(datoNuevo.toInt());
+    modelo->emitDataChanged(indice);
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
+    modelo->layoutChanged();
+}
+
+//#############################UNIDAD#############################//
+
+UndoEditarUnidad::UndoEditarUnidad(Obra* O, PrincipalModel* M,  QModelIndex I, QVariant D, QString descripcion, QUndoCommand* parent):
+    UndoEditarPrincipal(O,M,I,D,descripcion,parent)
+{
+
+}
+
+void UndoEditarUnidad::undo()
+{
+    qDebug()<<"UndoEditarUnidad";
+    Posicionar();
+    obra->EditarUnidad(datoAntiguo.toString());
+    modelo->QuitarIndicadorFilaVacia();
+    modelo->emitDataChanged(indice);
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
+    modelo->layoutChanged();
+}
+
+void UndoEditarUnidad::redo()
+{
+    qDebug()<<"RedoEditarUnidad";
+    obra->PosicionarAristaActual(indice.row());
+    obra->EditarUnidad(datoNuevo.toString());
+    modelo->emitDataChanged(indice);
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
+    modelo->layoutChanged();
+}
+
+
+//#############################RESUMEN#############################//
 
 UndoEditarResumen::UndoEditarResumen(Obra* O, PrincipalModel* M,  QModelIndex I, QVariant D, QString descripcion, QUndoCommand* parent):
     UndoEditarPrincipal(O,M,I,D,descripcion,parent)
@@ -99,7 +159,7 @@ void UndoEditarResumen::undo()
     obra->EditarResumen(datoAntiguo.toString());
     modelo->QuitarIndicadorFilaVacia();
     modelo->emitDataChanged(indice);
-    //modelo->ActualizarDatos();
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
     modelo->layoutChanged();
 }
 
@@ -109,7 +169,7 @@ void UndoEditarResumen::redo()
     obra->PosicionarAristaActual(indice.row());
     obra->EditarResumen(datoNuevo.toString());
     modelo->emitDataChanged(indice);
-    //modelo->ActualizarDatos();
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
     modelo->layoutChanged();
 }
 

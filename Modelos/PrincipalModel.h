@@ -62,7 +62,7 @@ public:
     /***********FUNCIONES DE EDICION**********************************/
     bool EditarCodigo(const QModelIndex & index, QVariant codigo);
     bool EditarResumen(const QModelIndex & index, QVariant resumen);
-    bool EditarNaturaleza(const QModelIndex & index, int naturaleza);
+    bool EditarNaturaleza(const QModelIndex & index, QVariant naturaleza);
     bool EditarCantidad(const QModelIndex & index, QVariant cantidad);
     bool EditarPrecio(const QModelIndex & index, QVariant precio);
     bool EditarUnidad(const QModelIndex & index, TEXTO unidad);
