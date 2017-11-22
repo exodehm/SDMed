@@ -30,7 +30,11 @@ void TablaPrincipal::MostrarMenuCabecera(QPoint pos)
     qDebug()<<"Columna: "<<column;
 
     QMenu *menu=new QMenu(this);
-    QAction *AccionBloquearColumna = new QAction("Bloquear columna", this);
+    QString nombre;
+    columnaBloqueada(column)
+            ?nombre=tr("Desbloquear")
+            :nombre=tr("Bloquear");
+    QAction *AccionBloquearColumna = new QAction(nombre, this);
     menu->addAction(AccionBloquearColumna);
     mapperH->setMapping(AccionBloquearColumna,column);
     QObject::connect(AccionBloquearColumna, SIGNAL(triggered()), mapperH, SLOT(map()));
