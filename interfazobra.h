@@ -65,7 +65,7 @@ public slots:
     void MostrarDeSegun(int indice);    
     void Undo();
     void Redo();
-    void RefrescarVista(QModelIndex indice1, QModelIndex indice2);
+    void RefrescarVista();
     //void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
     void CopiarPartidasTablaP();
     void CopiarMedicionTablaM();

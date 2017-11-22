@@ -15,6 +15,7 @@ Editor::Editor(QWidget *parent): QMainWindow(parent)
     //textEdit->setCurrentFont(fuenteActual);
 	cursivas=false;
     negrita=false;
+    setFocusPolicy(Qt::StrongFocus);
 
     QObject::connect (textEdit, SIGNAL(textChanged()), this, SLOT(updateStats()));
 }
@@ -61,6 +62,7 @@ void Editor::setupActions()
 	connect(actionDerecha, SIGNAL(triggered(bool)),this, SLOT(AlinearDerecha()));
 	connect(actionIzquierda, SIGNAL(triggered(bool)),this, SLOT(AlinearIzquierda()));
 	connect(actionCentrar, SIGNAL(triggered(bool)),this, SLOT(Centrar()));
+    //connect(textEdit,SIGNAL()
 }
 
 void Editor::negritas()
@@ -168,4 +170,16 @@ void Editor::updateStats()
 bool Editor:: HayCambios()
 {
     return textEdit->document()->isModified();
+}
+
+void Editor::focusOutEvent(QFocusEvent* event)
+{
+    qDebug()<<"Focus out: "<<event->type();
+    QMainWindow::focusOutEvent(event);
+}
+
+void Editor::focusInEvent(QFocusEvent* event)
+{
+    qDebug()<<"Focus in: "<<event->type();
+    QMainWindow::focusInEvent(event);
 }

@@ -14,15 +14,16 @@ PrincipalModel::PrincipalModel (Obra *O, QUndoStack *p, QObject* parent):pila(p)
     LeyendasCabecera[9]=QObject::tr("ImpPres\n");
     LeyendasCabecera[10]=QObject::tr("ImpCert\n");
 
-    Colores[eTipoDato::NORMAL] = Qt::black;
-    Colores[eTipoDato::BLOQUEADO] = Qt::red;
-    Colores[eTipoDato::DESCOMPUESTO] = Qt::magenta;
-
+    Colores[color::NORMAL] = Qt::black;
+    Colores[color::BLOQUEADO] = Qt::red;
+    Colores[color::DESCOMPUESTO] = Qt::magenta;
 
     miobra = O;
-
-    ActualizarDatos();
+    FactorRedondeoVisualizacion = 3;
+    ActualizarDatos(O->LeeDescompuesto());
     hayFilaVacia=false;
+    locale=QLocale(QLocale::Spanish,QLocale::Spain);
+
 }
 
 PrincipalModel::~PrincipalModel()
@@ -85,7 +86,10 @@ QVariant PrincipalModel::data(const QModelIndex& index, int role) const
     {
         if (role==Qt::DisplayRole || role == Qt::EditRole)
         {
-            return fila.at(indice.column()).toFloat();
+            return fila.at(indice.column());
+            //qDebug()<<"En fila: "<<indice.column()<<" hay un valor: "<<fila.at(indice.column())<<" con el tipo: ";
+            //QString test = QString("%1").arg(numero, 7, 'f',4, QLatin1Char('0'));
+            //return QString("%1").arg(fila.at(indice.column()).toFloat(),7,'f',4,QLatin1Char('0'));
         }
     }
     else if (indice.column()==tipoColumna::CODIGO || indice.column()==tipoColumna::UD ||indice.column()==tipoColumna::RESUMEN)
@@ -188,7 +192,7 @@ bool PrincipalModel::removeRows(int filaInicial, int numFilas, const QModelIndex
     beginRemoveRows(QModelIndex(), filaInicial, filaInicial+numFilas-1);
     miobra->PosicionarAristaActual(filaInicial);
     miobra->BorrarPartida();    
-    ActualizarDatos();
+    ActualizarDatos(miobra->LeeDescompuesto());
     if (rowCount(QModelIndex())==0)
     {
         insertRow(0);
@@ -282,7 +286,7 @@ bool PrincipalModel::EditarCantidad(const QModelIndex & index, QVariant cantidad
 
 bool PrincipalModel::EditarPrecio(const QModelIndex & index, QVariant precio)
 {
-    if (miobra->HayDescomposicion())
+    if (miobra->HayDescomposicionPartidaActual())
     {
         return ModificarPrecioExistente(index, precio);
     }
@@ -348,21 +352,37 @@ TEXTO PrincipalModel::CalculaCantidad(pNodo n, pArista A)
     }
 }
 
-void PrincipalModel::ActualizarDatos()
+void PrincipalModel::ActualizarDatos(const std::list<std::list<Dato> > &datosStd)
 {
+    //esta funcion lee la lista de datos generada por Obra::LeeDescompuesto()la cual almacena datos
+    //QString, float o int y las pasa a QString. formateando los float para su correcta visualizacion
+    //en la tabla. El formateo de los float se hace desde aqui porque hay que annadir la primera linea a la
+    //cabecera, aunque hubiera sido mas correcto hacerlo desde el delegado
     datos.clear();
-    QList<DatoCelda> lineapadre;
-    lineapadre = RellenaDatoLinea(miobra->Padre(), miobra->AristaPadre());
-    datos.append(lineapadre);
-
-    ListaAristasNodos listahijos = miobra->LeeDecompuesto();
-    qDebug()<<"Tamaño de la lista de hijos: "<<listahijos.size();
-    QList<DatoCelda> lineahijo;
-    for (auto elem:listahijos)
+    QList<DatoCelda>lineaDatos;
+    DatoCelda datoC;
+    for (auto it1 = datosStd.begin(); it1 != datosStd.end();++it1)
     {
-        lineahijo = RellenaDatoLinea(elem.second, elem.first);
-        datos.append(lineahijo);
-        lineahijo.clear();
+        for (auto it2 = it1->begin();it2!=it1->end();++it2)
+        {
+            if (it2->dato.etipodato==datocelda::INT)
+            {
+                datoC.valor=QString::number(it2->dato.datoNumero);
+            }
+            else if (it2->dato.etipodato==datocelda::NUMERO)//aqui formateo el numero a QString
+            {
+                datoC.valor= locale.toString(it2->dato.datoNumero,'f',FactorRedondeoVisualizacion);
+            }
+            else //TEXTO
+            {
+                 datoC.valor=it2->dato.datoTexto;
+            }
+            datoC.color=Colores[it2->color];
+            lineaDatos.append(datoC);
+            qDebug()<<"dato: "<<datoC.valor<<"--"<<datoC.color;
+        }
+        datos.append(lineaDatos);
+        lineaDatos.clear();
     }
     for(int i=0; i<datos.at(0).length(); i++)
     {
@@ -370,79 +390,16 @@ void PrincipalModel::ActualizarDatos()
     }
 }
 
-QList<DatoCelda> PrincipalModel::RellenaDatoLinea(pNodo nodo, pArista arista)
+QColor PrincipalModel::LeeColor(int fila, int columna)
 {
-    QList<DatoCelda>linea;
-    DatoCelda dato;
-
-    //codigo
-    dato.valor= nodo->datonodo.LeeCodigo();
-    dato.color = Colores[eTipoDato::NORMAL];
-    linea.append(dato);
-
-    //naturaleza
-    dato.valor= QString::number(nodo->datonodo.LeeNat());
-    dato.color = Colores[eTipoDato::NORMAL];
-    linea.append(dato);
-
-    //ud
-    dato.valor= nodo->datonodo.LeeUd();
-    dato.color = Colores[eTipoDato::NORMAL];
-    linea.append(dato);
-
-    //resumen
-    dato.valor= nodo->datonodo.LeeResumen();
-    dato.color = Colores[eTipoDato::NORMAL];
-    linea.append(dato);
-
-    //medicion
-    dato.valor= QString::number(arista->datoarista.LeeMedicion().LeeTotal(),'f',3);
-    miobra->PartidaConMedicion(arista)
-            ?dato.color = Colores[eTipoDato::DESCOMPUESTO]
-             :dato.color = Colores[eTipoDato::NORMAL];
-    linea.append(dato);
-
-    //certificacion
-    dato.valor= QString::number(arista->datoarista.LeeCertificacion().LeeTotal(),'f',3);
-    dato.color = Colores[eTipoDato::NORMAL];
-    //arista && arista->datoarista.LeeCertificacion().hayMedicion()?dato.color = Colores[eTipoDato::DESCOMPUESTO]:dato.color = Colores[eTipoDato::NORMAL];
-    linea.append(dato);
-
-    //porcentaje certificado
-    dato.valor= QString::number((arista->datoarista.LeeCertificacion().LeeTotal()/arista->datoarista.LeeMedicion().LeeTotal())*100,'f',2);
-    dato.color = Colores[eTipoDato::DESCOMPUESTO];
-    linea.append(dato);
-
-    //precio de la medicion
-    dato.valor= QString::number(nodo->datonodo.LeeImportePres(),'f',3);
-    miobra->PartidaConDescomposicion(arista)
-            ?dato.color = Colores[eTipoDato::DESCOMPUESTO]
-                :dato.color = Colores[eTipoDato::NORMAL];
-    linea.append(dato);
-
-    //precio de la certificacion
-    dato.valor= QString::number(nodo->datonodo.LeeImporteCert(),'f',3);
-    dato.color = QColor(Qt::red);
-    linea.append(dato);
-
-    //importe medicion
-    dato.valor= CalculaCantidad(nodo,arista);
-    dato.color = QColor(Qt::red);
-    linea.append(dato);
-
-    //importe certificacion
-    dato.valor= nodo->datonodo.LeeImporteCert()==0
-                 ? QString::number(nodo->datonodo.LeeImporteCert()*1,'f',3)
-                 : QString::number(nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal(),'f',3);
-    dato.color = QColor(Qt::red);
-    linea.append(dato);
-
-    return linea;
-}
-
-QColor PrincipalModel::LeeColor(int i, int j)
-{
-    return datos.at(i).at(j).color;
+    if (fila>datos.size()-1)
+    {
+        return Qt::black;
+    }
+    else
+    {
+        return datos.at(fila).at(columna).color;
+    }
 }
 
 QString PrincipalModel::LeeColorS(int i, int j)
@@ -457,14 +414,13 @@ QString PrincipalModel::LeeColorS(int i, int j)
     }
     else
         return "NUSE";
-
-
 }
 
 bool PrincipalModel::HayListaDatos()
 {
-    return datos.size()>0;
+    return datos.size()>1;//mayor que 1 porque 1 es para la cabecera
 }
+
 void PrincipalModel::emitDataChanged(const QModelIndex &index)
 {
      emit dataChanged(index, index);

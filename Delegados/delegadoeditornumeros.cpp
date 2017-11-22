@@ -44,39 +44,33 @@ void DelegadoEditorNumeros::setModelData(QWidget * editor, QAbstractItemModel * 
 void DelegadoEditorNumeros::paint( QPainter *painter,const QStyleOptionViewItem &option, const QModelIndex &index ) const
 { 
     QAbstractItemModel *model =const_cast<QAbstractItemModel *>(index.model());
-    PrincipalModel* modelo=qobject_cast<PrincipalModel*>(model);
-    if (modelo && modelo->LeeObra()->HayDescomposicion() && modelo->HayListaDatos() && index.isValid())
+    PrincipalModel* modelo = qobject_cast<PrincipalModel*>(model);
+    if (index.isValid() && modelo->HayListaDatos())
     {              
         QModelIndex indice = index;
-        //qDebug()<<"indice 1: "<<indice.row()<<"--"<<indice.column();
-        if (modelo->HayFilaVacia() && modelo->HayListaDatos())
+        if (modelo->HayFilaVacia())
         {
-            if (index.row()>=modelo->FilaVacia())
+            if (index.row()>modelo->FilaVacia())
             {
-                //indice = modelo->index(indice.row()-1,indice.column());
-                indice = modelo->index(0,0);
-                //indice.row() = indice.row()-1;
+                qDebug()<<"indice 1: "<<indice.row()<<"--"<<indice.column()<<"--Fila vacia: "<<modelo->FilaVacia();
+                indice = modelo->index(index.row()-1,index.column());
             }
         }
-        //qDebug()<<"indice 2: "<<indice.row()<<"##"<<indice.column();
-
         painter->save();
+        //qDebug()<<"Indice: "<<indice.row()<<" - "<<indice.column()<<"-"<<indice.data().toString()<<"-"<<modelo->LeeColorS(indice.row(),indice.column());
         painter->setPen(modelo->LeeColor(indice.row()+1,indice.column()));
-        //qDebug()<<"El dato en: "<<indice.row()<<","<<indice.column()<<" es: "<<indice.data()<<" y el color es: "<<modelo->LeeColorS(indice.row()+1,indice.column());
-        painter->drawText(option.rect, Qt::AlignCenter, displayText(indice.data(), QLocale::system()));
+        painter->drawText(option.rect, Qt::AlignRight | Qt::AlignVCenter,index.data().toString());
         painter->restore();
     }
     else
     {
-        //painter->drawText(option.rect, Qt::AlignCenter, displayText(index.data(), QLocale::system()));
         DelegadoBase::paint(painter, option, index);
     }
 }
 
 QSize DelegadoEditorNumeros::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    Q_UNUSED(index)
-    //return QSize( 45, 15);
+    Q_UNUSED(index)    
     return option.rect.size();
 }
 
@@ -89,6 +83,7 @@ QString DelegadoEditorNumeros::displayText(const QVariant & value, const QLocale
    }
    else
    {
-       return locale.toString(valor,'f',2);
+       return locale.toString(valor,'f',3);
+       //return QString("%1").arg(valor,5,'f',4,QLatin1Char('0'));
    }
 }

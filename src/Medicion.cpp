@@ -95,7 +95,7 @@ bool Medicion::hayMedicion() const
     {
         if (!linea.EsLineaVacia())
         {
-            //qDebug()<<"Hay lineas pero alguna vacia";
+            //qDebug()<<"Hay lineas pero alguna vacia";            
             return true;
         }
     }

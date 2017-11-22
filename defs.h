@@ -25,6 +25,13 @@ namespace codigo {
     enum {NUEVO, CAMBIAR, DUPLICAR, NADA};
 }
 
+namespace color {
+    enum {NORMAL,BLOQUEADO,DESCOMPUESTO};
+}
+
+namespace datocelda {
+    enum{TEXTO,NUMERO,INT};
+}
 
 
 #endif // DEFS_H

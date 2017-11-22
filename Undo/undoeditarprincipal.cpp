@@ -56,7 +56,7 @@ void UndoEditarCodigo::undo()
     }
     modelo->emitDataChanged(indice);
     //modelo->QuitarIndicadorFilaVacia();
-    modelo->ActualizarDatos();
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
     modelo->layoutChanged();
 }
 
@@ -79,7 +79,7 @@ void UndoEditarCodigo::redo()
     }
     modelo->emitDataChanged(indice);
     modelo->QuitarIndicadorFilaVacia();
-    modelo->ActualizarDatos();
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
     modelo->layoutChanged();
 }
 
@@ -136,7 +136,7 @@ void UndoEditarCantidad::undo()
         obra->EditarCantidad(datoAntiguo.toFloat());
     }
     modelo->emitDataChanged(indice);
-    modelo->ActualizarDatos();
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
     modelo->layoutChanged();
 }
 
@@ -148,7 +148,7 @@ void UndoEditarCantidad::redo()
     obra->PosicionarAristaActual(indice.row());
     obra->EditarCantidad(datoNuevo.toFloat());
     modelo->emitDataChanged(indice);
-    modelo->ActualizarDatos();
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
     modelo->layoutChanged();
 }
 
@@ -189,7 +189,7 @@ void UndoEditarPrecio::undo()
         break;
     }
     modelo->emitDataChanged(indice);
-    modelo->ActualizarDatos();
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
     modelo->layoutChanged();
 }
 
@@ -222,6 +222,6 @@ void UndoEditarPrecio::redo()
         break;
     }
     modelo->emitDataChanged(indice);
-    modelo->ActualizarDatos();
+    modelo->ActualizarDatos(obra->LeeDescompuesto());
     modelo->layoutChanged();
 }

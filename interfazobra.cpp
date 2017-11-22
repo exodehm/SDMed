@@ -22,8 +22,7 @@ InterfazObra::InterfazObra(QString codigo, QString resumen,QWidget *parent):QWid
 
 void InterfazObra::IniciarObra()
 {
-    O->IrAInicio();
-    O->MostrarHijos();
+    O->IrAInicio();    
     pila = new QUndoStack(this);
     GenerarUI();
 }
@@ -69,7 +68,7 @@ void InterfazObra::GenerarUI()
     //añado el separador al layout
     lienzoGlobal->addWidget(separadorPrincipal);
 
-    RefrescarVista(QModelIndex(),QModelIndex());
+    RefrescarVista();
     MostrarDeSegun(0);
     O->cambiarEntreMedYCert(MedCert::MEDICION);
 
@@ -84,11 +83,11 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaPrincipal,SIGNAL(PegarPartidas()),this,SLOT(PegarPartidasTablaP()));
     QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicionTablaM()));
     QObject::connect(tablaMediciones,SIGNAL(PegarMedicion()),this,SLOT(PegarMedicionTablaM()));
-    QObject::connect(tablaMediciones,SIGNAL(CertificarLineasMedicion()),this,SLOT(Certificar()));
+    QObject::connect(tablaMediciones,SIGNAL(CertificarLineasMedicion()),this,SLOT(Certificar()));    
     //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
-    QObject::connect(modeloTablaP, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
+    /*QObject::connect(modeloTablaP, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
     QObject::connect(modeloTablaMed, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
-    QObject::connect(modeloTablaCert, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
+    QObject::connect(modeloTablaCert, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));*/
     QObject::connect(separadorTablasMedicion,SIGNAL(currentChanged(int)),this,SLOT(CambiarEntreMedicionYCertificacion(int)));
 
     QObject::connect(pila,SIGNAL(indexChanged(int)),this,SLOT(ActivarDesactivarUndoRedo(int)));    
@@ -168,6 +167,7 @@ void InterfazObra::BajarNivel()
 
 void InterfazObra::Mover(int tipomovimiento)
 {
+    GuardarTextoPartidaInicial();
     switch (tipomovimiento)
     {
     case movimiento::ARRIBA:
@@ -194,7 +194,7 @@ void InterfazObra::Mover(int tipomovimiento)
         break;
     }
     modeloTablaP->QuitarIndicadorFilaVacia();
-    RefrescarVista(QModelIndex(),QModelIndex());
+    RefrescarVista();
 }
 
 void InterfazObra::Undo()
@@ -209,12 +209,9 @@ void InterfazObra::Redo()
     pila->redo();
 }
 
-void InterfazObra::RefrescarVista(QModelIndex indice1, QModelIndex indice2)
+void InterfazObra::RefrescarVista()
 {
-    Q_UNUSED (indice1);
-    Q_UNUSED (indice2);
-
-    modeloTablaP->ActualizarDatos();
+    modeloTablaP->ActualizarDatos(O->LeeDescompuesto());
     modeloTablaMed->ActualizarDatos();
     modeloTablaCert->ActualizarDatos();
     if (modeloTablaP->rowCount(QModelIndex())==0)
@@ -359,7 +356,7 @@ void InterfazObra::PegarPartidas(const std::list<std::pair<pArista, pNodo>>&list
     }
     O->Pegar(listaNodosCopiarPegar, insertarAlFinal);
     modeloTablaP->QuitarIndicadorFilaVacia();
-    RefrescarVista(QModelIndex(),QModelIndex());
+    RefrescarVista();
 }
 
 void InterfazObra::CopiarMedicion(Medicion& listaMedicionCopiarPegar)
@@ -416,7 +413,7 @@ void InterfazObra::PegarMedicion(const Medicion& ListaMedicion)
 {    
     QModelIndex indice = tablaMediciones->currentIndex();
     O->PegarMedicion(indice.row(),ListaMedicion);//indice.row() es la fila de la tabla a partir de la cual pego
-    RefrescarVista(QModelIndex(),QModelIndex());
+    RefrescarVista();
 }
 
 void InterfazObra::ActivarDesactivarUndoRedo(int indice)

@@ -33,6 +33,12 @@
         <italic>true</italic>
        </font>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="acceptDrops">
+       <bool>true</bool>
+      </property>
       <property name="tabChangesFocus">
        <bool>false</bool>
       </property>
@@ -49,6 +55,9 @@ p, li { white-space: pre-wrap; }
   </widget>
   <widget class="QStatusBar" name="BarraEstado"/>
   <widget class="QToolBar" name="BarraHerramientas">
+   <property name="focusPolicy">
+    <enum>Qt::ClickFocus</enum>
+   </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>

@@ -7,11 +7,15 @@
 #include <QColorDialog>
 #include <QFont>
 #include <QFontDialog>
+#include <QFocusEvent>
+#include <QDebug>
 
 #include "ui_editor.h"
 
+#include "filter.h"
 
-class QLabel;
+
+//class QLabel;
 
 class Editor : 	public QMainWindow, private Ui::Editor
 {
@@ -23,6 +27,8 @@ public:
     void EscribeTexto(const QString& texto);
     bool HayCambios();
     QString LeeContenido() const;
+    void focusOutEvent(QFocusEvent* event);
+    void focusInEvent(QFocusEvent* event);
 
 protected:
     void setupActions();

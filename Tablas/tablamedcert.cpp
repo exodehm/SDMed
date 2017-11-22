@@ -13,11 +13,11 @@ TablaMedCert::TablaMedCert(int nColumnas, QWidget *parent): TablaBase(nColumnas,
     celdaBloqueada[tipoColumna::SUBTOTAL]=true;
     celdaBloqueada[tipoColumna::ID]=true;
 
-    setItemDelegateForColumn(tipoColumna::N,dlgEN);
+    //setItemDelegateForColumn(tipoColumna::N,dlgEN);
     setItemDelegateForColumn(tipoColumna::COMENTARIO,dlgBA);
-    setItemDelegateForColumn(tipoColumna::LONGITUD,dlgEN);
-    setItemDelegateForColumn(tipoColumna::ANCHURA,dlgEN);
-    setItemDelegateForColumn(tipoColumna::ALTURA,dlgEN);
+    //setItemDelegateForColumn(tipoColumna::LONGITUD,dlgEN);
+    //setItemDelegateForColumn(tipoColumna::ANCHURA,dlgEN);
+    //setItemDelegateForColumn(tipoColumna::ALTURA,dlgEN);
     setItemDelegateForColumn(tipoColumna::FORMULA,dlgBA);
     setItemDelegateForColumn(tipoColumna::PARCIAL,dlgPS);
     setItemDelegateForColumn(tipoColumna::SUBTOTAL,dlgPS);

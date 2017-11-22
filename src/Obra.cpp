@@ -60,7 +60,7 @@ void Obra::IniciarObra (Concepto conceptoRaiz)
     aristaPadre->destino=padre;
     pilaAristas.push(aristaPadre);
     aristaActual=nullptr;
-    CI=1.00;
+    CI=1.00;    
 }
 
 void Obra::CrearPartida (TEXTO CodPadre, float cantidad, TEXTO CodHijo)
@@ -325,94 +325,6 @@ void Obra::PosicionarAristaActual(int pos)
     }
 }
 
-void Obra::MostrarHijos()
-{
-    /*std::string nombreNodo="";
-    pArista aristaParaMostrar= new arista<MedCert,Concepto>;
-    TratarArista* tratamiento=new Imprimir (nombreNodo, aristaParaMostrar, aristaActual);*/
-    /*******************************/
-    /********************************/
-    //linea horizontal superior
-    /*dibujaLinea();
-    //cabecera
-    std::cout<<"\t"
-             <<std::left<<std::setfill(' ')//el texto se alinea a la izquierda y el relleno es un espacio
-             <<'|'<<std::setw(AnchoCodigo-1)<<"Codigo"
-             <<'|'<<std::setw(AnchoNaturaleza-1)<<"Nat"
-             <<'|'<<std::setw(AnchoUd-1)<<"Ud"
-             <<'|'<<std::setw(AnchoResumen-1)<<"Resumen"
-             <<std::right//el texto se alinea a la derecha
-             <<'|'<<std::setw(AnchoCanPres-1 )<<"CanPres"
-             <<'|'<<std::setw(AnchoCanPres-1 )<<"CanCert"
-             <<'|'<<std::setw(AnchoPorCertPres-1 )<<"PorCertPres"
-             <<'|'<<std::setw(AnchoPrPres-1)<<"PrPres"
-             <<'|'<<std::setw(AnchoPrPres-1)<<"PrCert"
-             <<'|'<<std::setw(AnchoImpPres-1)<<"ImpPres"
-             <<'|'<<std::setw(AnchoImpPres-1)<<"ImpCert"
-             <<'|'<<std::endl;
-
-    std::cout<<"\t"
-             <<std::left//el texto se alinea a la izquierda
-             <<'|'<<std::setw(AnchoCodigo-1)<<padre->datonodo.LeeCodigo()
-             <<'|'<<std::setw(AnchoNaturaleza-1)<<""
-             <<'|'<<std::setw(AnchoUd-1)<<""
-             <<'|'<<std::setw(AnchoResumen-1)<<padre->datonodo.LeeResumen()
-             <<std::right//el texto se alinea a la derecha
-             <<'|'<<std::setw(AnchoCanPres-1)<<aristaPadre->datoarista.LeeMedicion().LeeTotal()
-             <<'|'<<std::setw(AnchoCanPres-1)<<aristaPadre->datoarista.LeeCertificacion().LeeTotal()
-             <<'|'<<std::setw(AnchoPorCertPres-1)<<(aristaPadre->datoarista.LeeCertificacion().LeeTotal()/aristaPadre->datoarista.LeeMedicion().LeeTotal())*100
-             <<'|'<<std::setw(AnchoPrPres-1)<<padre->datonodo.LeeImportePres()//Precio de la medicion
-             <<'|'<<std::setw(AnchoPrPres-1)<<padre->datonodo.LeeImporteCert()//Precio de la certificacion
-
-             <<'|'<<std::setw(AnchoImpPres-1)<< ((padre->datonodo.LeeImportePres()==0)
-                     ?   padre->datonodo.LeeImportePres()*1
-                     :   padre->datonodo.LeeImportePres()*aristaPadre->datoarista.LeeMedicion().LeeTotal())
-
-             <<'|'<<std::setw(AnchoImpPres-1)<< ((padre->datonodo.LeeImporteCert()==0)
-                     ?   padre->datonodo.LeeImporteCert()*1
-                     :   padre->datonodo.LeeImporteCert()*aristaPadre->datoarista.LeeCertificacion().LeeTotal())
-             <<'|'<<std::endl;
-    //linea horizontal superior
-    dibujaLinea();
-    G.recorrerHijos(padre, *tratamiento);
-    //linea horizontal inferior
-    dibujaLinea();
-    //Mediciones
-    VerMedicion VerMediciones(selectorMedCer);
-    VerMediciones(aristaPadre->datoarista);
-
-    //texto
-    std::cout<<"\n\n"<<padre->datonodo.LeeTexto()<<"\n\n";*/
-    //ListaNodosAristas lista = G.recorrerHijos(padre);
-    //lista.push_front(padre);
-    //for (auto it= lista.begin(); it!=lista.end(); ++it)
-    {
-        /*std::cout<<(*it)->datonodo.LeeCodigo()<<"|"                              //codigo
-                 <<(*it)->datonodo.LeeNat()<<"|"                                 //naturaleza
-                 <<(*it)->datonodo.LeeUd()<<"|"                                  //ud
-                 <<(*it)->datonodo.LeeResumen()<<"|"                             //resumen
-                 <<aristaPadre->datoarista.LeeMedicion().LeeTotal()<<"|"         //Cantidad presupuestada(medida)
-                 <<aristaPadre->datoarista.LeeCertificacion().LeeTotal()<<"|"    //Cantidad certificada
-                 <<(aristaPadre->datoarista.LeeCertificacion().LeeTotal()/aristaPadre->datoarista.LeeMedicion().LeeTotal())*100<<"|" //porcentaje certificado
-                 <<(*it)->datonodo.LeeImportePres()<<"|"                         //precio de la medicion
-                 <<(*it)->datonodo.LeeImporteCert()<<"|"                         //precio de la certificacion
-                 <<(((*it)->datonodo.LeeImportePres()==0)
-                    ? (*it)->datonodo.LeeImportePres()*1
-                    : (*it)->datonodo.LeeImportePres()*aristaPadre->datoarista.LeeMedicion().LeeTotal())<<"|"
-                 <<(((*it)->datonodo.LeeImporteCert()==0)
-                    ? (*it)->datonodo.LeeImporteCert()*1
-                    : (*it)->datonodo.LeeImporteCert()*aristaPadre->datoarista.LeeCertificacion().LeeTotal())<<"|"
-                 <<std::endl;*/
-
-    }
-    /***************mediciones*****************/
-    std::cout<<"Mediciones:"<<std::endl;
-    aristaPadre->datoarista.Ver();
-    /***************texto********************/
-    std::cout<<"Texto:"<<std::endl;
-    //std::cout<<"\n"<<padre->datonodo.LeeTexto()<<"\n\n";
-}
-
 TEXTO Obra::VerTexto()
 {
     return padre->datonodo.LeeTexto();
@@ -519,7 +431,7 @@ void Obra::BorrarLineasMedicion(int pos, int numLineas)
 
 void Obra::borrarTodaMedicionOCertificacion()
 {
-    if (HayMedicion())
+    if (HayMedicionPartidaActual())
     {
         aristaActual->datoarista.ModificaMedCer(selectorMedCer).BorrarMedicion();
         Actualizar(aristaPadre->destino);
@@ -528,7 +440,7 @@ void Obra::borrarTodaMedicionOCertificacion()
 
 void Obra::borrarTodaMedicion()
 {
-    if (HayMedicion())
+    if (HayMedicionPartidaActual())
     {
         aristaActual->datoarista.ModificaMedCer(MedCert::MEDICION).BorrarMedicion();
         Actualizar(aristaPadre->destino);
@@ -537,7 +449,7 @@ void Obra::borrarTodaMedicion()
 
 void Obra::borrarTodaCertificacion()
 {
-    if (HayMedicion())
+    if (HayMedicionPartidaActual())
     {
         aristaActual->datoarista.ModificaMedCer(MedCert::CERTIFICACION).BorrarMedicion();
         Actualizar(aristaPadre->destino);
@@ -1034,16 +946,7 @@ int Obra::verNumCertificaciones()
     return Cert.tamanno();
 }
 
-bool Obra::HayDescomposicion()
-{
-    if (aristaActual)
-    {
-        return aristaActual->destino->adyacente;
-    }
-    return false;
-}
-
-bool Obra::PartidaConDescomposicion(const pArista &A)
+bool Obra::HayDescomposicion(pArista A)
 {
     if (A)
     {
@@ -1052,37 +955,27 @@ bool Obra::PartidaConDescomposicion(const pArista &A)
     return false;
 }
 
-bool Obra::PartidaConMedicion(const pArista& A)
+bool Obra::HayDescomposicionPartidaActual()
 {
+    if (aristaActual)
     {
-        if (A->datoarista.LeeMedicion().hayMedicion())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return aristaActual->destino->adyacente;
+    }
+    return false;
+}
+
+bool Obra::HayMedicion(pArista A) const
+{
+    if (A)
+    {            
         return A->datoarista.LeeMedicion().hayMedicion();
     }
     return false;
 }
 
-bool Obra::HayMedicion() const
-{
-    //if (aristaActual)
-    {            
-        return aristaPadre->datoarista.LeeMedicion().hayMedicion();
-    }   
-}
-
 bool Obra::HayMedicionPartidaActual() const
 {
-    if (aristaActual)
-    {
-        return aristaActual->datoarista.LeeMedicion().hayMedicion();
-    }
-    return false;
+    return aristaActual->datoarista.LeeMedicion().hayMedicion();
 }
 
 bool Obra::HayCertificacion() const
@@ -1224,9 +1117,105 @@ pArista Obra::AristaActual()
     return aristaActual;
 }
 
-std::list<std::pair<pArista,pNodo>>Obra::LeeDecompuesto()
+/*std::list<std::pair<pArista,pNodo>>Obra::LeeDecompuesto()
 {
     return G.recorrerHijos(padre);
+}*/
+
+std::list<std::list<Dato>> Obra::LeeDescompuesto()
+{
+    std::list<std::list<Dato>>toReturn;
+    //padre
+    toReturn.push_back(RellenaDatoLinea(padre,AristaPadre()));
+    //hijos
+    std::list<std::pair<pArista,pNodo>>listaHijos = G.recorrerHijos(padre);
+    for (auto it=listaHijos.begin();it!=listaHijos.end();++it)
+    {
+        toReturn.push_back(RellenaDatoLinea(it->second,it->first));
+    }
+    return toReturn;
+}
+
+std::list<Dato> Obra::RellenaDatoLinea(pNodo nodo, pArista arista)
+{
+    std::list<Dato>toReturn;
+    //codigo
+    Dato codigo;    
+    codigo.dato.datoTexto=nodo->datonodo.LeeCodigo();
+    codigo.dato.etipodato=datocelda::TEXTO;
+    codigo.color = color::NORMAL;
+    toReturn.push_back(codigo);
+    //naturaleza
+    Dato naturaleza;
+    naturaleza.dato.datoNumero = nodo->datonodo.LeeNat();
+    naturaleza.dato.etipodato = datocelda::INT;
+    naturaleza.color = color::NORMAL;
+    toReturn.push_back(naturaleza);
+    //Unidad
+    Dato unidad;
+    unidad.dato.datoTexto=nodo->datonodo.LeeUd();
+    unidad.dato.etipodato = datocelda::TEXTO;
+    unidad.color=color::NORMAL;    
+    toReturn.push_back(unidad);
+    //resumen
+    Dato resumen;
+    resumen.dato.datoTexto=nodo->datonodo.LeeResumen();
+    resumen.dato.etipodato = datocelda::TEXTO;
+    resumen.color=color::NORMAL;    
+    toReturn.push_back(resumen);
+    //medicion
+    Dato medicion;
+    medicion.dato.datoNumero = arista->datoarista.LeeMedicion().LeeTotal();
+    medicion.dato.etipodato = datocelda::NUMERO;
+    HayMedicion(arista)
+            ?medicion.color = color::DESCOMPUESTO
+            :medicion.color = color::NORMAL;    
+    toReturn.push_back(medicion);
+    //certificacion
+    Dato certificacion;
+    certificacion.dato.datoNumero = arista->datoarista.LeeCertificacion().LeeTotal();
+    certificacion.dato.etipodato = datocelda::NUMERO;
+    HayMedicion(arista)//HACER FUNCION DE HAYMEDICION!!!!!!!!!!
+            ?certificacion.color = color::DESCOMPUESTO
+            :certificacion.color = color::NORMAL;
+    toReturn.push_back(certificacion);
+    //porcentaje certificado
+    Dato porcentaje;
+    porcentaje.dato.datoNumero = arista->datoarista.LeeCertificacion().LeeTotal()/arista->datoarista.LeeMedicion().LeeTotal()*100;
+    porcentaje.dato.etipodato = datocelda::NUMERO;
+    porcentaje.color= color::DESCOMPUESTO;
+    toReturn.push_back(porcentaje);
+    //precio medicion
+    Dato preciomed;
+    preciomed.dato.datoNumero = nodo->datonodo.LeeImportePres();
+    preciomed.dato.etipodato = datocelda::NUMERO;
+    HayDescomposicion(arista)
+            ?preciomed.color = color::DESCOMPUESTO
+             :preciomed.color = color::NORMAL;    
+    toReturn.push_back(preciomed);
+    //precio certificacion
+    Dato preciocert;
+    preciocert.dato.datoNumero = nodo->datonodo.LeeImporteCert();
+    preciocert.dato.etipodato = datocelda::NUMERO;
+    preciocert.color=color::NORMAL;    
+    toReturn.push_back(preciocert);
+    //importe presupuesto
+    Dato importepres;
+    importepres.dato.datoNumero = nodo->datonodo.LeeImportePres()==0
+            ? nodo->datonodo.LeeImportePres()
+            : nodo->datonodo.LeeImportePres()*arista->datoarista.LeeMedicion().LeeTotal();
+    importepres.dato.etipodato = datocelda::NUMERO;
+    importepres.color=color::NORMAL;
+    toReturn.push_back(importepres);
+    //importe certificacion
+    Dato importecert;
+    importecert.dato.datoNumero = nodo->datonodo.LeeImporteCert()==0
+            ? nodo->datonodo.LeeImporteCert()
+            : nodo->datonodo.LeeImporteCert()*arista->datoarista.LeeCertificacion().LeeTotal();
+    importecert.dato.etipodato = datocelda::NUMERO;
+    importecert.color=color::NORMAL;
+    toReturn.push_back(importecert);
+    return toReturn;
 }
 
 std::stack<pArista> Obra::LeePilaAristas()

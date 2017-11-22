@@ -1,14 +1,7 @@
 #ifndef OBRA_H
 #define OBRA_H
 
-#include <iomanip>
 #include <cstring>
-
-#include <QList>
-#include <QString>
-#include <QStringList>
-#include <QHash>
-#include <QDebug>
 
 #include "Grafo.h"
 #include "Concepto.h"
@@ -16,6 +9,21 @@
 #include "Redondeos.h"
 #include "Certificacion.h"
 #include "Datos.h"
+
+
+struct TipoDato
+{
+    TEXTO datoTexto;
+    float datoNumero;
+    int datoInt;
+    int etipodato;
+};
+
+struct Dato
+{
+    TipoDato dato;
+    int color;    
+};
 
 class Obra
 {
@@ -57,8 +65,7 @@ public:
     void HijoAnterior();
     void IrAInicio();
     void PosicionarAristaActual(int pos);
-    /******funciones para mostrar datos*******/
-    void MostrarHijos();    
+    /******funciones para mostrar datos*******/    
     void VerNodos();
     void VerArbol();
     void VerRama();
@@ -73,7 +80,7 @@ public:
     void BloquearPrecio (float precio); //escribe un precio bloqueado y no considera el descompuesto
     void DesbloquearPrecio();           //anula el bloqueo y suma el descompuesto
     bool esPrecioBloqueado();           //consulta para saber si un precio esta bloqueado
-    void EditarPrecio(float precio);  //escribe un precio si no hay descompuesto
+    void EditarPrecio(float precio);    //escribe un precio si no hay descompuesto
     void EditarCostesIndirectos(float coste);
     /*********funciones de edicion***********/
     void EditarCodigo (TEXTO codigo);
@@ -122,12 +129,11 @@ public:
     /**********seleccionar entre medicion y certificacion********/
     void cambiarEntreMedYCert(int n);
     /***************************varias de consulta********************/
-    bool HayDescomposicion();
-    bool PartidaConDescomposicion(const pArista& A);
-    bool PartidaConMedicion(const pArista& A);
-    bool HayMedicion() const;
+    bool HayDescomposicion(pArista A);
+    bool HayDescomposicionPartidaActual();
+    bool HayMedicion(pArista A) const;
     bool HayMedicionPartidaActual() const;
-    bool HayCertificacion() const;
+    bool HayCertificacion() const;    
     bool EsPartidaVacia() const;
     pNodo ExisteConcepto(const TEXTO& codigo);
     bool ExisteHermano(const TEXTO& codigo);
@@ -150,7 +156,11 @@ public:
     pNodo Padre();
     pArista AristaPadre();
     pArista AristaActual();
-    std::list<std::pair<pArista,pNodo>>LeeDecompuesto();
+    //std::list<std::pair<pArista,pNodo>>LeeDecompuesto();
+    //QList<QList<Dato>>LeeDescompuesto();
+    //QList<Dato> RellenaDatoLinea(pNodo nodo, pArista arista);
+    std::list<std::list<Dato>>LeeDescompuesto();
+    std::list<Dato> RellenaDatoLinea(pNodo nodo, pArista arista);
     std::stack<pArista> LeePilaAristas();
     void DefinePilaAristas(const std::stack<pArista> &pila);
     void DefineAristaPadre(const pArista& ap);

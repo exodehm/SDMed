@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QTextStream>
 #include <QMessageBox>
+#include<QLocale>
 
 #include "../include/Obra.h"
 #include "../Dialogos/dialogosuprimirmedicion.h"
@@ -20,7 +21,7 @@
 
 struct DatoCelda
 {
-    QString valor;
+    TEXTO valor;
     QColor color;
 };
 Q_DECLARE_METATYPE(DatoCelda)
@@ -33,8 +34,7 @@ class PrincipalModel : public QAbstractTableModel
 public:
 
     typedef std::list<std::pair<pNodo,pArista>> ListaNodosAristas;
-    typedef std::list<std::pair<pArista,pNodo>> ListaAristasNodos;
-    enum eTipoDato{NORMAL,BLOQUEADO,DESCOMPUESTO};
+    typedef std::list<std::pair<pArista,pNodo>> ListaAristasNodos;    
     QColor Colores[3];
 
     PrincipalModel(Obra* O, QUndoStack* p, QObject* parent=nullptr);
@@ -54,7 +54,7 @@ public:
     bool HayFilaVacia();
     int FilaVacia();
     bool HayListaDatos();
-    void ActualizarDatos();
+    void ActualizarDatos(const std::list<std::list<Dato>>& datosStd);
     bool esColumnaNumerica(int columna) const;
     void QuitarIndicadorFilaVacia();
     Obra* LeeObra() const;
@@ -67,9 +67,8 @@ public:
     bool EditarPrecio(const QModelIndex & index, QVariant precio);
     bool EditarUnidad(const QModelIndex & index, TEXTO unidad);
     /*****************************************************************/
-    void VerActual();
-    QList <DatoCelda> RellenaDatoLinea(pNodo nodo, pArista arista);
-    QColor LeeColor(int i, int j);
+    void VerActual();    
+    QColor LeeColor(int fila, int columna);
     QString LeeColorS(int i, int j);
     TEXTO CalculaCantidad(pNodo n, pArista A);
 
@@ -84,6 +83,8 @@ private:
     bool hayFilaVacia;
     int filavacia;
     QUndoStack* pila;
+    QLocale locale;
+    int FactorRedondeoVisualizacion;
 };
 
 #endif // PRINCIPALMODEL_H

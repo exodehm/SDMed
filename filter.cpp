@@ -12,7 +12,7 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
     if (event->type() == QEvent::KeyPress)
     {
         QModelIndex indice = tabla->currentIndex();
-        QKeyEvent *ke =static_cast<QKeyEvent*>(event);       
+        QKeyEvent *ke =static_cast<QKeyEvent*>(event);
         switch (ke->key())
         {
         case (Qt::Key_Delete):
@@ -90,7 +90,7 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             if (col<tabla->limiteIzquierdo)
             {
                 if (indice.row()==0)
-                {                   
+                {
                     col=0;
                     while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
                     {
@@ -155,14 +155,14 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
             {
                 col++;
-            }            
+            }
             if (col>tabla->limiteDerecho)
             {
                 col--;
                 while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
                 {
                     col--;
-                }                
+                }
             }
             QModelIndex ind = tabla->model()->index(indice.row(),col);
             emit tabla->CambiaFila(ind);
@@ -177,14 +177,14 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
             {
                 col--;
-            }            
+            }
             if (col<tabla->limiteIzquierdo)
             {
                 col++;
                 while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
                 {
                     col++;
-                }                
+                }
             }
             QModelIndex ind = tabla->model()->index(indice.row(),col);
             emit tabla->CambiaFila(ind);
@@ -198,7 +198,7 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
                 qDebug()<<tabla->selectionModel()->selectedRows().size();
                 //table->model()->insertRows(indice.row(),table->selectionModel()->selectedRows().size());
                 tabla->model()->insertRow(tabla->currentIndex().row());
-                QModelIndex ind = tabla->model()->index(indice.row(),tipoColumna::COMENTARIO);
+                QModelIndex ind = tabla->model()->index(indice.row(),tipoColumna::CODIGO);
                 tabla->setCurrentIndex(ind);
                 return true;
             }
