@@ -24,8 +24,6 @@
 #include "./Tablas/tablamedcert.h"
 #include "./Editor/editor.h"
 
-#include "./Undo/undoeditartextopartida.h"
-
 #include "filter.h"
 
 class InterfazObra : public QWidget
@@ -39,9 +37,7 @@ public:
 
     void IniciarObra();
     void GenerarUI();
-    void EscribirTexto();
-    void GuardarTextoPartidaModificada();
-    void GuardarTextoPartidaInicial();
+    void EscribirTexto();    
     TEXTO TextoPartidaInicial();
 
     PrincipalModel* ModeloTablaPrincipal();
@@ -81,6 +77,8 @@ public slots:
     void CambiarEntreMedicionYCertificacion(int n);
     void GuardarBC3(QString fileName);
     void ActivarDesactivarUndoRedo(int indice);    
+    void GuardarTextoPartidaInicial();
+    void GuardarTextoPartida();
 
 signals:
     void CopiarP();
@@ -113,7 +111,7 @@ private:
     QUndoStack* pila;
 
     Obra* O;
-    TEXTO textoPartidaActual;   
+    TEXTO textoPartidaInicial;
 };
 
 #endif // INTERFAZOBRA_H

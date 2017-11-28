@@ -348,15 +348,15 @@ void Obra:: SumarHijos(pNodo padre)
             {
                 precio*=CI;
             }
-            qDebug()<<"Cantidad: "<<medicion<<"* Precio: "<<precio;
+            //qDebug()<<"Cantidad: "<<medicion<<"* Precio: "<<precio;
             if (elem.second->datonodo.LeeCodigo().contains("%")) //si es un porcentaje
             {
                 elem.second->datonodo.EscribeImportePres(sumapres/100.0);
             }
             sumapres+=Redondear(precio * medicion,3);
             sumacert+=Redondear(precio * certificacion,3);
-            qDebug()<<"sumapres: "<<sumapres;
-            qDebug()<<"sumacert: "<<sumacert;
+            //qDebug()<<"sumapres: "<<sumapres;
+            //rqDebug()<<"sumacert: "<<sumacert;
         }
         padre->datonodo.EscribeImportePres(sumapres);
         padre->datonodo.EscribeImporteCert(sumacert);
@@ -722,13 +722,35 @@ void Obra::DesbloquearPrecio()
 
 bool Obra::esPrecioBloqueado()
 {
-    return aristaActual->destino->datonodo.esPrecioBloqueado();
+    if (aristaActual)
+    {
+        return aristaActual->destino->datonodo.esPrecioBloqueado();
+    }
+    return false;
+}
+
+bool Obra::esPrecioBloqueado(pArista A)
+{
+    if(A)
+    {
+        return A->destino->datonodo.esPrecioBloqueado();
+    }
+    return false;
 }
 
 void Obra::EditarPrecio(float precio)
 {
     aristaActual->destino->datonodo.EscribePrecio(precio);
     Actualizar(aristaActual->destino);
+}
+
+float Obra::LeePrecio()
+{
+    if (aristaActual)
+    {
+        return aristaActual->destino->datonodo.LeeImportePres();
+    }
+    return false;
 }
 
 void Obra::EditarCostesIndirectos(float coste)
@@ -840,7 +862,7 @@ void Obra::EditarCertificacionPorc(float porcentaje)
 
 void Obra::EditarLineaMedicion (int fila, int columna, float valor, TEXTO comentario)
 {
-    qDebug()<<"Estoy en la tabla: "<<selectorMedCer;
+    //qDebug()<<"Estoy en la tabla: "<<selectorMedCer;
     aristaPadre->datoarista.ModificaMedCer(selectorMedCer).EditarCampo (fila, columna, valor, comentario);
     Actualizar(aristaPadre->destino);
 }
@@ -975,18 +997,26 @@ bool Obra::HayMedicion(pArista A) const
 
 bool Obra::HayMedicionPartidaActual() const
 {
-    return aristaActual->datoarista.LeeMedicion().hayMedicion();
+    if (aristaActual)
+    {
+        return aristaActual->datoarista.LeeMedicion().hayMedicion();
+    }
+    return false;
 }
 
 bool Obra::HayCertificacion() const
 {
     //return aristaActual->datoarista.LeeCertificacion().hayMedicion();
-    return aristaPadre->datoarista.LeeCertificacion().hayMedicion();
+    if (aristaPadre)
+    {
+        return aristaPadre->datoarista.LeeCertificacion().hayMedicion();
+    }
+    return false;
 }
 
 bool Obra::EsPartidaVacia() const
 {
-    if (aristaPadre->destino->adyacente==nullptr)
+    if (aristaPadre && aristaPadre->destino->adyacente==nullptr)
     {
         return true;
     }
@@ -1053,7 +1083,11 @@ bool Obra::NivelUno(pNodo nodo)
 
 bool Obra::EsPartida()
 {
-    return aristaPadre->destino->datonodo.LeeNat()==Codificacion::Partida;
+    if (aristaPadre)
+    {
+        return aristaPadre->destino->datonodo.LeeNat()==Codificacion::Partida;
+    }
+    return false;
 }
 
 const TEXTO Obra::LeeCodigoObra() const
@@ -1169,7 +1203,7 @@ std::list<Dato> Obra::RellenaDatoLinea(pNodo nodo, pArista arista)
     medicion.dato.etipodato = datocelda::NUMERO;
     HayMedicion(arista)
             ?medicion.color = color::DESCOMPUESTO
-            :medicion.color = color::NORMAL;    
+            :medicion.color = color::NORMAL;
     toReturn.push_back(medicion);
     //certificacion
     Dato certificacion;
@@ -1189,9 +1223,21 @@ std::list<Dato> Obra::RellenaDatoLinea(pNodo nodo, pArista arista)
     Dato preciomed;
     preciomed.dato.datoNumero = nodo->datonodo.LeeImportePres();
     preciomed.dato.etipodato = datocelda::NUMERO;
-    HayDescomposicion(arista)
-            ?preciomed.color = color::DESCOMPUESTO
-             :preciomed.color = color::NORMAL;    
+    if (esPrecioBloqueado(arista))
+    {
+        preciomed.color = color::BLOQUEADO;
+    }
+    else
+    {
+        if (HayDescomposicion(arista))
+        {
+            preciomed.color = color::DESCOMPUESTO;
+        }
+        else
+        {
+            preciomed.color = color::NORMAL;
+        }
+    }
     toReturn.push_back(preciomed);
     //precio certificacion
     Dato preciocert;

@@ -7,6 +7,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include "./Tablas/tablabase.h"
+#include "./Editor/editor.h"
 
 class Filter : public QObject
 {

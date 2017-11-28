@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <QPen>
-#include<QBrush>
+#include <QBrush>
 
 #include  "../Delegados/delegadoeditornumeros.h"
 

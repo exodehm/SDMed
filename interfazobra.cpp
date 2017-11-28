@@ -70,7 +70,7 @@ void InterfazObra::GenerarUI()
 
     RefrescarVista();
     MostrarDeSegun(0);
-    O->cambiarEntreMedYCert(MedCert::MEDICION);
+    O->cambiarEntreMedYCert(MedCert::MEDICION);    
 
     /************signals y slots*****************/
     QObject::connect(tablaPrincipal,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel()));
@@ -84,13 +84,12 @@ void InterfazObra::GenerarUI()
     QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicionTablaM()));
     QObject::connect(tablaMediciones,SIGNAL(PegarMedicion()),this,SLOT(PegarMedicionTablaM()));
     QObject::connect(tablaMediciones,SIGNAL(CertificarLineasMedicion()),this,SLOT(Certificar()));    
-    //QObject::connect(ui->TablaMed,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
-    /*QObject::connect(modeloTablaP, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
-    QObject::connect(modeloTablaMed, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));
-    QObject::connect(modeloTablaCert, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(RefrescarVista(QModelIndex,QModelIndex)));*/
     QObject::connect(separadorTablasMedicion,SIGNAL(currentChanged(int)),this,SLOT(CambiarEntreMedicionYCertificacion(int)));
+    QObject::connect(pila,SIGNAL(indexChanged(int)),this,SLOT(ActivarDesactivarUndoRedo(int)));
+    QObject::connect(pila,SIGNAL(indexChanged(int)),this,SLOT(RefrescarVista()));
+    QObject::connect(editor->LeeEditor(),SIGNAL(GuardaTexto()),this,SLOT(GuardarTextoPartida()));
+    QObject::connect(editor,SIGNAL(GuardaTexto()),this,SLOT(GuardarTextoPartida()));
 
-    QObject::connect(pila,SIGNAL(indexChanged(int)),this,SLOT(ActivarDesactivarUndoRedo(int)));    
 }
 
 Obra* InterfazObra::LeeObra()
@@ -193,7 +192,8 @@ void InterfazObra::Mover(int tipomovimiento)
     default:
         break;
     }
-    modeloTablaP->QuitarIndicadorFilaVacia();
+    //modeloTablaP->QuitarIndicadorFilaVacia();
+    tablaPrincipal->clearSelection();
     RefrescarVista();
 }
 
@@ -214,13 +214,14 @@ void InterfazObra::RefrescarVista()
     modeloTablaP->ActualizarDatos(O->LeeDescompuesto());
     modeloTablaMed->ActualizarDatos();
     modeloTablaCert->ActualizarDatos();
+    modeloTablaP->QuitarIndicadorFilaVacia();
     if (modeloTablaP->rowCount(QModelIndex())==0)
     {
         modeloTablaP->insertRow(0);
     }
-    //O->MostrarHijos();
     EscribirTexto();
-    //MostrarTexto();
+    editor->Formatear();
+    GuardarTextoPartidaInicial();
     modeloTablaP->layoutChanged();
     modeloTablaMed->layoutChanged();
     modeloTablaCert->layoutChanged();
@@ -228,7 +229,7 @@ void InterfazObra::RefrescarVista()
     //tablaPrincipal->setCurrentIndex(indiceActual);
     tablaMediciones->resizeColumnsToContents();
     tablaCertificaciones->resizeColumnsToContents();
-    separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
+    separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)    
 }
 
 void InterfazObra::EscribirTexto()
@@ -256,24 +257,34 @@ void InterfazObra::PosicionarTablaM(QModelIndex indice)
     
 }
 
-void InterfazObra::GuardarTextoPartidaModificada()
+void InterfazObra::GuardarTextoPartidaInicial()
 {
-    if (editor->HayCambios())
+    if (!O->EsPartidaVacia())
     {
-        QString cadenaundo = ("Cambiar texto de partida a " + editor->LeeContenido());
-        pila->push(new UndoEditarTextoPartida(O,cadenaundo));
-        O->EditarTexto(editor->LeeContenido());
+        textoPartidaInicial = editor->LeeContenidoConFormato();
+        qDebug()<<"textoPartidaActual"<<textoPartidaInicial;
     }
 }
 
-void InterfazObra::GuardarTextoPartidaInicial()
+void InterfazObra::GuardarTextoPartida()
 {
-    textoPartidaActual = editor->LeeContenido();
+    qDebug()<<QApplication::focusWidget();
+    if (editor->HayCambios())
+    {
+        TablaBase* tabla = qobject_cast<TablaBase*>(QApplication::focusWidget());
+        if (tabla)
+        {
+            qDebug()<<"Guardar en la pila: "<<editor->LeeContenido();
+            QString cadenaundo = ("Cambiar texto de partida a " + editor->LeeContenido());
+            pila->push(new UndoEditarTexto(O,modeloTablaP, QModelIndex(), textoPartidaInicial, editor->LeeContenidoConFormato(), cadenaundo));
+            qDebug()<<"velor inicial: "<<textoPartidaInicial;
+        }
+    }
 }
 
 TEXTO InterfazObra::TextoPartidaInicial()
 {
-    return textoPartidaActual;
+    return textoPartidaInicial;
 }
 
 void InterfazObra::CopiarPartidasTablaP()

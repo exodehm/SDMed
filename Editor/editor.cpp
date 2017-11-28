@@ -3,19 +3,19 @@
 
 Editor::Editor(QWidget *parent): QMainWindow(parent)
 {
-	setupUi(this);	
-	setupActions();
+    setupUi(this);
+    textEdit= new MiCustomTextEdit(this);
+    setCentralWidget(textEdit);
+    setupActions();
     this->setWindowFlags(this->windowFlags() & ~Qt::Window); //opcionalmente editor->setWindowFlags(Qt::Widget) ?
 	mStatLabel = new QLabel;
 	BarraEstado->addPermanentWidget(mStatLabel);	
-	updateStats();
-    //fuenteActual= QFont("Arial", 10);
-	colorFondo = QColor(Qt::yellow);
-	colorLetra = QColor(Qt::black);
-    //textEdit->setCurrentFont(fuenteActual);
-	cursivas=false;
-    negrita=false;
-    setFocusPolicy(Qt::StrongFocus);
+	updateStats();    
+    cursivas=false;
+    negrita=false;    
+    filtro = new Filter;
+    installEventFilter(filtro);
+    Formatear();
 
     QObject::connect (textEdit, SIGNAL(textChanged()), this, SLOT(updateStats()));
 }
@@ -25,9 +25,19 @@ QTextEdit &Editor::LeeTexto() const
     return *textEdit;
 }
 
+QTextEdit* Editor::LeeEditor()
+{
+    return textEdit;
+}
+
 QString Editor::LeeContenido() const
 {
     return textEdit->document()->toPlainText();
+}
+
+QString Editor::LeeContenidoConFormato() const
+{
+    return textEdit->document()->toHtml();
 }
 
 void Editor::EscribeTexto(const QString& texto)
@@ -37,12 +47,11 @@ void Editor::EscribeTexto(const QString& texto)
 
 void Editor::setupActions()
 {
-	connect(action_Quit, SIGNAL(triggered(bool)),qApp, SLOT(quit()));
+    connect(action_Quit, SIGNAL(triggered(bool)),qApp, SLOT(quit()));
 	
 	connect(textEdit, SIGNAL(copyAvailable(bool)),action_Copiar, SLOT(setEnabled(bool)));
 	connect(textEdit, SIGNAL(undoAvailable(bool)),action_Undo, SLOT(setEnabled(bool)));
-	connect(textEdit, SIGNAL(redoAvailable(bool)),actionRedo, SLOT(setEnabled(bool)));
-
+    connect(textEdit, SIGNAL(redoAvailable(bool)),actionRedo, SLOT(setEnabled(bool)));
 
 	connect(actionNegrita, SIGNAL(triggered(bool)),this, SLOT(negritas()));
 	connect(actionCursiva, SIGNAL(triggered(bool)),this, SLOT(cursiva()));
@@ -61,27 +70,29 @@ void Editor::setupActions()
 	connect(actionJustificar, SIGNAL(triggered(bool)),this, SLOT(Justificar()));
 	connect(actionDerecha, SIGNAL(triggered(bool)),this, SLOT(AlinearDerecha()));
 	connect(actionIzquierda, SIGNAL(triggered(bool)),this, SLOT(AlinearIzquierda()));
-	connect(actionCentrar, SIGNAL(triggered(bool)),this, SLOT(Centrar()));
-    //connect(textEdit,SIGNAL()
+    connect(actionCentrar, SIGNAL(triggered(bool)),this, SLOT(Centrar()));
 }
 
 void Editor::negritas()
 {
-	negrita=!negrita;
+    negrita=!negrita;
 	if (negrita)
 	{	
-		textEdit->setFontWeight(QFont::Bold);		
+        textEdit->setFontWeight(QFont::Bold);
 	}
 	else
 	{
 		textEdit->setFontWeight(QFont::Normal);
-	}	
+    }
+    qDebug()<<"Poniendo negritas y saliendo";
+    textEdit->setFocus();
 }
 
 void Editor::cursiva()
 {
 	cursivas=!cursivas;	
-	textEdit->setFontItalic(cursivas);	
+    textEdit->setFontItalic(cursivas);
+    textEdit->setFocus();
 }
 
 void Editor::undo()
@@ -117,38 +128,45 @@ void Editor::definirFuente()
 	{
 		textEdit->setCurrentFont(fuenteActual);
 	}
+    textEdit->setFocus();
 }
 
 void Editor::definirColorLetra()
 {
 	colorLetra = QColorDialog::getColor(colorLetra, this);
 	textEdit->setTextColor(colorLetra);
+    textEdit->setFocus();
 }
 
 void Editor::definirColorFondo()
 {
 	colorFondo = QColorDialog::getColor(colorFondo, this);
 	textEdit->setTextBackgroundColor(colorFondo);
+    textEdit->setFocus();
 }
 
 void Editor::Justificar()
 {
-	textEdit->setAlignment(Qt::AlignJustify);	
+    textEdit->setAlignment(Qt::AlignJustify);
+    textEdit->setFocus();
 }
 
 void Editor::AlinearDerecha()
 {
-	textEdit->setAlignment(Qt::AlignRight);		
+    textEdit->setAlignment(Qt::AlignRight);
+    textEdit->setFocus();
 }
 
 void Editor::AlinearIzquierda()
 {
-	textEdit->setAlignment(Qt::AlignLeft);		
+    textEdit->setAlignment(Qt::AlignLeft);
+    textEdit->setFocus();
 }
 
 void Editor::Centrar()
 {
-	textEdit->setAlignment(Qt::AlignCenter);	
+    textEdit->setAlignment(Qt::AlignCenter);
+    textEdit->setFocus();
 }
 
 void Editor::updateStats()
@@ -172,14 +190,22 @@ bool Editor:: HayCambios()
     return textEdit->document()->isModified();
 }
 
-void Editor::focusOutEvent(QFocusEvent* event)
+void Editor::Formatear()
 {
-    qDebug()<<"Focus out: "<<event->type();
-    QMainWindow::focusOutEvent(event);
+    textEdit->setFontFamily(QStringLiteral("URW Gothic L"));
+    textEdit->setFontWeight(QFont::Normal);
+    textEdit->setFontItalic(false);
+    textEdit->setFontPointSize(10);
+    textEdit->setFontUnderline(false);
+    colorFondo = QColor(Qt::white);
+    colorLetra = QColor(Qt::black);
+    textEdit->setTextColor(colorLetra);
+    textEdit->setTextBackgroundColor(colorFondo);
 }
 
-void Editor::focusInEvent(QFocusEvent* event)
+void Editor::focusOutEvent(QFocusEvent* event)
 {
-    qDebug()<<"Focus in: "<<event->type();
-    QMainWindow::focusInEvent(event);
+    qDebug()<<"Focus out del editor: "<<event->type();
+    emit GuardaTexto();
+    Formatear();
 }

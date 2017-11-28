@@ -12,7 +12,6 @@
 
 class PrincipalModel;
 
-
 class UndoEditarPrincipal : public QUndoCommand
 {
 public:
@@ -46,6 +45,7 @@ public:
 private:
 
     int accion;
+    int filaInsertar;
 };
 
 //#############################NATURALEZA#############################//
@@ -89,6 +89,7 @@ public:
 
 private:
     Medicion ListaMedicion;
+    float cantidadAntigua,cantidadNueva;
 };
 
 //#############################PRECIO#############################//
@@ -103,8 +104,23 @@ public:
 
 private:
     int accion;
+    float precioAntiguo,precioNuevo;
     std::list<std::pair<pArista,pNodo>>ListaNodos;
     Grafo<datonodo_t,datoarista_t>grafoaux;
+};
+
+//#############################TEXTO#############################//
+
+class UndoEditarTexto : public UndoEditarPrincipal
+{
+public:
+    UndoEditarTexto(Obra* O, PrincipalModel* M,  QModelIndex I, TEXTO TAntiguo, TEXTO TNuevo,  QString descripcion, QUndoCommand* parent = nullptr);
+
+    void undo();
+    void redo();
+
+private:
+    TEXTO textoantiguo, textonuevo;
 };
 
 

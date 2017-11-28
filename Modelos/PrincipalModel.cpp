@@ -216,7 +216,8 @@ int PrincipalModel::FilaVacia()
     }
     else
     {
-        return this->rowCount(QModelIndex());
+        //return this->rowCount(QModelIndex());
+        return -1;
     }
 }
 
@@ -359,6 +360,7 @@ void PrincipalModel::ActualizarDatos(const std::list<std::list<Dato> > &datosStd
     //en la tabla. El formateo de los float se hace desde aqui porque hay que annadir la primera linea a la
     //cabecera, aunque hubiera sido mas correcto hacerlo desde el delegado
     datos.clear();
+    qDebug()<<"Tamaño del listado: "<<datosStd.size();
     QList<DatoCelda>lineaDatos;
     DatoCelda datoC;
     for (auto it1 = datosStd.begin(); it1 != datosStd.end();++it1)
@@ -379,7 +381,7 @@ void PrincipalModel::ActualizarDatos(const std::list<std::list<Dato> > &datosStd
             }
             datoC.color=Colores[it2->color];
             lineaDatos.append(datoC);
-            //qDebug()<<"dato: "<<datoC.valor<<"--"<<datoC.color;
+            qDebug()<<"dato: "<<datoC.valor<<"--"<<datoC.color;
         }
         datos.append(lineaDatos);
         lineaDatos.clear();

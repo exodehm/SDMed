@@ -1,259 +1,274 @@
- #include "filter.h"
+#include "filter.h"
 
 Filter::Filter(QObject *parent) : QObject(parent) {}
 
 bool Filter::eventFilter(QObject *obj, QEvent* event)
 {
-   TablaBase* tabla = qobject_cast<TablaBase*>(obj);
-    if( !tabla )
+    TablaBase* tabla = qobject_cast<TablaBase*>(obj);
+    if( tabla )
     {
-        return QObject::eventFilter(obj, event);;
-    }
-    if (event->type() == QEvent::KeyPress)
-    {
-        QModelIndex indice = tabla->currentIndex();
-        QKeyEvent *ke =static_cast<QKeyEvent*>(event);
-        switch (ke->key())
+        if (event->type() == QEvent::KeyPress)
         {
-        case (Qt::Key_Delete):
-        {
-            if (tabla->selectionModel()->isRowSelected(indice.row(),QModelIndex()))//si hay alguna fila seleccionada
+            QModelIndex indice = tabla->currentIndex();
+            QKeyEvent *ke =static_cast<QKeyEvent*>(event);
+            switch (ke->key())
             {
-                //table->model()->removeRows(table->selectionModel()->selectedRows().first().row(),table->selectionModel()->selectedRows().size());
-                tabla->setUpdatesEnabled(false);
-                QModelIndexList indexes = tabla->selectionModel()->selectedIndexes();
-                QList<int> listaIndices;
-                foreach (QModelIndex i, indexes)
+            case (Qt::Key_Delete):
+            {
+                if (tabla->selectionModel()->isRowSelected(indice.row(),QModelIndex()))//si hay alguna fila seleccionada
                 {
-                    if (!listaIndices.contains(i.row()))
-                        listaIndices.prepend(i.row());
-                }
-                foreach (int i, listaIndices)
-                {
-                    tabla->model()->removeRow(i);
-                    qDebug()<<i;
-                }
-                tabla->setUpdatesEnabled(true);
-            }
-            else
-            {
-                tabla->model()->setData(tabla->currentIndex(),"",Qt::EditRole);//solo si hay una celda seleccionada
-            }
-            return true;
-            break;
-        }
-        case (Qt::Key_Tab):
-        {
-            int col=indice.column();
-            col++;
-            while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
-            {
-                col++;
-                qDebug()<<"Columna: "<<col;
-            }
-            QModelIndex ind;
-            if (col>tabla->limiteDerecho)
-            {
-                if (indice.row()==tabla->model()->rowCount(QModelIndex())-1)
-                {
-                    tabla->model()->insertRow(tabla->model()->rowCount(QModelIndex()));
-                    ind = tabla->model()->index(indice.row()+1,tabla->limiteIzquierdo);
+                    //table->model()->removeRows(table->selectionModel()->selectedRows().first().row(),table->selectionModel()->selectedRows().size());
+                    tabla->setUpdatesEnabled(false);
+                    QModelIndexList indexes = tabla->selectionModel()->selectedIndexes();
+                    QList<int> listaIndices;
+                    foreach (QModelIndex i, indexes)
+                    {
+                        if (!listaIndices.contains(i.row()))
+                            listaIndices.prepend(i.row());
+                    }
+                    foreach (int i, listaIndices)
+                    {
+                        tabla->model()->removeRow(i);
+                        qDebug()<<i;
+                    }
+                    tabla->setUpdatesEnabled(true);
                 }
                 else
                 {
-                    col=tabla->limiteIzquierdo;
-                    while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
-                    {
-                        col++;
-                    }
-                    ind = tabla->model()->index(indice.row()+1,col);
+                    tabla->model()->setData(tabla->currentIndex(),"",Qt::EditRole);//solo si hay una celda seleccionada
                 }
+                return true;
+                break;
             }
-            else
+            case (Qt::Key_Tab):
             {
-                ind = tabla->model()->index(indice.row(),col);
-            }
-            tabla->setCurrentIndex(ind);
-            emit tabla->CambiaFila(ind);
-            return true;
-            break;
-        }
-        case (Qt::Key_Backtab):
-        {
-            int col=indice.column();
-            col--;
-            while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
-            {
-                col--;
-            }
-            QModelIndex ind;
-            if (col<tabla->limiteIzquierdo)
-            {
-                if (indice.row()==0)
+                int col=indice.column();
+                col++;
+                while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
                 {
-                    col=0;
-                    while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
+                    col++;
+                    qDebug()<<"Columna: "<<col;
+                }
+                QModelIndex ind;
+                if (col>tabla->limiteDerecho)
+                {
+                    if (indice.row()==tabla->model()->rowCount(QModelIndex())-1)
                     {
-                        col++;
+                        tabla->model()->insertRow(tabla->model()->rowCount(QModelIndex()));
+                        ind = tabla->model()->index(indice.row()+1,tabla->limiteIzquierdo);
                     }
-                    ind = tabla->model()->index(0,col);
+                    else
+                    {
+                        col=tabla->limiteIzquierdo;
+                        while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
+                        {
+                            col++;
+                        }
+                        ind = tabla->model()->index(indice.row()+1,col);
+                    }
                 }
                 else
                 {
-                    col=tabla->limiteDerecho;
-                    while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
-                    {
-                        col--;
-                    }
-                    ind = tabla->model()->index(indice.row()-1,col);
+                    ind = tabla->model()->index(indice.row(),col);
                 }
-            }
-            else
-            {
-                ind = tabla->model()->index(indice.row(),col);
-            }
-            tabla->setCurrentIndex(ind);
-            emit tabla->CambiaFila(ind);
-            return true;
-            break;
-        }
-        case (Qt::Key_Up):
-        {
-            if (indice.row()>0)//si estoy en la segunda fila o mas
-            {
-                QModelIndex ind = tabla->model()->index(indice.row()-1,indice.column());
-                qDebug()<<"Fila: "<<ind.row()<<" - Columna: "<<ind.column();
+                tabla->setCurrentIndex(ind);
                 emit tabla->CambiaFila(ind);
-                tabla->setCurrentIndex(ind);
                 return true;
+                break;
             }
-            break;
-        }
-        case (Qt::Key_Down):
-        {
-            if (indice.row() == tabla->model()->rowCount(QModelIndex())-1)
+            case (Qt::Key_Backtab):
             {
-                tabla->model()->insertRow(tabla->model()->rowCount(QModelIndex()));
-                QModelIndex ind = tabla->model()->index(indice.row()+1,indice.column(), QModelIndex());
-                tabla->setCurrentIndex(ind);
-                return true;
-            }
-            else
-            {
-                QModelIndex ind = tabla->model()->index(indice.row()+1,indice.column(), QModelIndex());
-                //qDebug()<<"Fila: "<<ind.row()<<" - Columna: "<<ind.column();
-                emit tabla->CambiaFila(ind);
-                tabla->setCurrentIndex(ind);
-                return true;
-            }
-            break;
-        }
-        case (Qt::Key_Right):
-        {
-            int col=indice.column();
-            col++;
-            while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
-            {
-                col++;
-            }
-            if (col>tabla->limiteDerecho)
-            {
+                int col=indice.column();
                 col--;
                 while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
                 {
                     col--;
                 }
+                QModelIndex ind;
+                if (col<tabla->limiteIzquierdo)
+                {
+                    if (indice.row()==0)
+                    {
+                        col=0;
+                        while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
+                        {
+                            col++;
+                        }
+                        ind = tabla->model()->index(0,col);
+                    }
+                    else
+                    {
+                        col=tabla->limiteDerecho;
+                        while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
+                        {
+                            col--;
+                        }
+                        ind = tabla->model()->index(indice.row()-1,col);
+                    }
+                }
+                else
+                {
+                    ind = tabla->model()->index(indice.row(),col);
+                }
+                tabla->setCurrentIndex(ind);
+                emit tabla->CambiaFila(ind);
+                return true;
+                break;
             }
-            QModelIndex ind = tabla->model()->index(indice.row(),col);
-            emit tabla->CambiaFila(ind);
-            tabla->setCurrentIndex(ind);
-            return true;
-            break;
-        }
-        case (Qt::Key_Left):
-        {
-            int col=indice.column();
-            col--;
-            while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
+            case (Qt::Key_Up):
             {
-                col--;
+                if (indice.row()>0)//si estoy en la segunda fila o mas
+                {
+                    QModelIndex ind = tabla->model()->index(indice.row()-1,indice.column());
+                    qDebug()<<"Fila: "<<ind.row()<<" - Columna: "<<ind.column();
+                    emit tabla->CambiaFila(ind);
+                    tabla->setCurrentIndex(ind);
+                    return true;
+                }
+                break;
             }
-            if (col<tabla->limiteIzquierdo)
+            case (Qt::Key_Down):
             {
+                if (indice.row() == tabla->model()->rowCount(QModelIndex())-1)
+                {
+                    tabla->model()->insertRow(tabla->model()->rowCount(QModelIndex()));
+                    QModelIndex ind = tabla->model()->index(indice.row()+1,indice.column(), QModelIndex());
+                    tabla->setCurrentIndex(ind);
+                    return true;
+                }
+                else
+                {
+                    QModelIndex ind = tabla->model()->index(indice.row()+1,indice.column(), QModelIndex());
+                    //qDebug()<<"Fila: "<<ind.row()<<" - Columna: "<<ind.column();
+                    emit tabla->CambiaFila(ind);
+                    tabla->setCurrentIndex(ind);
+                    return true;
+                }
+                break;
+            }
+            case (Qt::Key_Right):
+            {
+                int col=indice.column();
                 col++;
                 while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
                 {
                     col++;
                 }
-            }
-            QModelIndex ind = tabla->model()->index(indice.row(),col);
-            emit tabla->CambiaFila(ind);
-            tabla->setCurrentIndex(ind);
-            return true;
-            break;
-        }
-        case (Qt::Key_F5):
-        {
-            {
-                qDebug()<<tabla->selectionModel()->selectedRows().size();
-                //table->model()->insertRows(indice.row(),table->selectionModel()->selectedRows().size());
-                tabla->model()->insertRow(tabla->currentIndex().row());
-                QModelIndex ind = tabla->model()->index(indice.row(),tipoColumna::CODIGO);
+                if (col>tabla->limiteDerecho)
+                {
+                    col--;
+                    while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
+                    {
+                        col--;
+                    }
+                }
+                QModelIndex ind = tabla->model()->index(indice.row(),col);
+                emit tabla->CambiaFila(ind);
                 tabla->setCurrentIndex(ind);
                 return true;
+                break;
             }
-            break;
-        }
-        case (Qt::Key_F2):
-        {
-            tabla->edit(indice);
-            return true;
-        }
-        case (Qt::Key_C)://Copiar
-        {
-            if (ke->modifiers()==Qt::ControlModifier)
+            case (Qt::Key_Left):
             {
-                if (tabla->objectName()=="TablaP")
+                int col=indice.column();
+                col--;
+                while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
                 {
-                    emit tabla->CopiarPartidas();
+                    col--;
                 }
-                else
+                if (col<tabla->limiteIzquierdo)
                 {
-                    emit tabla->CopiarMedicion();
+                    col++;
+                    while (tabla->columnaBloqueada(col) || tabla->isColumnHidden(col))
+                    {
+                        col++;
+                    }
                 }
+                QModelIndex ind = tabla->model()->index(indice.row(),col);
+                emit tabla->CambiaFila(ind);
+                tabla->setCurrentIndex(ind);
+                return true;
+                break;
+            }
+            case (Qt::Key_F5):
+            {
+                {
+                    qDebug()<<tabla->selectionModel()->selectedRows().size();
+                    //table->model()->insertRows(indice.row(),table->selectionModel()->selectedRows().size());
+                    tabla->model()->insertRow(tabla->currentIndex().row());
+                    QModelIndex ind = tabla->model()->index(indice.row(),tipoColumna::CODIGO);
+                    tabla->setCurrentIndex(ind);
+                    return true;
+                }
+                break;
+            }
+            case (Qt::Key_F2):
+            {
+                tabla->edit(indice);
                 return true;
             }
-            break;
-        }
-        case (Qt::Key_X)://Cortar
-        {
-            if (ke->modifiers()==Qt::ControlModifier)
+            case (Qt::Key_C)://Copiar
             {
-                qDebug()<<"Cortanding";
-                return true;
+                if (ke->modifiers()==Qt::ControlModifier)
+                {
+                    if (tabla->objectName()=="TablaP")
+                    {
+                        emit tabla->CopiarPartidas();
+                    }
+                    else
+                    {
+                        emit tabla->CopiarMedicion();
+                    }
+                    return true;
+                }
+                break;
+            }
+            case (Qt::Key_X)://Cortar
+            {
+                if (ke->modifiers()==Qt::ControlModifier)
+                {
+                    qDebug()<<"Cortanding";
+                    return true;
+                }
+            }
+            case (Qt::Key_V)://Pegar
+            {
+                if (ke->modifiers()==Qt::ControlModifier)
+                {
+                    if (tabla->objectName()=="TablaP")
+                    {
+                        emit tabla->PegarPartidas();
+                    }
+                    else
+                    {
+                        emit tabla->PegarMedicion();
+                    }
+                    return true;
+                }
+                break;
+            }
+            default:
+            {
+                return false;
+                break;
+            }
             }
         }
-        case (Qt::Key_V)://Pegar
+    }
+    else
+    {
+        Editor *editor = qobject_cast<Editor*>(obj);
+        if (editor)
         {
-            if (ke->modifiers()==Qt::ControlModifier)
+            QTextEdit* editor1 =qobject_cast<QTextEdit*>(editor->LeeEditor());
+            if( editor1)
             {
-                if (tabla->objectName()=="TablaP")
+                if (event->type() == QEvent::FocusOut)
                 {
-                    emit tabla->PegarPartidas();
+                    qDebug()<<"Saliendo del editor";
+                    return true;
                 }
-                else
-                {
-                    emit tabla->PegarMedicion();
-                }
-                return true;
             }
-            break;
-        }
-        default:
-        {
-            return false;
-            break;
-        }
         }
     }
     return QObject::eventFilter(obj, event);

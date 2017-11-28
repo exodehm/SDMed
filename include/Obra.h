@@ -79,9 +79,11 @@ public:
     /**********funciones de precio*************/
     void BloquearPrecio (float precio); //escribe un precio bloqueado y no considera el descompuesto
     void DesbloquearPrecio();           //anula el bloqueo y suma el descompuesto
-    bool esPrecioBloqueado();           //consulta para saber si un precio esta bloqueado
+    bool esPrecioBloqueado();           //consulta para saber si la partida activa tiene el precio bloqueado
+    bool esPrecioBloqueado(pArista A);           //consulta para saber si un precio esta bloqueado
     void EditarPrecio(float precio);    //escribe un precio si no hay descompuesto
     void EditarCostesIndirectos(float coste);
+    float LeePrecio();
     /*********funciones de edicion***********/
     void EditarCodigo (TEXTO codigo);
     void EditarResumen (TEXTO resumen);

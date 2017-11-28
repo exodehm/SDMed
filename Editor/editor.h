@@ -11,24 +11,27 @@
 #include <QDebug>
 
 #include "ui_editor.h"
+#include "micustomtextedit.h"
 
 #include "filter.h"
 
+class Filter;
 
-//class QLabel;
 
 class Editor : 	public QMainWindow, private Ui::Editor
 {
     Q_OBJECT
 public:
-    Editor (QWidget* parent=nullptr);
-    //~MainWindow();
+    Editor (QWidget *parent=nullptr);
     QTextEdit &LeeTexto() const;
+    QTextEdit* LeeEditor();
     void EscribeTexto(const QString& texto);
     bool HayCambios();
     QString LeeContenido() const;
+    QString LeeContenidoConFormato() const;
+    void Formatear();
+
     void focusOutEvent(QFocusEvent* event);
-    void focusInEvent(QFocusEvent* event);
 
 protected:
     void setupActions();
@@ -51,14 +54,20 @@ protected slots:
     void Centrar();
     void updateStats();
 
+
+signals:
+    void GuardaTexto();
+
 private:
 
+    MiCustomTextEdit* textEdit;
     QLabel *mStatLabel;
     QFont fuenteActual;
     QColor colorFondo;
     QColor colorLetra;
     bool cursivas;
     bool negrita;
+    Filter* filtro;
 };
 
 #endif
