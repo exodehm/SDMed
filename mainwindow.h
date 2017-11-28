@@ -30,6 +30,7 @@ public:
     QString strippedName(const QString &fullFileName);
 
 private slots:
+    /*********MENU***************/
     void ActionNuevo();
     bool ActionAbrir();
     bool ActionGuardar();
@@ -45,6 +46,10 @@ private slots:
 
     void ActionAdelante();
     void ActionAtras();
+
+    void AcercaDe();
+    void AcercaDeQt();
+    /**********OTROS**************/
     void CambiarObraActual(int indice);
     void CambiarMedCert(int indice);
     void NuevaCertificacion();

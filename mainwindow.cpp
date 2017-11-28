@@ -385,6 +385,16 @@ void MainWindow::ActionAtras()
     }
 }
 
+void MainWindow::AcercaDe()
+{
+    QMessageBox::about(this,"Acerca de SDMed","Pues eso oooooooooooooo");
+}
+
+void MainWindow::AcercaDeQt()
+{
+    QMessageBox::aboutQt(this);
+}
+
 void MainWindow::NuevaCertificacion()
 {
     DialogoNuevaCertificacion d;
@@ -476,6 +486,8 @@ void MainWindow::setupActions()
     QObject::connect(ui->tabPrincipal,SIGNAL(currentChanged(int)),this,SLOT(CambiarObraActual(int)));
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
+    QObject::connect(ui->actionAcerca_de,SIGNAL(triggered(bool)),this,SLOT(AcercaDe()));
+    QObject::connect(ui->actionAcerca_de_Qt,SIGNAL(triggered(bool)),this,SLOT(AcercaDeQt()));
     QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarMedCert(int)));
     QObject::connect(botonNuevaCertificacion,SIGNAL(pressed()),this,SLOT(NuevaCertificacion()));
     QObject::connect(comboCertificacionActual,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarCertificacionActual(int)));
