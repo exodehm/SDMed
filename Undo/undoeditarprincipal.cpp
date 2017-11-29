@@ -25,8 +25,7 @@ void UndoEditarPrincipal::Posicionar()
     obra->DefinePilaAristas(pilaAristas);
     obra->DefineAristaPadre(pilaAristas.top());
     pArista aux = pilaAristas.top();
-    obra->DefineNodoPadre(aux->destino);
-    //modelo->QuitarIndicadorFilaVacia();
+    obra->DefineNodoPadre(aux->destino);    
     obra->PosicionarAristaActual(indice.row());
 }
 

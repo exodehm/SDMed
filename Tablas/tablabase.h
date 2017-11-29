@@ -9,12 +9,11 @@
 #include <QItemSelectionModel>
 
 #include "../Delegados/delegadobase.h"
-#include "../Delegados/delegadoeditormediciones.h"
-#include "../Delegados/delegadosparcialessubtotales.h"
 #include "../Delegados/delegadocolumnasbloqueadas.h"
-#include "../Delegados/delegadomedicionesestandar.h"
 #include "../Delegados/delegadoiconos.h"
-#include "../Delegados/delegadoeditornumeros.h"
+#include "../Delegados/delegadonumerosbase.h"
+#include "../Delegados/delegadonumerostablaprincipal.h"
+#include "../Delegados/delegadonumerostablamedcert.h"
 #include "../Modelos/MedCertModel.h"
 #include "../Modelos/PrincipalModel.h"
 #include "../filter.h"
@@ -32,6 +31,8 @@ public:
     QHeaderView* CabeceraDeTabla();
     int limiteIzquierdo;
     int limiteDerecho;
+    void PonerDelegadoOriginal(int columna);
+    void BorrarFilas(QList<int>indices);
 
 private slots:
     void Bloquear(int columna);
@@ -57,8 +58,9 @@ protected:
     QHeaderView* cabeceraHorizontal;
     QHeaderView* alturaFilas;
     QHeaderView* cabeceraVertical;
-    DelegadoBase* dlgBA;
-    DelegadoEditorNumeros* dlgEN;
+    DelegadoBase* dlgBA;    
+    DelegadoNumerosTablaPrincipal* dlgNumTablaP;
+    DelegadoNumerosTablaMedCert* dlgNumTablaMC;
     DelegadoColumnasBloqueadas* dlgCB;
     DelegadoIconos* dlgIco;
     bool* celdaBloqueada;

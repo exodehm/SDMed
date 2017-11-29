@@ -226,7 +226,7 @@ void InterfazObra::RefrescarVista()
     modeloTablaMed->layoutChanged();
     modeloTablaCert->layoutChanged();
     tablaPrincipal->resizeColumnsToContents();
-    //tablaPrincipal->setCurrentIndex(indiceActual);
+    tablaPrincipal->setCurrentIndex(indiceActual);
     tablaMediciones->resizeColumnsToContents();
     tablaCertificaciones->resizeColumnsToContents();
     separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)    
@@ -262,7 +262,7 @@ void InterfazObra::GuardarTextoPartidaInicial()
     if (!O->EsPartidaVacia())
     {
         textoPartidaInicial = editor->LeeContenidoConFormato();
-        qDebug()<<"textoPartidaActual"<<textoPartidaInicial;
+        //qDebug()<<"textoPartidaActual"<<textoPartidaInicial;
     }
 }
 
@@ -274,10 +274,8 @@ void InterfazObra::GuardarTextoPartida()
         TablaBase* tabla = qobject_cast<TablaBase*>(QApplication::focusWidget());
         if (tabla)
         {
-            qDebug()<<"Guardar en la pila: "<<editor->LeeContenido();
             QString cadenaundo = ("Cambiar texto de partida a " + editor->LeeContenido());
-            pila->push(new UndoEditarTexto(O,modeloTablaP, QModelIndex(), textoPartidaInicial, editor->LeeContenidoConFormato(), cadenaundo));
-            qDebug()<<"velor inicial: "<<textoPartidaInicial;
+            pila->push(new UndoEditarTexto(O,modeloTablaP, QModelIndex(), textoPartidaInicial, editor->LeeContenidoConFormato(), cadenaundo));            
         }
     }
 }
@@ -358,6 +356,7 @@ void InterfazObra::PegarMedicionTablaM()
 
 void InterfazObra::PegarPartidas(const std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
 {
+    qDebug()<<"Pegar partidas";
     QModelIndex indice = tablaPrincipal->currentIndex();
     qDebug()<<indice.row();
     bool insertarAlFinal=false;

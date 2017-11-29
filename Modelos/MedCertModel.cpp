@@ -96,9 +96,9 @@ bool MedCertModel::setData(const QModelIndex & index, const QVariant& value, int
 {
     if (index.isValid() && (role == Qt::EditRole/* || role == Qt::DisplayRole*/))
     {
-        QModelIndex indiceantiguo= IndiceAnterior();       
+
         QString cadenaundo = "Editar linea de medicion con el valor " + index.data().toString();
-        pila->push(new UndoMedicion(miobra,this,indiceantiguo,index,value,cadenaundo));
+        pila->push(new UndoMedicion(miobra,this,index,value,cadenaundo));
         return true;
     }
     return false;
@@ -107,11 +107,23 @@ bool MedCertModel::setData(const QModelIndex & index, const QVariant& value, int
 bool MedCertModel::insertRows(int row, int count, const QModelIndex& parent)
 {
     Q_UNUSED(parent);
-    beginInsertRows(QModelIndex(), row, row+count-1);
-    miobra->InsertarLineasVaciasMedicion(tabla,row, count);
+    beginInsertRows(QModelIndex(), row, row+count-1);    
+    QList<int>indices;
+    for (int i=0;i<count;i++)
+    {
+        indices.append(row+i);
+    }
+    QString cadenaundo = "Insertar lineas de medicion";
+    pila->push(new UndoInsertarLineasMedicion(miobra,this,indices,cadenaundo));
     ActualizarDatos();
     endInsertRows();
     return true;
+}
+
+void MedCertModel::BorrarFilas(QList<int>filas)
+{
+    QString cadenaundo = "Borrar lineas de medicion";
+    pila->push(new UndoBorrarLineasMedicion(miobra,this,filas,cadenaundo));
 }
 
 bool MedCertModel::removeRows(int filaInicial, int numFilas, const QModelIndex& parent)
@@ -174,22 +186,4 @@ void MedCertModel::VerMedCert(QList<QStringList> &datos)
             qDebug()<<dato;
         }*/
     }
-}
-
-QModelIndex MedCertModel::IndiceAnterior()
-{
-    int fila=0,columna=0;
-    const QUndoCommand* com = nullptr;
-    if (pila->count()-1>=0)
-    {
-        com = pila->command(pila->count()-1);
-    }
-    const UndoMedicion* com1 = dynamic_cast<const UndoMedicion*>(com);
-    if (com1 && pila->count()-1>=0)
-    {
-        fila = com1->LeeFila();
-        columna = com1->LeeColumna();
-    }
-    QModelIndex indiceantiguo= this->index(fila,columna);
-    return indiceantiguo;
 }

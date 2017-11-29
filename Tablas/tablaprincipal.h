@@ -8,7 +8,7 @@ class TablaPrincipal : public TablaBase
 {
      Q_OBJECT
 public:
-    explicit TablaPrincipal(int nColumnas, QWidget *parent=nullptr);
+    explicit TablaPrincipal(int nColumnas, QWidget *parent=nullptr);    
 
 public slots:
     void MostrarMenuCabecera(QPoint pos);

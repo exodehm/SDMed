@@ -6,9 +6,9 @@
 #include <QPen>
 #include <QBrush>
 
-#include  "../Delegados/delegadoeditornumeros.h"
+#include  "../Delegados/delegadonumerosbase.h"
 
-class DelegadoColumnasBloqueadas : public DelegadoEditorNumeros
+class DelegadoColumnasBloqueadas : public DelegadoNumerosBase
 {
     Q_OBJECT
 public:

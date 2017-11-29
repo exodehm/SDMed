@@ -44,7 +44,7 @@ public:
     void ActualizarDatos();
     void VerMedCert(QList<QStringList>&datos);
     void emitDataChanged(const QModelIndex &index);
-    QModelIndex IndiceAnterior();
+    void BorrarFilas(QList<int>filas);
 
 signals:
     void EditarCampoLineaMedicion (QModelIndex, float, QString);

@@ -381,7 +381,7 @@ void PrincipalModel::ActualizarDatos(const std::list<std::list<Dato> > &datosStd
             }
             datoC.color=Colores[it2->color];
             lineaDatos.append(datoC);
-            qDebug()<<"dato: "<<datoC.valor<<"--"<<datoC.color;
+            //qDebug()<<"dato: "<<datoC.valor<<"--"<<datoC.color;
         }
         datos.append(lineaDatos);
         lineaDatos.clear();
