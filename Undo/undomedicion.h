@@ -51,6 +51,30 @@ private:
     MedCertModel* modelo;
     QList<int>indices;
     std::stack <pArista> pilaAristas;
+<<<<<<< HEAD
+=======
+    Medicion listaMedicion;
+};
+
+//#############################INSERTAR LINEAS MEDICION#############################//
+class UndoInsertarLineasMedicion : public QUndoCommand
+{
+public:
+    UndoInsertarLineasMedicion(Obra* O, MedCertModel* M,  QList<int>listaindices,
+                 QString descripcion, QUndoCommand* parent = nullptr);
+
+    void undo();
+    void redo();
+
+    void Posicionar();
+
+private:
+
+    Obra* obra;
+    MedCertModel* modelo;
+    QList<int>indices;
+    std::stack <pArista> pilaAristas;
+>>>>>>> cc4eadfa63af172a3d2c2e2ffd0a5dfaa8a7d9c0
     Medicion listaMedicion;
 };
 
