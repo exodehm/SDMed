@@ -383,8 +383,8 @@ void InterfazObra::CopiarMedicion(Medicion& listaMedicionCopiarPegar)
     }
     qSort(listaIndices);
     O->CopiarMedicion(listaMedicionCopiarPegar, listaIndices);
-    foreach (int i, listaIndices)
-        qDebug()<<"Copiando las linea de medicion: "<<i;
+    /*foreach (int i, listaIndices)
+        qDebug()<<"Copiando las linea de medicion: "<<i;*/
     selecmodel->clearSelection();
 }
 
