@@ -119,7 +119,6 @@ void UndoInsertarLineasMedicion::redo()
     //Cuando borro SI es necesaria una lista que albergue indices no correlativos, pero
     //al insertar no. No obstante uso una lista de QList<int> para mantener el constructor,
     //aunque no es lo apropiado para esta funcion.
-
     obra->InsertarLineasVaciasMedicion(0,indices.first(),indices.count());
 }
 
