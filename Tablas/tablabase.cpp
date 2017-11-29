@@ -126,16 +126,12 @@ void TablaBase::PonerDelegadoOriginal(int columna)
 
 void TablaBase::BorrarFilas(QList<int>indices)
 {
-<<<<<<< HEAD
     //llama a la funcion BorrarFilas del modelo de la tabla activa
-=======
->>>>>>> cc4eadfa63af172a3d2c2e2ffd0a5dfaa8a7d9c0
     MedCertModel* modelo = qobject_cast<MedCertModel*>(model());
     if (modelo)
     {
         modelo->BorrarFilas(indices);
     }
-<<<<<<< HEAD
     else
     {
         PrincipalModel* modelo = qobject_cast<PrincipalModel*>(model());
@@ -144,6 +140,4 @@ void TablaBase::BorrarFilas(QList<int>indices)
             modelo->BorrarFilas(indices);
         }
     }
-=======
->>>>>>> cc4eadfa63af172a3d2c2e2ffd0a5dfaa8a7d9c0
 }
