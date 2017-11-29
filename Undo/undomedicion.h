@@ -13,29 +13,85 @@ class MedCertModel;
 class UndoMedicion : public QUndoCommand
 {
 public:
-    UndoMedicion(Obra* O, MedCertModel* M,  QModelIndex indiceAnterior, QModelIndex indiceActual,
-                 QVariant dato, QString descripcion, QUndoCommand* parent = nullptr);
+    UndoMedicion(Obra* O, MedCertModel* M,  QModelIndex I, QVariant D,
+                 QString descripcion, QUndoCommand* parent = nullptr);
 
     void undo();
     void redo();
 
-    int LeeFila() const;
-    int LeeColumna() const;
+    void Posicionar();
 
 private:
 
     Obra* obra;
     MedCertModel* modelo;
-    QModelIndex indiceAnterior;
-    QModelIndex indiceActual;
-    int fila, columna;
+    QModelIndex indice;
     QVariant datoAntiguo, datoNuevo;
     float fValorAntiguo, fValorNuevo;
     TEXTO sValorAntiguo, sValorNuevo;
-    bool esNuevoDato;
-    int accion;
+    std::stack <pArista> pilaAristas;
+
+};
+
+//#############################BORRAR LINEAS MEDICION#############################//
+class UndoBorrarLineasMedicion : public QUndoCommand
+{
+public:
+    UndoBorrarLineasMedicion(Obra* O, MedCertModel* M,  QList<int>listaindices,
+                 QString descripcion, QUndoCommand* parent = nullptr);
+
+    void undo();
+    void redo();
+
+    void Posicionar();
+
+private:
+
+    Obra* obra;
+    MedCertModel* modelo;
+    QList<int>indices;
+    std::stack <pArista> pilaAristas;
     Medicion listaMedicion;
 };
 
+//#############################INSERTAR LINEAS MEDICION#############################//
+class UndoInsertarLineasMedicion : public QUndoCommand
+{
+public:
+    UndoInsertarLineasMedicion(Obra* O, MedCertModel* M,  QList<int>listaindices,
+                 QString descripcion, QUndoCommand* parent = nullptr);
+
+    void undo();
+    void redo();
+
+    void Posicionar();
+
+private:
+
+    Obra* obra;
+    MedCertModel* modelo;
+    QList<int>indices;
+    std::stack <pArista> pilaAristas;
+    Medicion listaMedicion;
+};
+
+//#############################PEGAR LINEAS MEDICION#############################//
+class UndoPegarLineasMedicion : public QUndoCommand
+{
+public:
+    UndoPegarLineasMedicion(Obra* O, int F, const Medicion& listaM, QString descripcion, QUndoCommand* parent = nullptr);
+
+    void undo();
+    void redo();
+
+    void Posicionar();
+
+private:
+
+    Obra* obra;
+    int fila;
+    Medicion listaMedicionOriginal, listaMedicionACopiar;
+    std::stack <pArista> pilaAristas;
+};
 
 #endif // UNDOMEDICION_H

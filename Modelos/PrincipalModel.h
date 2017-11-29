@@ -66,6 +66,7 @@ public:
     bool EditarCantidad(const QModelIndex & index, QVariant cantidad);
     bool EditarPrecio(const QModelIndex & index, QVariant precio);
     bool EditarUnidad(const QModelIndex & index, TEXTO unidad);
+    void BorrarFilas(QList<int>filas);
     /*****************************************************************/
     void VerActual();    
     QColor LeeColor(int fila, int columna);

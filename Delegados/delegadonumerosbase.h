@@ -1,5 +1,5 @@
-#ifndef DELEGADOEDITORNUMEROS_H
-#define DELEGADOEDITORNUMEROS_H
+#ifndef DELEGADONUMEROSBASE_H
+#define DELEGADONUMEROSBASE_H
 
 #include <QRegExp>
 #include <QRegExpValidator>
@@ -9,10 +9,10 @@
 #include "./Modelos/PrincipalModel.h"
 
 
-class DelegadoEditorNumeros : public DelegadoBase
+class DelegadoNumerosBase : public DelegadoBase
 {
 public:
-    explicit DelegadoEditorNumeros(QObject* parent=nullptr);
+    explicit DelegadoNumerosBase(QObject* parent=nullptr);
     QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem&option, const QModelIndex&index) const;
     void setEditorData(QWidget * editor, const QModelIndex&index)const;
     void setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex&index) const;
@@ -24,4 +24,4 @@ private:
     QRegExp* rx;
 };
 
-#endif // DELEGADOEDITORNUMEROS_H
+#endif // DELEGADONUMEROSBASE_H

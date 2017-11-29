@@ -9,15 +9,14 @@ TablaPrincipal::TablaPrincipal(int nColumnas, QWidget *parent): TablaBase(nColum
     celdaBloqueada[tipoColumna::PORCERTPRES]=true;
     celdaBloqueada[tipoColumna::IMPPRES]=true;
     celdaBloqueada[tipoColumna::IMPCERT]=true;
-    //setItemDelegateForColumn(tipoColumna::CODIGO,dlgCB);
     setItemDelegateForColumn(tipoColumna::CODIGO,dlgBA);
     setItemDelegateForColumn(tipoColumna::UD,dlgBA);
     setItemDelegateForColumn(tipoColumna::RESUMEN,dlgBA);
-    setItemDelegateForColumn(tipoColumna::CANPRES,dlgEN);
-    setItemDelegateForColumn(tipoColumna::CANCERT,dlgEN);
-    setItemDelegateForColumn(tipoColumna::PRPRES,dlgEN);
-    setItemDelegateForColumn(tipoColumna::PRCERT,dlgEN);
-    setItemDelegateForColumn(tipoColumna::PORCERTPRES,dlgEN);
+    setItemDelegateForColumn(tipoColumna::CANPRES,dlgNumTablaP);
+    setItemDelegateForColumn(tipoColumna::CANCERT,dlgNumTablaP);
+    setItemDelegateForColumn(tipoColumna::PRPRES,dlgNumTablaP);
+    setItemDelegateForColumn(tipoColumna::PRCERT,dlgNumTablaP);
+    setItemDelegateForColumn(tipoColumna::PORCERTPRES,dlgNumTablaP);
     setItemDelegateForColumn(tipoColumna::IMPPRES,dlgCB);
     setItemDelegateForColumn(tipoColumna::IMPCERT,dlgCB);
 

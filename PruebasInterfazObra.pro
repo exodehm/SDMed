@@ -34,10 +34,7 @@ SOURCES += main.cpp\
     src/Codificacion.cpp \
     filter.cpp \
     Tablas/tablamedcert.cpp \
-    Delegados/delegadosparcialessubtotales.cpp \
-    Delegados/delegadoeditormediciones.cpp \
     Delegados/delegadocolumnasbloqueadas.cpp \
-    Delegados/delegadomedicionesestandar.cpp \
     Tablas/tablaprincipal.cpp \
     iconos.cpp \
     Delegados/delegadoiconos.cpp \
@@ -45,14 +42,16 @@ SOURCES += main.cpp\
     Dialogos/dialogosuprimirmedicion.cpp \
     Dialogos/dialogoprecio.cpp \
     Delegados/delegadobase.cpp \
-    Delegados/delegadoeditornumeros.cpp \
     mainwindow.cpp \
     Dialogos/dialogodatoscodigoresumen.cpp \
     Dialogos/dialogonuevacertificacion.cpp \
     Modelos/MedCertModel.cpp \
     Undo/undomedicion.cpp \
     Undo/undoeditarprincipal.cpp \
-    Editor/micustomtextedit.cpp
+    Editor/micustomtextedit.cpp \
+    Delegados/delegadonumerosbase.cpp \
+    Delegados/delegadonumerostablaprincipal.cpp \
+    Delegados/delegadonumerostablamedcert.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -81,10 +80,7 @@ HEADERS  += interfazobra.h \
     include/Codificacion.h \
     filter.h \
     Tablas/tablamedcert.h \
-    Delegados/delegadosparcialessubtotales.h \
-    Delegados/delegadoeditormediciones.h \
     Delegados/delegadocolumnasbloqueadas.h \
-    Delegados/delegadomedicionesestandar.h \
     Tablas/tablaprincipal.h \
     iconos.h \
     Delegados/delegadoiconos.h \
@@ -92,7 +88,6 @@ HEADERS  += interfazobra.h \
     Dialogos/dialogosuprimirmedicion.h \
     Dialogos/dialogoprecio.h \
     Delegados/delegadobase.h \
-    Delegados/delegadoeditornumeros.h \
     mainwindow.h \
     Dialogos/dialogodatoscodigoresumen.h \
     Modelos/PrincipalModel.h \
@@ -100,7 +95,10 @@ HEADERS  += interfazobra.h \
     Modelos/MedCertModel.h \
     Undo/undomedicion.h \
     Undo/undoeditarprincipal.h \
-    Editor/micustomtextedit.h
+    Editor/micustomtextedit.h \
+    Delegados/delegadonumerosbase.h \
+    Delegados/delegadonumerostablaprincipal.h \
+    Delegados/delegadonumerostablamedcert.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \

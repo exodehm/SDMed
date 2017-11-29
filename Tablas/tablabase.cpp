@@ -11,8 +11,9 @@ TablaBase::TablaBase(int nColumnas, QWidget *parent): QTableView(parent)
     cabeceraVertical = this->verticalHeader();
     alturaFilas = this->verticalHeader();
     dlgBA = new DelegadoBase;
-    dlgCB = new DelegadoColumnasBloqueadas;
-    dlgEN = new DelegadoEditorNumeros;
+    dlgCB = new DelegadoColumnasBloqueadas;        
+    dlgNumTablaP = new DelegadoNumerosTablaPrincipal;
+    dlgNumTablaMC = new DelegadoNumerosTablaMedCert;
     filtro = new Filter;
     installEventFilter(filtro);
     cabeceraHorizontal->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -49,9 +50,9 @@ void TablaBase::Bloquear(int columna)
         {
             setItemDelegateForColumn(columna,dlgCB);
         }
-        else
+        else       
         {
-            setItemDelegateForColumn(columna,dlgEN);
+            PonerDelegadoOriginal(columna);
         }
         clearSelection();
     }
@@ -95,4 +96,48 @@ void TablaBase::Certificar()
 QHeaderView* TablaBase::CabeceraDeTabla()
 {
     return cabeceraHorizontal;
+}
+
+void TablaBase::PonerDelegadoOriginal(int columna)
+{
+    if (sender()->parent()->parent()->objectName()=="TablaP")
+    {
+        if (columna!=tipoColumna::CODIGO && columna!=tipoColumna::UD && columna!=tipoColumna::RESUMEN)
+        {
+            setItemDelegateForColumn(columna,dlgNumTablaP);
+        }
+        else
+        {
+            setItemDelegateForColumn(columna,dlgBA);
+        }
+    }
+    else
+    {
+        if (columna==tipoColumna::N || columna==tipoColumna::LONGITUD || columna==tipoColumna::ANCHURA || columna==tipoColumna::ALTURA)
+        {
+            setItemDelegateForColumn(columna,dlgNumTablaMC);
+        }
+        else
+        {
+            setItemDelegateForColumn(columna,dlgBA);
+        }
+    }
+}
+
+void TablaBase::BorrarFilas(QList<int>indices)
+{
+    //llama a la funcion BorrarFilas del modelo de la tabla activa
+    MedCertModel* modelo = qobject_cast<MedCertModel*>(model());
+    if (modelo)
+    {
+        modelo->BorrarFilas(indices);
+    }
+    else
+    {
+        PrincipalModel* modelo = qobject_cast<PrincipalModel*>(model());
+        if (modelo)
+        {
+            modelo->BorrarFilas(indices);
+        }
+    }
 }

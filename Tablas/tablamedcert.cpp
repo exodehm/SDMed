@@ -1,11 +1,8 @@
 #include "tablamedcert.h"
 
 TablaMedCert::TablaMedCert(int nColumnas, QWidget *parent): TablaBase(nColumnas, parent)
-{
-    dlgME = new DelegadoMedicionesEstandar;
-    dlgPS = new DelegadosParcialesSubtotales;
-
-    limiteIzquierdo=tipoColumna::FASE;
+{    
+    limiteIzquierdo=tipoColumna::COMENTARIO;
     limiteDerecho=tipoColumna::PARCIAL;
 
     celdaBloqueada[tipoColumna::FASE]=true;
@@ -13,14 +10,14 @@ TablaMedCert::TablaMedCert(int nColumnas, QWidget *parent): TablaBase(nColumnas,
     celdaBloqueada[tipoColumna::SUBTOTAL]=true;
     celdaBloqueada[tipoColumna::ID]=true;
 
-    //setItemDelegateForColumn(tipoColumna::N,dlgEN);
+    setItemDelegateForColumn(tipoColumna::N,dlgNumTablaMC);
     setItemDelegateForColumn(tipoColumna::COMENTARIO,dlgBA);
-    //setItemDelegateForColumn(tipoColumna::LONGITUD,dlgEN);
-    //setItemDelegateForColumn(tipoColumna::ANCHURA,dlgEN);
-    //setItemDelegateForColumn(tipoColumna::ALTURA,dlgEN);
+    setItemDelegateForColumn(tipoColumna::LONGITUD,dlgNumTablaMC);
+    setItemDelegateForColumn(tipoColumna::ANCHURA,dlgNumTablaMC);
+    setItemDelegateForColumn(tipoColumna::ALTURA,dlgNumTablaMC);
     setItemDelegateForColumn(tipoColumna::FORMULA,dlgBA);
-    setItemDelegateForColumn(tipoColumna::PARCIAL,dlgPS);
-    setItemDelegateForColumn(tipoColumna::SUBTOTAL,dlgPS);
+    setItemDelegateForColumn(tipoColumna::PARCIAL,dlgNumTablaMC);
+    setItemDelegateForColumn(tipoColumna::SUBTOTAL,dlgNumTablaMC);
     setItemDelegateForColumn(tipoColumna::FASE,dlgCB);
     setItemDelegateForColumn(tipoColumna::ID,dlgCB);
 

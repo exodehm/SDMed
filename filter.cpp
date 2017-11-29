@@ -24,13 +24,9 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
                     foreach (QModelIndex i, indexes)
                     {
                         if (!listaIndices.contains(i.row()))
-                            listaIndices.prepend(i.row());
-                    }
-                    foreach (int i, listaIndices)
-                    {
-                        tabla->model()->removeRow(i);
-                        qDebug()<<i;
-                    }
+                            listaIndices.prepend(i.row());//pongo prepend para borrar de atras a adelante de la lista de medicion
+                    }                   
+                    tabla->BorrarFilas(listaIndices);
                     tabla->setUpdatesEnabled(true);
                 }
                 else
@@ -194,9 +190,13 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             {
                 {
                     qDebug()<<tabla->selectionModel()->selectedRows().size();
-                    //table->model()->insertRows(indice.row(),table->selectionModel()->selectedRows().size());
-                    tabla->model()->insertRow(tabla->currentIndex().row());
-                    QModelIndex ind = tabla->model()->index(indice.row(),tipoColumna::CODIGO);
+                    //si no hay filas seleccionadas selecciono la fila actual de la tabla
+                    if (tabla->selectionModel()->selectedRows().size()==0)
+                    {
+                        tabla->selectRow(tabla->currentIndex().row());
+                    }
+                    tabla->model()->insertRows(indice.row(),tabla->selectionModel()->selectedRows().size());
+                    QModelIndex ind = tabla->model()->index(indice.row(),tabla->limiteIzquierdo);
                     tabla->setCurrentIndex(ind);
                     return true;
                 }

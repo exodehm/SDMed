@@ -28,8 +28,7 @@ protected:
     Obra* obra;
     PrincipalModel* modelo;
     QModelIndex indice;
-    QVariant datoAntiguo;
-    QVariant datoNuevo;
+    QVariant datoAntiguo, datoNuevo;
     std::stack <pArista> pilaAristas;
 };
 
@@ -122,6 +121,5 @@ public:
 private:
     TEXTO textoantiguo, textonuevo;
 };
-
 
 #endif // UNDOEDITARPRINCIPAL_H

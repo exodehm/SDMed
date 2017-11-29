@@ -68,7 +68,7 @@ public slots:
     void CopiarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosCopiarPegar);
     void PegarPartidasTablaP();
     void PegarMedicionTablaM();
-    void PegarPartidas(const std::list<std::pair<pArista, pNodo> > &listaNodosCopiarPegar);
+    void PegarPartidas(const Obra::ListaAristasNodos &listaNodosCopiarPegar);
     void CopiarMedicionPortapapeles(const QModelIndexList &lista);
     void CopiarPartidasPortapapeles(const QModelIndexList &lista);
     void CopiarMedicion(Medicion& listaMedicionCopiarPegar);

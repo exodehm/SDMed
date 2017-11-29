@@ -99,7 +99,7 @@ public:
     void Pegar(Grafo<datonodo_t,datoarista_t> grafo);
     void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar, bool ultimafila = false);
     void EditarCodificacion(int n);
-    /*****funciones relacionadas con la medicion o certificacion de la partida********/
+    /*****funciones relacionadas con la edicion de la medicion o certificacion de la partida********/
     void InsertarLineasVaciasMedicion(int tabla, int pos, int num);
     void inicializarActual();
     void Medir_O_Certificar();
@@ -126,15 +126,17 @@ public:
     int CertificacionActiva();
     void EstablecerCertificacionActual(int n);
     void cambiarFechaCertificacion(std::string fecha);
-    const Medicion LeeListaMedicion(int tabla) const;
-    const float& LeeTotalMedicion(int tabla) const;
+    const Medicion LeeListaMedicion(int tabla=MedCert::MEDICION) const;
+    const float& LeeTotalMedicion(int tabla=MedCert::MEDICION) const;
     /**********seleccionar entre medicion y certificacion********/
     void cambiarEntreMedYCert(int n);
     /***************************varias de consulta********************/
-    bool HayDescomposicion(pArista A);
-    bool HayDescomposicionPartidaActual();
+    bool HayDescomposicion(pArista A) const;
+    bool HayDescomposicionPartidaActual() const;
+    bool HayDescomposicionPadre() const;
     bool HayMedicion(pArista A) const;
     bool HayMedicionPartidaActual() const;
+    bool HayMedicionPadre() const;
     bool HayCertificacion() const;    
     bool EsPartidaVacia() const;
     pNodo ExisteConcepto(const TEXTO& codigo);
@@ -158,9 +160,6 @@ public:
     pNodo Padre();
     pArista AristaPadre();
     pArista AristaActual();
-    //std::list<std::pair<pArista,pNodo>>LeeDecompuesto();
-    //QList<QList<Dato>>LeeDescompuesto();
-    //QList<Dato> RellenaDatoLinea(pNodo nodo, pArista arista);
     std::list<std::list<Dato>>LeeDescompuesto();
     std::list<Dato> RellenaDatoLinea(pNodo nodo, pArista arista);
     std::stack<pArista> LeePilaAristas();

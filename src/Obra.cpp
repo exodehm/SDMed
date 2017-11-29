@@ -431,27 +431,27 @@ void Obra::BorrarLineasMedicion(int pos, int numLineas)
 
 void Obra::borrarTodaMedicionOCertificacion()
 {
-    if (HayMedicionPartidaActual())
+    if (HayMedicionPadre())
     {
-        aristaActual->datoarista.ModificaMedCer(selectorMedCer).BorrarMedicion();
+        aristaPadre->datoarista.ModificaMedCer(selectorMedCer).BorrarMedicion();
         Actualizar(aristaPadre->destino);
     }
 }
 
 void Obra::borrarTodaMedicion()
 {
-    if (HayMedicionPartidaActual())
+    if (HayMedicionPadre())
     {
-        aristaActual->datoarista.ModificaMedCer(MedCert::MEDICION).BorrarMedicion();
+        aristaPadre->datoarista.ModificaMedCer(MedCert::MEDICION).BorrarMedicion();
         Actualizar(aristaPadre->destino);
     }
 }
 
 void Obra::borrarTodaCertificacion()
 {
-    if (HayMedicionPartidaActual())
+    if (HayMedicionPadre())
     {
-        aristaActual->datoarista.ModificaMedCer(MedCert::CERTIFICACION).BorrarMedicion();
+        aristaPadre->datoarista.ModificaMedCer(MedCert::CERTIFICACION).BorrarMedicion();
         Actualizar(aristaPadre->destino);
     }
 }
@@ -869,8 +869,8 @@ void Obra::EditarLineaMedicion (int fila, int columna, float valor, TEXTO coment
 
 const Medicion Obra::LeeListaMedicion(int tabla) const
 {
-    //return aristaPadre->datoarista.LeeMedCer(tabla);
-    return aristaActual->datoarista.LeeMedCer(tabla);
+    return aristaPadre->datoarista.LeeMedCer(tabla);
+    //return aristaActual->datoarista.LeeMedCer(tabla);
 }
 
 const float& Obra::LeeTotalMedicion(int tabla) const
@@ -933,7 +933,7 @@ void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar,
     }
     if (padre->adyacente && ultimafila)
     {
-        qDebug()<<"Pego al final del todo wey";
+        //qDebug()<<"Pego al final";
         A=A->siguiente;//si estoy en el caso de la ultima fila me posiciono detrás de la aristaActual para copiar despues de ella, no antes
     }
     for (auto elem : listaNodosACopiar)
@@ -945,7 +945,7 @@ void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar,
     {
        if (!mapaNodos.contains(elem->datonodo.LeeCodigo()))
        {
-           std::cout<<"Meto en el mapa el codigo: "<< elem->datonodo.LeeCodigo().toStdString()<<" del nodo: "<<elem<<std::endl;
+           //std::cout<<"Meto en el mapa el codigo: "<< elem->datonodo.LeeCodigo().toStdString()<<" del nodo: "<<elem<<std::endl;
            mapaNodos.insert(elem->datonodo.LeeCodigo(),elem);
        }
     }
@@ -968,7 +968,7 @@ int Obra::verNumCertificaciones()
     return Cert.tamanno();
 }
 
-bool Obra::HayDescomposicion(pArista A)
+bool Obra::HayDescomposicion(pArista A) const
 {
     if (A)
     {
@@ -977,11 +977,20 @@ bool Obra::HayDescomposicion(pArista A)
     return false;
 }
 
-bool Obra::HayDescomposicionPartidaActual()
+bool Obra::HayDescomposicionPartidaActual() const
 {
     if (aristaActual)
     {
         return aristaActual->destino->adyacente;
+    }
+    return false;
+}
+
+bool Obra::HayDescomposicionPadre() const
+{
+    if (aristaPadre)
+    {
+        return aristaPadre->destino->adyacente;
     }
     return false;
 }
@@ -1000,6 +1009,15 @@ bool Obra::HayMedicionPartidaActual() const
     if (aristaActual)
     {
         return aristaActual->datoarista.LeeMedicion().hayMedicion();
+    }
+    return false;
+}
+
+bool Obra::HayMedicionPadre() const
+{
+    if (aristaPadre)
+    {
+        return aristaPadre->datoarista.LeeMedicion().hayMedicion();
     }
     return false;
 }

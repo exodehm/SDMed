@@ -336,6 +336,12 @@ bool PrincipalModel::ModificarPrecioExistente(QModelIndex indice, QVariant preci
     }
 }
 
+void PrincipalModel::BorrarFilas(QList<int> filas)
+{
+    qDebug()<<"Borrar filas tabla P";
+    removeRows(0,2,QModelIndex());
+}
+
 TEXTO PrincipalModel::CalculaCantidad(pNodo n, pArista A)
 {
     if (n->datonodo.LeeImportePres()==0)
@@ -381,7 +387,7 @@ void PrincipalModel::ActualizarDatos(const std::list<std::list<Dato> > &datosStd
             }
             datoC.color=Colores[it2->color];
             lineaDatos.append(datoC);
-            qDebug()<<"dato: "<<datoC.valor<<"--"<<datoC.color;
+            //qDebug()<<"dato: "<<datoC.valor<<"--"<<datoC.color;
         }
         datos.append(lineaDatos);
         lineaDatos.clear();
