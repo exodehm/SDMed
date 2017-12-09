@@ -46,7 +46,7 @@ void UndoMedicion::Posicionar()
     obra->DefineAristaPadre(pilaAristas.top());
     pArista aux = pilaAristas.top();
     obra->DefineNodoPadre(aux->destino);
-    //obra->PosicionarAristaActual(indice.row());
+    obra->PosicionarAristaActual(indice.row());
 }
 
 //#############################BORRAR LINEAS MEDICION#############################//

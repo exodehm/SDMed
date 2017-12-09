@@ -20,12 +20,13 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
                     //table->model()->removeRows(table->selectionModel()->selectedRows().first().row(),table->selectionModel()->selectedRows().size());
                     tabla->setUpdatesEnabled(false);
                     QModelIndexList indexes = tabla->selectionModel()->selectedIndexes();
-                    QList<int> listaIndices;
+                    QList<int> listaIndices;                    
                     foreach (QModelIndex i, indexes)
                     {
                         if (!listaIndices.contains(i.row()))
                             listaIndices.prepend(i.row());//pongo prepend para borrar de atras a adelante de la lista de medicion
-                    }                   
+                    }
+                    qSort(listaIndices);
                     tabla->BorrarFilas(listaIndices);
                     tabla->setUpdatesEnabled(true);
                 }

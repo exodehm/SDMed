@@ -878,52 +878,32 @@ const float& Obra::LeeTotalMedicion(int tabla) const
     return aristaPadre->datoarista.LeeMedCer(tabla).LeeTotal();
 }
 
-void Obra::CopiarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosSeleccionados, const QList<int> &listaIndices)
+void Obra::CopiarPartidas(ListaAristasNodos &listaNodosSeleccionados, const QList<int> &listaIndices)
 {
     std::list<std::pair<pArista,pNodo>>listaNodos=G.recorrerHijos(padre);
     auto iterator = listaNodos.begin();
+    ListaN.clear();
     for (auto elem:listaIndices)
     {
-        qDebug()<<"Numero de fila: "<<elem;
         std::advance(iterator,elem);
+        qDebug()<<"Numero de fila: "<<elem;
         listaNodosSeleccionados.push_back(*iterator);
+        ListaN.push_back(GrafoAPartirDeNodo(iterator->second));
+        qDebug()<<"Code: "<<iterator->second->datonodo.LeeCodigo();
         iterator = listaNodos.begin();
     }
-    for (auto elem : listaNodosSeleccionados)
+    for (auto elem : ListaN)
     {
-        qDebug()<<elem.second->datonodo.LeeCodigo();
-    }
-}
-void Obra::CopiarPartidas(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, Grafo<datonodo_t,datoarista_t>&grafo)
-{
-    pNodo nodo = grafo.LeeRaiz();
-    std::list<std::pair<pArista,pNodo>>listaNodos=grafo.recorrerHijos(nodo);
-    auto iterator = listaNodos.begin();
-    while(iterator!=listaNodos.end())
-    {
-        listaNodosSeleccionados.push_back(*iterator);
-        iterator++;
-    }
-    /*for (auto elem:listaIndices)
-    {
-        qDebug()<<"Numero de fila: "<<elem;
-        std::advance(iterator,elem);
-        listaNodosSeleccionados.push_back(*iterator);
-        iterator = listaNodos.begin();
-    }*/
-    for (auto elem : listaNodosSeleccionados)
-    {
-        qDebug()<<elem.second->datonodo.LeeCodigo();
+        qDebug()<<"Hijos de "<<elem->datonodo.LeeCodigo()<<" :";
+        std::list<std::pair<pNodo,int>>listaB=G.recorrerGrafoConNiveles(elem);
+        for (auto elem2:listaB)
+        {
+            qDebug()<<"Nodo:"<<elem2.first->datonodo.LeeCodigo();
+        }
     }
 }
 
-void Obra::Pegar(Grafo<datonodo_t, datoarista_t> grafo)
-{
-    std::list<std::pair<pArista,pNodo>> lista = grafo.recorrerHijos(grafo.LeeRaiz());
-    Pegar(lista);
-}
-
-void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar, bool ultimafila)
+void Obra::Pegar(const ListaAristasNodos &listaNodosACopiar, bool ultimafila)
 {
     pArista A = aristaActual;
     bool NoHayHijos=false;
@@ -938,6 +918,7 @@ void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar,
     }
     for (auto elem : listaNodosACopiar)
     {
+        qDebug()<<"Nodos a copiar: "<<elem.second->datonodo.LeeCodigo();
         G.Copiar(padre,elem.second,elem.first,A);
     }
     std::list<pNodo> lista = G.recorrerNodos();
@@ -954,7 +935,37 @@ void Obra::Pegar(const std::list<std::pair<pArista, pNodo> > &listaNodosACopiar,
         aristaActual=padre->adyacente;
     }
     Actualizar(aristaActual->destino);
-    //std::cout<<"Implementando el pegado"<<std::endl;
+}
+
+void Obra::InsertarPartidas(const ListaAristasNodos &listaNodosACopiar, QList<int>indices)
+{
+    pArista A = padre->adyacente;
+    int i=0;
+    for (auto elem : listaNodosACopiar)
+    {
+        qDebug()<<"Nodos a copiar: "<<elem.second->datonodo.LeeCodigo();
+        qDebug()<<"Indice: "<<i<<" valor: "<<indices.at(i);
+        for (int j=0;j<indices.at(i);j++)
+        {
+            A=A->siguiente;
+        }
+        G.Copiar(padre,elem.second,elem.first,A);
+        i++;
+        A = padre->adyacente;
+    }
+    std::list<pNodo> lista = G.recorrerNodos();
+    for (auto elem : lista)
+    {
+       if (!mapaNodos.contains(elem->datonodo.LeeCodigo()))
+       {
+           //std::cout<<"Meto en el mapa el codigo: "<< elem->datonodo.LeeCodigo().toStdString()<<" del nodo: "<<elem<<std::endl;
+           mapaNodos.insert(elem->datonodo.LeeCodigo(),elem);
+       }
+    }
+    if (aristaActual->destino)
+    {
+        Actualizar(aristaActual->destino);
+    }
 }
 
 void Obra::cambiarEntreMedYCert(int n)
@@ -1307,7 +1318,7 @@ void Obra::DefineAristaActual(const pArista& aa)
     aristaActual=aa;
 }
 
-Grafo<datonodo_t,datoarista_t> Obra::GrafoAPartirDeNodo(pNodo nodo)
+pNodo Obra::GrafoAPartirDeNodo(pNodo nodo)
 {
     return G.CrearGrafoAPartirDeNodo(nodo);
 }

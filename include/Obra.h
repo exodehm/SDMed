@@ -51,7 +51,6 @@ public:
     pNodo DefinirConcepto(TEXTO Cod, TEXTO Res="", float precio=0, int ud=0, int nat = Codificacion::Sin_clasificar);
     void CopiarPartida(TEXTO codigo, float cantidad);
     void BorrarPartida();
-    void BorrarPartidas();
     void BorrarPartida(pNodo N);
     void SuprimirDescomposicion();
     void DuplicarPartida(TEXTO codigo);    
@@ -94,10 +93,10 @@ public:
     void EditarNaturaleza (int nat);
     void EditarCertificacionCant(float cantidad);
     void EditarCertificacionPorc(float porcentaje);
-    void CopiarPartidas(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, const QList<int> &listaIndices);
-    void CopiarPartidas(std::list<std::pair<pArista,pNodo>>&listaNodosSeleccionados, Grafo<datonodo_t,datoarista_t>&grafo);
-    void Pegar(Grafo<datonodo_t,datoarista_t> grafo);
-    void Pegar(const std::list<std::pair<pArista,pNodo>>&listaNodosACopiar, bool ultimafila = false);
+    void CopiarPartidas(ListaAristasNodos&listaNodosSeleccionados, const QList<int> &listaIndices);    
+    //void Pegar(Grafo<datonodo_t,datoarista_t> grafo);
+    void Pegar(const ListaAristasNodos& listaNodosACopiar, bool ultimafila = false);
+    void InsertarPartidas(const ListaAristasNodos& listaNodosACopiar, QList<int>indices);
     void EditarCodificacion(int n);
     /*****funciones relacionadas con la edicion de la medicion o certificacion de la partida********/
     void InsertarLineasVaciasMedicion(int tabla, int pos, int num);
@@ -168,7 +167,7 @@ public:
     void DefineNodoPadre(const pNodo& np);
     void DefineAristaActual(const pArista& aa);
     /***********varias***********************************/
-    Grafo<datonodo_t,datoarista_t> GrafoAPartirDeNodo(pNodo nodo);
+    pNodo GrafoAPartirDeNodo(pNodo nodo);
     Grafo<datonodo_t,datoarista_t> LeeGrafo()
     {
         return G;
@@ -190,6 +189,9 @@ private:
     //redondeos de la obra
     Coeficientes Redondeos;
     float CI;//Costes Indirectos
+
+    //auxiliar para copiado de partidas
+    QList<pNodo>ListaN;
 
     friend class AbrirGuardarBC3;    
 };

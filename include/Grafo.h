@@ -25,6 +25,11 @@ public:
     {
         std::cout<<"Constructor grafo"<<std::endl;
     }
+    Grafo (pNodo nodo)
+    {
+        Raiz = new t_nodo(*nodo);
+        nNodos=0;
+    }
     //constructor copia
     Grafo (const Grafo& G);
     //sobrecarga del operador =
@@ -44,8 +49,9 @@ public:
     void borrarNodos(pArista& A);
     void Copiar(pNodo& padre, pNodo& hijo, pArista NuevaArista, pArista& precedente=nullptr);
     void CopiarNodo(pNodo& padre, pNodo& hijo, pArista& precedente, pArista& NuevaArista);
-    //Grafo CrearGrafoAPartirDeNodo(pNodo& nodo);
-    Grafo CrearGrafoAPartirDeNodo(pNodo& nodo);
+    Grafo GrafoAPartirDeNodo(pNodo& nodo);
+    pNodo CrearGrafoAPartirDeNodo(pNodo& nodo);
+    pNodo CrearRamaAPartirDeNodo(pNodo& nodo);
     /******funciones para recorrer el grafo*************************/
     std::list<pNodo> recorrerNodos();
     //std::list<pNodo> recorrerHijos(const pNodo& padre);
@@ -146,12 +152,12 @@ Grafo<datonodo_t, datoarista_t>::Grafo (const Grafo<datonodo_t, datoarista_t>& G
 {
     std::cout<<"CONSTRUCTOR COPIA"<<std::endl;
     //Raiz
-    pNodo indice1=G.Raiz;
+    /*pNodo indice1=G.Raiz;
     Raiz=new t_nodo (*indice1);
     //std::cout<<"Raiz codigo: "<<Raiz->datonodo.LeeCodigo().toStdString()<<std::endl;
     //std::cout<<"Raiz->siguiente: "<<Raiz->siguiente<<std::endl;
     pNodo indice=Raiz;
-    pArista indiceA=indice1->adyacente;    
+    pArista indiceA;//=indice1->adyacente;
     while (indice1->siguiente)
     {
         indiceA=indice1->adyacente;
@@ -171,6 +177,9 @@ Grafo<datonodo_t, datoarista_t>::Grafo (const Grafo<datonodo_t, datoarista_t>& G
         indice1=indice1->siguiente;
         indice=indice->siguiente;
     }
+    std::cout<<"Copia terminada"<<std::endl;*/
+    pNodo raiz = G.Raiz;
+    Raiz = CrearGrafoAPartirDeNodo(raiz);
     std::cout<<"Copia terminada"<<std::endl;
 }
 
@@ -541,28 +550,6 @@ arista<datoarista_t,datonodo_t>* Grafo<datonodo_t,datoarista_t>::hallarArista (p
     return precedente;
 }
 
-//************************************//
-//copiar un nodo existente a otro nodo//
-//************************************//
-
-/*template <typename datonodo_t, typename datoarista_t>
-    void Grafo<datonodo_t,datoarista_t>::CopiarNodo(pNodo& padre, pNodo& hijo, pArista& precedente, pArista& NuevaArista)
-    {
-        if (padre)
-        {
-            //eliminamos la posibilidad de tener dos nodos iguales bajo el mismo padre
-            if (esReferenciaCircular(padre,hijo))
-            {
-                std::cout<<"Referencia circular"<<std::endl;
-            }
-            else
-            {
-                InsertarHijo(padre,hijo, precedente, NuevaArista);
-            }
-        }
-        else std::cout<<"No hay padre al que copiar!!!"<<std::endl;
-    }*/
-
 //**********************************************************************//
 //copia un grafo a partir de un nodo dado en una parte del grafo actual //
 //**********************************************************************//
@@ -579,14 +566,14 @@ void Grafo<datonodo_t,datoarista_t>::Copiar(pNodo& padre, pNodo& hijo, pArista N
     else
     {
         copianuevaarista = new t_arista();
-    }   
+    }
     pNodo copiahijo = posicionarseEnNodo(hijo->datonodo);
     if (!copiahijo)
     {
-        //std::cout<<"creo copia del hijo: "<<hijo->datonodo.LeeCodigo().toStdString()<<std::endl;
+        std::cout<<"creo copia del hijo: "<<hijo->datonodo.LeeCodigo().toStdString()<<std::endl;
         copiahijo = new t_nodo(*hijo);
         copiahijo->nPadres--;
-    }    
+    }
     guardaAristasParaCopia(hijo);
     //std::cout<<"copia hijo: "<<copiahijo->datonodo.LeeCodigo().toStdString()<<" - "<<copiahijo<<std::endl;
     pArista A = padre->adyacente;
@@ -624,23 +611,56 @@ void Grafo<datonodo_t,datoarista_t>::Copiar(pNodo& padre, pNodo& hijo, pArista N
 //******************************************//
 
 template <typename datonodo_t, typename datoarista_t>
-//Grafo<datonodo_t,datoarista_t> Grafo<datonodo_t,datoarista_t>::CrearGrafoAPartirDeNodo(pNodo& nodo)
-Grafo<datonodo_t,datoarista_t> Grafo<datonodo_t,datoarista_t>::CrearGrafoAPartirDeNodo(pNodo& nodo)
+Grafo<datonodo_t,datoarista_t> Grafo<datonodo_t,datoarista_t>::GrafoAPartirDeNodo(pNodo& nodo)
 {
+    std::cout<<"FUNCION CREAR GRAFO A PARTIR DE NODO"<<std::endl;
     Grafo G;
+    G.Raiz = CrearRamaAPartirDeNodo(nodo);
+    std::cout<<"FIN FUNCION CREAR GRAFO A PARTIR DE NODO"<<std::endl;
+    return G;
+}
+
+//********************************************//
+//Crea un grafo a partir de un nodo dado      //
+//********************************************//
+
+template <typename datonodo_t, typename datoarista_t>
+nodo<datonodo_t,datoarista_t>* Grafo<datonodo_t,datoarista_t>::CrearGrafoAPartirDeNodo(pNodo& nodo)
+{
+    Grafo* G = new Grafo();
     if (nodo)
     {
-        G.Raiz=new t_nodo (*nodo);
+        G->Raiz=new t_nodo (*nodo);
     }
 
-    G.guardaAristasParaCopia(nodo);
-    while (!G.pilaAristasParaCopia.empty())
+    guardaAristasParaCopia(nodo);
+    while (!pilaAristasParaCopia.empty())
     {
-        pArista hijo = G.pilaAristasParaCopia.top();
-        G.pilaAristasParaCopia.pop();
-        G.Copiar(G.Raiz,hijo->destino,hijo,nodo->adyacente->anterior);
+        pArista AristaHijo = pilaAristasParaCopia.top();
+        pilaAristasParaCopia.pop();
+        G->Copiar(G->Raiz,AristaHijo->destino,AristaHijo,nodo->adyacente->anterior);
     }
-    return G;
+    return G->Raiz;
+}
+
+//********************************************//
+//Crea una rama a partir de un nodo dado      //
+//********************************************//
+
+template <typename datonodo_t, typename datoarista_t>
+nodo<datonodo_t,datoarista_t>* Grafo<datonodo_t,datoarista_t>::CrearRamaAPartirDeNodo(pNodo& nodo)
+{
+    std::cout<<"CREAR RAMA A PARTIR DE NODO: "<<std::endl;
+    pNodo base = new t_nodo(*nodo);
+    std::cout<<"Nodo base: "<<base->datonodo.LeeCodigo().toStdString()<<std::endl;
+    guardaAristasParaCopia(nodo);
+    while (!pilaAristasParaCopia.empty())
+    {
+        pArista hijo = pilaAristasParaCopia.top();
+        pilaAristasParaCopia.pop();
+        Copiar(base,hijo->destino,hijo,nodo->adyacente->anterior);
+    }
+    return base;
 }
 
 

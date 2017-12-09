@@ -104,8 +104,9 @@ public:
 private:
     int accion;
     float precioAntiguo,precioNuevo;
-    std::list<std::pair<pArista,pNodo>>ListaNodos;
-    Grafo<datonodo_t,datoarista_t>grafoaux;
+    std::list<std::pair<pArista,pNodo>>listanodos;
+    pNodo rama;
+    pArista cantidad;
 };
 
 //#############################TEXTO#############################//
@@ -121,5 +122,37 @@ public:
 private:
     TEXTO textoantiguo, textonuevo;
 };
+
+//########################BORRAR PARTIDAS#########################//
+class UndoBorrarPartidas : public UndoEditarPrincipal
+{
+public:
+    UndoBorrarPartidas(Obra* O, PrincipalModel* M, QList<int>listaindices, QString descripcion, QUndoCommand* parent = nullptr);
+
+    void undo();
+    void redo();
+
+protected:
+
+    QList<int>indices, rIndices;
+    Obra::ListaAristasNodos listanodos,rListanodos;
+};
+
+//########################PEGAR PARTIDAS#########################//
+class UndoPegarPartidas : public UndoEditarPrincipal
+{
+public:
+    UndoPegarPartidas(Obra* O, PrincipalModel* M, QModelIndex I, Obra::ListaAristasNodos listanodospegar, bool U, QString descripcion, QUndoCommand* parent = nullptr);
+
+    void undo();
+    void redo();
+
+protected:
+
+    bool ultimafila;
+    QList<int>indices, rIndices;
+    Obra::ListaAristasNodos listanodos,rListanodos;
+};
+
 
 #endif // UNDOEDITARPRINCIPAL_H

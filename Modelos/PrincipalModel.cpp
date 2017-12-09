@@ -186,6 +186,12 @@ bool PrincipalModel::insertRows(int row, int count, const QModelIndex & parent)
     return true;
 }
 
+void PrincipalModel::BorrarFilas(QList<int> filas)
+{
+    QString cadenaundo = "Borrar filas";
+    pila->push(new UndoBorrarPartidas(miobra,this,filas,cadenaundo));
+}
+
 bool PrincipalModel::removeRows(int filaInicial, int numFilas, const QModelIndex& parent)
 {
     Q_UNUSED(parent);
@@ -334,12 +340,6 @@ bool PrincipalModel::ModificarPrecioExistente(QModelIndex indice, QVariant preci
     {
         return false;
     }
-}
-
-void PrincipalModel::BorrarFilas(QList<int> filas)
-{
-    qDebug()<<"Borrar filas tabla P";
-    removeRows(0,2,QModelIndex());
 }
 
 TEXTO PrincipalModel::CalculaCantidad(pNodo n, pArista A)

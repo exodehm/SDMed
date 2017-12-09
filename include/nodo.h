@@ -24,7 +24,8 @@ struct nodo
         nPadres=n.nPadres;
         siguiente=nullptr;
         adyacente=nullptr;
-        std::list<pArista>lista_aristas;
+        //std::list<pArista>lista_aristas;
+        std::cout<<"FINN nodo Constructor copia"<<std::endl;
     }
     //destructor
     ~nodo()

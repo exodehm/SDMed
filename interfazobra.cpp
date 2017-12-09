@@ -297,6 +297,8 @@ void InterfazObra::CopiarMedicionTablaM()
 
 void InterfazObra::CopiarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
 {
+    //en esta funcion creo una lista de int para almacenar los indices de las lineas seleccionadas de la tabla
+    //con esta lista de indices y las lista de nodos seleccionados me voy a la funcion Obra::CopiarPartidas
     listaNodosCopiarPegar.clear();
     QItemSelectionModel *selecmodel = tablaPrincipal->selectionModel();
     QModelIndexList selectedRowsIndexesList = selecmodel->selectedIndexes();
@@ -364,8 +366,9 @@ void InterfazObra::PegarPartidas(const Obra::ListaAristasNodos &listaNodosCopiar
     {
         insertarAlFinal=true;
     }
-    O->Pegar(listaNodosCopiarPegar, insertarAlFinal);
-    //modeloTablaP->QuitarIndicadorFilaVacia();
+    QString cadenaundo = "Pegar partidas";
+    //O->Pegar(listaNodosCopiarPegar,insertarAlFinal);
+    pila->push(new UndoPegarPartidas(O,modeloTablaP,indice,listaNodosCopiarPegar, insertarAlFinal,cadenaundo));
     RefrescarVista();
 }
 

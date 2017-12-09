@@ -25,8 +25,11 @@ void UndoEditarPrincipal::Posicionar()
     obra->DefinePilaAristas(pilaAristas);
     obra->DefineAristaPadre(pilaAristas.top());
     pArista aux = pilaAristas.top();
-    obra->DefineNodoPadre(aux->destino);    
-    obra->PosicionarAristaActual(indice.row());
+    obra->DefineNodoPadre(aux->destino);
+    //if (indice.isValid()&& indice.row()<modelo->rowCount(QModelIndex()))
+    {
+        obra->PosicionarAristaActual(indice.row());
+    }
 }
 
 //#############################CODIGO#############################//
@@ -152,7 +155,8 @@ void UndoEditarResumen::redo()
 UndoEditarCantidad::UndoEditarCantidad(Obra* O, PrincipalModel* M,  QModelIndex I, QVariant D, QString descripcion, QUndoCommand* parent):
     UndoEditarPrincipal(O,M,I,D,descripcion,parent)
 {    
-    cantidadAntigua = obra->LeeTotalMedicion(MedCert::MEDICION);
+    ListaMedicion = obra->LeeListaMedicion(MedCert::MEDICION);//habra que completarlo para que trabaje sobre la certificacion
+    cantidadAntigua = obra->LeeTotalMedicion(MedCert::MEDICION);//idem
     cantidadNueva = datoNuevo.toFloat();
 }
 
@@ -175,8 +179,7 @@ void UndoEditarCantidad::redo()
 {
     qDebug()<<"RedoEditarCantidad con datoNuevo: "<<cantidadNueva<<" y datoAntiguo: "<<cantidadAntigua;
     //guardo la medicion
-    Posicionar();
-    ListaMedicion = obra->LeeListaMedicion(MedCert::MEDICION);//habra que arreglarlo para que trabaje sobre la certificacion
+    Posicionar();    
     obra->EditarCantidad(cantidadNueva);
 }
 
@@ -204,7 +207,7 @@ void UndoEditarPrecio::undo()
     {
         qDebug()<<"suprimir undo";
         obra->BajarNivel();
-        obra->Pegar(grafoaux);
+        obra->Pegar(listanodos);
         obra->SubirNivel();
         break;
     }
@@ -233,7 +236,10 @@ void UndoEditarPrecio::redo()
     {
         qDebug()<<"suprimir undo";
         qDebug()<<obra->AristaActual()->destino->datonodo.LeeCodigo();
-        grafoaux = obra->GrafoAPartirDeNodo(obra->AristaActual()->destino);
+        rama = obra->GrafoAPartirDeNodo(obra->AristaActual()->destino);
+        cantidad = new t_arista(*obra->AristaActual());
+        std::pair<pArista,pNodo> pareja(cantidad,rama);
+        listanodos.push_back(pareja);
         obra->SuprimirDescomposicion();
         obra->EditarPrecio(precioNuevo);
         break;
@@ -271,4 +277,87 @@ void UndoEditarTexto::redo()
     //qDebug()<<"Redo EditarTextoPartida: "<<textonuevo<<"--"<<textoantiguo;
     Posicionar();
     obra->EditarTexto(textonuevo);
+}
+
+//########################BORRAR PARTIDAS#########################//
+UndoBorrarPartidas::UndoBorrarPartidas(Obra* O, PrincipalModel* M, QList<int>listaindices, QString descripcion, QUndoCommand* parent):
+    UndoEditarPrincipal(O,M,QModelIndex(),QVariant(),descripcion,parent)
+{
+    indices=listaindices;//indices de menor a mayor
+    for (auto elem:indices)
+    {
+        qDebug()<<"Indicelemento: "<<elem;
+        rIndices.push_front(elem);//indices de mayor a menor
+    }
+    Obra::ListaAristasNodos listaAux=obra->LeeGrafo().recorrerHijos(obra->Padre());
+    auto iterator = listaAux.begin();
+    for (auto elem:rIndices)
+    {
+        std::advance(iterator,elem);
+        qDebug()<<"Numero de fila: "<<elem;        
+        pNodo N = obra->GrafoAPartirDeNodo(iterator->second);
+        pArista A = new t_arista(*iterator->first);
+        std::pair<pArista,pNodo> pareja(A,N);
+        listanodos.push_back(pareja);
+        iterator = listaAux.begin();
+    }
+    rListanodos=listanodos;
+    rListanodos.reverse();
+    pilaAristas = obra->LeePilaAristas();
+    setText(descripcion);
+}
+
+void UndoBorrarPartidas::undo()
+{
+    qDebug()<<"Undo borrar partidas";
+    Posicionar();
+    obra->InsertarPartidas(rListanodos,indices);
+}
+
+void UndoBorrarPartidas::redo()
+{
+    qDebug()<<"Redo borrar partidas";
+    Posicionar();
+    foreach (int i, rIndices)
+    {        
+        obra->PosicionarAristaActual(i);
+        obra->BorrarPartida();
+    }
+}
+
+//########################PEGAR PARTIDAS#########################//
+UndoPegarPartidas::UndoPegarPartidas(Obra* O, PrincipalModel* M, QModelIndex I, Obra::ListaAristasNodos listanodospegar, bool U , QString descripcion, QUndoCommand* parent):
+    ultimafila(U),UndoEditarPrincipal(O,M,I,QVariant(),descripcion,parent)
+{
+    for (auto elem:listanodospegar)
+    {
+        pNodo N = obra->GrafoAPartirDeNodo(elem.second);
+        pArista A = new t_arista(*elem.first);
+        std::pair<pArista,pNodo> pareja(A,N);
+        listanodos.push_back(pareja);
+    }
+    pilaAristas = obra->LeePilaAristas();
+    setText(descripcion);
+}
+
+void UndoPegarPartidas::undo()
+{
+    qDebug()<<"Undo pegar partidas";
+    Posicionar();
+    for (uint i=0;i<listanodos.size();i++)
+    {
+        obra->PosicionarAristaActual(indice.row());
+        obra->BorrarPartida();
+    }
+}
+
+void UndoPegarPartidas::redo()
+{
+    qDebug()<<"Redo pegar partidas";
+    Posicionar();
+    if (ultimafila)
+    {
+        obra->PosicionarAristaActual(indice.row()-1);
+    }
+    obra->Pegar(listanodos, ultimafila);
 }
