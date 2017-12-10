@@ -7,3 +7,5 @@ file.png->Madebyoliver
 truck.png->Freepik
 delete.png->Freepik
 deshacer y rehacer->Freepik 
+
+https://www.flaticon.es/packs/arrows-11

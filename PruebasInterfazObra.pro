@@ -51,7 +51,9 @@ SOURCES += main.cpp\
     Editor/micustomtextedit.cpp \
     Delegados/delegadonumerosbase.cpp \
     Delegados/delegadonumerostablaprincipal.cpp \
-    Delegados/delegadonumerostablamedcert.cpp
+    Delegados/delegadonumerostablamedcert.cpp \
+    Dialogos/dialogoabout.cpp \
+    Dialogos/dialogocreditos.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -98,7 +100,9 @@ HEADERS  += interfazobra.h \
     Editor/micustomtextedit.h \
     Delegados/delegadonumerosbase.h \
     Delegados/delegadonumerostablaprincipal.h \
-    Delegados/delegadonumerostablamedcert.h
+    Delegados/delegadonumerostablamedcert.h \
+    Dialogos/dialogoabout.h \
+    Dialogos/dialogocreditos.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \
@@ -107,7 +111,9 @@ FORMS    += \
     Ui/dialogodatosgenerales.ui \
     Ui/dialogodatoscodigoresumen.ui \
     Ui/dialogonuevacertificacion.ui \
-    Editor/editor.ui
+    Editor/editor.ui \
+    Dialogos/dialogoabout.ui \
+    Dialogos/dialogocreditos.ui
 
 RESOURCES += \
     Editor/iconosEditor.qrc \

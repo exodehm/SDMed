@@ -13,6 +13,7 @@
 #include "interfazobra.h"
 #include "Dialogos/dialogodatoscodigoresumen.h"
 #include "Dialogos/dialogonuevacertificacion.h"
+#include "Dialogos/dialogoabout.h"
 
 namespace Ui {
 class MainWindow;

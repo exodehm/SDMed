@@ -386,7 +386,9 @@ void MainWindow::ActionAtras()
 
 void MainWindow::AcercaDe()
 {
-    QMessageBox::about(this,"Acerca de SDMed","Pues eso oooooooooooooo");
+    //QMessageBox::about(this,"Acerca de SDMed","Pues eso <url>http:\\kaka</url>");
+    DialogoAbout *d = new DialogoAbout(this);
+    d->show();
 }
 
 void MainWindow::AcercaDeQt()
