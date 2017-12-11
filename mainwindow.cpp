@@ -291,10 +291,11 @@ QString MainWindow::strippedName(const QString &fullFileName)
 
 void MainWindow::ActionSalir()
 {
-    //while (!ListaObras.empty())
+    for (uint i=ListaObras.size();i>0;i--)
     {
-        ui->tabPrincipal->setCurrentIndex(0);
-        emit ui->tabPrincipal->currentChanged(0);
+        qDebug()<<"Numero de obras: "<<i;
+        ui->tabPrincipal->setCurrentIndex(i);
+        emit ui->tabPrincipal->currentChanged(i);
         ActionCerrar();
     }
     if (ListaObras.empty())
@@ -446,7 +447,7 @@ bool MainWindow::ConfirmarContinuar()
 
 bool MainWindow::HayObra()
 {
-    return ListaObras.size()>0;
+    return ListaObras.empty();
 }
 
 void MainWindow::readSettings()
