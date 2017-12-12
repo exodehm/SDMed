@@ -6,12 +6,10 @@ UndoAjustarPresupuesto::UndoAjustarPresupuesto(Obra *O, float cantidades[])
 
 }
 
-
 void UndoAjustarPresupuesto::redo()
 {
     qDebug()<<"Redo ajustar presupuesto de "<<obra->LeeResumenObra()<<"con la cantidad de: "<<cantidadnueva;
     obra->AjustarPrecio(cantidadnueva);
-
 }
 
 void UndoAjustarPresupuesto::undo()

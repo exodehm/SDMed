@@ -6,7 +6,7 @@ DialogoAjustarPrecio::DialogoAjustarPrecio(float cantidad, QWidget *parent) :
 {
     cantidades[0]=cantidad;
     ui->setupUi(this);
-    rx = new QRegExp("[-]{0,1}[0-9]{0,5}[\\,\\.]{1}[0-9]{1,3}");
+    rx = new QRegExp("[-]{0,1}[0-9]{0,9}[\\,\\.]{1}[0-9]{1,3}");
     ui->editorcantidad->setValidator(new QRegExpValidator(*rx));
     ui->editorporcentaje->setValidator(new QRegExpValidator(*rx));
     ui->editorcantidad->setText(QString::number(cantidadinicial));
