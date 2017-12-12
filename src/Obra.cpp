@@ -685,26 +685,30 @@ void Obra::Actualizar(pNodo nodoactual)
 
 void Obra::AjustarPrecio(float nuevoprecio)
 {
-    /* float precioActual=G.Raiz->datonodo.LeeImportePres();
-     std::cout<<"Ajustar el precio: "<<precioActual<<std::endl;
-     float factorDeAjuste=nuevoprecio/precioActual;
-     std::cout<<"Factor de correción: "<<factorDeAjuste<<std::endl;
+    float precioActual=G.LeeRaiz()->datonodo.LeeImportePres();
+    std::cout<<"Ajustar el precio: "<<precioActual<<" a: "<<nuevoprecio<<std::endl;
+    float factorDeAjuste=nuevoprecio/precioActual;
+    std::cout<<"Factor de correción: "<<factorDeAjuste<<std::endl;
+    std::list<pNodo> listahojas = G.listaHojas();
 
-     std::cout<<"Las hojas son: ";
-     for(auto Iterador = G.listaHojas.cbegin(); Iterador != G.listaHojas.cend(); Iterador++)
-     {
-         std::cout<<(*Iterador)->datonodo.LeeCodigo()<<" - ";
-     }
-     //multiplicando las hojas x el factor de corrección
-     for(auto Iterador = G.listaHojas.cbegin(); Iterador != G.listaHojas.cend(); Iterador++)
-     {
-         (*Iterador)->datonodo.EscribeImportePres((*Iterador)->datonodo.LeeImportePres()*factorDeAjuste);
-     }
-     //y actualizo
-     for(auto Iterador = G.listaHojas.cbegin(); Iterador != G.listaHojas.cend(); Iterador++)
-     {
-         Actualizar(*Iterador);
-     }*/
+    std::cout<<"Las hojas son: ";
+    for(auto elem:listahojas)
+    {
+        //std::cout<<*Iterador->datonodo->LeeCodigo()<<"-";
+        qDebug()<<elem->datonodo.LeeCodigo();
+    }
+    //multiplicando las hojas x el factor de corrección
+    for(auto Iterador = listahojas.cbegin(); Iterador != listahojas.cend(); Iterador++)
+    {
+        qDebug()<<"Precio anterior: "<<(*Iterador)->datonodo.LeeImportePres();
+        (*Iterador)->datonodo.EscribeImportePres((*Iterador)->datonodo.LeeImportePres()*factorDeAjuste);
+        qDebug()<<"Precio nuevo: "<<(*Iterador)->datonodo.LeeImportePres();
+    }
+    //y actualizo
+    for(auto Iterador = listahojas.cbegin(); Iterador != listahojas.cend(); Iterador++)
+    {
+        Actualizar(*Iterador);
+    }
     std::cout<<std::endl;
 }
 

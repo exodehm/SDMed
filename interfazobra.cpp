@@ -435,6 +435,11 @@ void InterfazObra::ActivarDesactivarUndoRedo(int indice)
     ActivarBoton(indice);
 }
 
+void InterfazObra::AjustarPresupuesto(float cantidades[2])
+{
+    pila->push(new UndoAjustarPresupuesto(O,cantidades));
+}
+
 void InterfazObra::Certificar()
 {
     Medicion listaParaCertificar;

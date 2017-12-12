@@ -53,7 +53,9 @@ SOURCES += main.cpp\
     Delegados/delegadonumerostablaprincipal.cpp \
     Delegados/delegadonumerostablamedcert.cpp \
     Dialogos/dialogoabout.cpp \
-    Dialogos/dialogocreditos.cpp
+    Dialogos/dialogocreditos.cpp \
+    Dialogos/dialogoajustarprecio.cpp \
+    Undo/undoajustarpresupuesto.cpp
 
 HEADERS  += interfazobra.h \
     Editor/editor.h \
@@ -102,7 +104,9 @@ HEADERS  += interfazobra.h \
     Delegados/delegadonumerostablaprincipal.h \
     Delegados/delegadonumerostablamedcert.h \
     Dialogos/dialogoabout.h \
-    Dialogos/dialogocreditos.h
+    Dialogos/dialogocreditos.h \
+    Dialogos/dialogoajustarprecio.h \
+    Undo/undoajustarpresupuesto.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \
@@ -113,7 +117,8 @@ FORMS    += \
     Ui/dialogonuevacertificacion.ui \
     Editor/editor.ui \
     Dialogos/dialogoabout.ui \
-    Dialogos/dialogocreditos.ui
+    Dialogos/dialogocreditos.ui \
+    Dialogos/dialogoajustarprecio.ui
 
 RESOURCES += \
     Editor/iconosEditor.qrc \
@@ -121,3 +126,4 @@ RESOURCES += \
     recursos.qrc
 
 CONFIG +=C++14
+CONFIG +=static

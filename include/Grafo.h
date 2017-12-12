@@ -54,7 +54,7 @@ public:
     pNodo CrearRamaAPartirDeNodo(pNodo& nodo);
     /******funciones para recorrer el grafo*************************/
     std::list<pNodo> recorrerNodos();
-    //std::list<pNodo> recorrerHijos(const pNodo& padre);
+    std::list<pNodo> listaHojas();
     std::list<std::pair<pArista,pNodo>> recorrerHijos(const pNodo& padre);
     std::list<pNodo>& recorrerGrafo(pNodo& inicio);
     std::list<pNodo>& lista_recorrerGrafo(pNodo& inicio);
@@ -796,9 +796,9 @@ std::list<std::pair<nodo<datonodo_t,datoarista_t>*,int>>&Grafo<datonodo_t,datoar
     return nodosConNiveles;
 }
 
-//***************************************************//
-//devuelve todos los ancestros de un nodo dado       //
-//***************************************************//
+//******************************************************************//
+//devuelve todos los ancestros de un nodo dado de forma ordenada    //
+//******************************************************************//
 
 template <typename datonodo_t, typename datoarista_t>
 std::list<nodo<datonodo_t,datoarista_t>*>&Grafo<datonodo_t,datoarista_t>::recorrerAncestrosOrdenado(pNodo& nodoAInvestigar)
@@ -852,6 +852,10 @@ std::list<nodo<datonodo_t,datoarista_t>*>&Grafo<datonodo_t,datoarista_t>::recorr
     }
     return nodos;
 }
+
+//***************************************************//
+//devuelve todos los ancestros de un nodo dado       //
+//***************************************************//
 
 template <typename datonodo_t, typename datoarista_t>
 std::list<nodo<datonodo_t,datoarista_t>*>&Grafo<datonodo_t,datoarista_t>::recorrerAncestros(pNodo& nodoAInvestigar)
@@ -930,6 +934,29 @@ bool Grafo<datonodo_t,datoarista_t>::esReferenciaCircular(pNodo& padre, pNodo& h
         }
     }
     return false;
+}
+
+//*********************************************************************************//
+//devuelve una lista con todos los nodos del grafo que no tienen aristas adyacentes//
+//*********************************************************************************//
+template <typename datonodo_t, typename datoarista_t>
+std::list<nodo<datonodo_t,datoarista_t>*>Grafo<datonodo_t,datoarista_t>::listaHojas()
+{
+    std::list<pNodo>listadehojas;
+    if (Raiz)
+    {
+        pNodo indice = Raiz;
+        listadehojas.push_back(indice);
+        while (indice->siguiente)
+        {
+            indice= indice->siguiente;
+            if (!indice->adyacente)
+            {
+                listadehojas.push_back(indice);
+            }
+        }
+    }
+    return listadehojas;
 }
 
 //*************************************************************//

@@ -13,6 +13,7 @@
 #include "interfazobra.h"
 #include "Dialogos/dialogodatoscodigoresumen.h"
 #include "Dialogos/dialogonuevacertificacion.h"
+#include "Dialogos/dialogoajustarprecio.h"
 #include "Dialogos/dialogoabout.h"
 
 namespace Ui {
@@ -47,6 +48,8 @@ private slots:
 
     void ActionAdelante();
     void ActionAtras();
+
+    void ActionAjustarPresupuesto();
 
     void AcercaDe();
     void AcercaDeQt();

@@ -24,6 +24,8 @@
 #include "./Tablas/tablamedcert.h"
 #include "./Editor/editor.h"
 
+#include "./Undo/undoajustarpresupuesto.h"
+
 #include "filter.h"
 
 class InterfazObra : public QWidget
@@ -45,6 +47,7 @@ public:
 
     QUndoStack* Pila();
     void Mover(int tipomovimiento);
+    void AjustarPresupuesto(float cantidades[2]);
 
 public slots:
 

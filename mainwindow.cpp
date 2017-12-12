@@ -373,6 +373,7 @@ void MainWindow::ActionAdelante()
 {
     if (HayObra())
     {
+        qDebug()<<"Moviendo adelaten";
         obraActual->miobra->Mover(movimiento::DERECHA);
     }
 }
@@ -385,9 +386,20 @@ void MainWindow::ActionAtras()
     }
 }
 
+void MainWindow::ActionAjustarPresupuesto()
+{
+    if (HayObra())
+    {
+        DialogoAjustarPrecio *d = new DialogoAjustarPrecio(obraActual->miobra->LeeObra()->LeePrecioObra(), this);
+        if (d->exec()==QDialog::Accepted)
+        {
+            obraActual->miobra->AjustarPresupuesto(d->Cantidad());
+        }
+    }
+}
+
 void MainWindow::AcercaDe()
 {
-    //QMessageBox::about(this,"Acerca de SDMed","Pues eso <url>http:\\kaka</url>");
     DialogoAbout *d = new DialogoAbout(this);
     d->show();
 }
@@ -447,7 +459,7 @@ bool MainWindow::ConfirmarContinuar()
 
 bool MainWindow::HayObra()
 {
-    return ListaObras.empty();
+    return !ListaObras.empty();
 }
 
 void MainWindow::readSettings()
@@ -488,6 +500,7 @@ void MainWindow::setupActions()
     QObject::connect(ui->tabPrincipal,SIGNAL(currentChanged(int)),this,SLOT(CambiarObraActual(int)));
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
+    QObject::connect(ui->actionAjustar_precio,SIGNAL(triggered(bool)),this,SLOT(ActionAjustarPresupuesto()));
     QObject::connect(ui->actionAcerca_de,SIGNAL(triggered(bool)),this,SLOT(AcercaDe()));
     QObject::connect(ui->actionAcerca_de_Qt,SIGNAL(triggered(bool)),this,SLOT(AcercaDeQt()));
     QObject::connect(comboMedCert,SIGNAL(currentIndexChanged(int)),this,SLOT(CambiarMedCert(int)));
