@@ -6,7 +6,9 @@ DialogoAbout::DialogoAbout(QWidget *parent) :
     ui(new Ui::DialogoAbout)
 {
     ui->setupUi(this);
+    ui->label->setOpenExternalLinks(true);
     QObject::connect(ui->botonCreditos,SIGNAL(clicked(bool)),this,SLOT(VerCreditos()));
+    QObject::connect(ui->botonLicencia,SIGNAL(clicked(bool)),this,SLOT(VerLicencia()));
 }
 
 DialogoAbout::~DialogoAbout()
@@ -17,5 +19,11 @@ DialogoAbout::~DialogoAbout()
 void DialogoAbout::VerCreditos()
 {
     DialogoCreditos* d = new DialogoCreditos(this);
+    d->show();
+}
+
+void DialogoAbout::VerLicencia()
+{
+    DialogoLicencia* d = new DialogoLicencia(this);
     d->show();
 }

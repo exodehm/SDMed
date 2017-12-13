@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include "./Dialogos/dialogocreditos.h"
+#include "./Dialogos/dialogolicencia.h"
 
 namespace Ui {
 class DialogoAbout;
@@ -19,6 +20,7 @@ public:
 
 private slots:
     void VerCreditos();
+    void VerLicencia();
 
 private:
     Ui::DialogoAbout *ui;

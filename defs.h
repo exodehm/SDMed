@@ -33,5 +33,9 @@ namespace datocelda {
     enum{TEXTO,NUMERO,INT};
 }
 
+namespace tipoFichero {
+    enum{NOVALIDO, SEG, BC3};
+}
+
 
 #endif // DEFS_H

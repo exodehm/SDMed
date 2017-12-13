@@ -1,5 +1,5 @@
-#ifndef INTERFAZOBRA_H
-#define INTERFAZOBRA_H
+#ifndef INSTANCIA_H
+#define INSTANCIA_H
 
 #include <QWidget>
 #include <QHeaderView>
@@ -28,14 +28,14 @@
 
 #include "filter.h"
 
-class InterfazObra : public QWidget
+class Instancia : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit InterfazObra(QString nombrefichero, QWidget *parent = nullptr);
-    explicit InterfazObra(QString codigo, QString resumen, QWidget *parent=nullptr);
-    ~InterfazObra();
+    explicit Instancia(QString nombrefichero, QWidget *parent = nullptr);
+    explicit Instancia(QString codigo, QString resumen, QWidget *parent=nullptr);
+    ~Instancia();
 
     void IniciarObra();
     void GenerarUI();
@@ -48,6 +48,8 @@ public:
     QUndoStack* Pila();
     void Mover(int tipomovimiento);
     void AjustarPresupuesto(float cantidades[2]);
+
+    int TipoFichero(TEXTO nombrefichero);
 
 public slots:
 
@@ -117,4 +119,4 @@ private:
     TEXTO textoPartidaInicial;
 };
 
-#endif // INTERFAZOBRA_H
+#endif // INSTANCIA_H

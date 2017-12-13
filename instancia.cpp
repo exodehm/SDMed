@@ -1,9 +1,18 @@
-#include "interfazobra.h"
-//#include "ui_interfazobra.h"
+#include "instancia.h"
 
-InterfazObra::InterfazObra(QString nombrefichero, QWidget *parent):QWidget(parent)
+Instancia::Instancia(QString nombrefichero, QWidget *parent):QWidget(parent)
 {
-    AbrirGuardar* A = new AbrirGuardarBC3();    
+    AbrirGuardar* A;
+    switch (TipoFichero(nombrefichero)) {
+    case tipoFichero::BC3:
+        A = new AbrirGuardarBC3();
+        break;
+    case tipoFichero::SEG:
+        A = new AbrirGuardarSEG();
+        break;
+    default:
+        break;
+    }
     O = A->Leer(nombrefichero);
     if (O)
     {
@@ -11,7 +20,7 @@ InterfazObra::InterfazObra(QString nombrefichero, QWidget *parent):QWidget(paren
     }
 }
 
-InterfazObra::InterfazObra(QString codigo, QString resumen,QWidget *parent):QWidget(parent)
+Instancia::Instancia(QString codigo, QString resumen,QWidget *parent):QWidget(parent)
 {
     O= new Obra(codigo,resumen);
     if (O)
@@ -20,19 +29,19 @@ InterfazObra::InterfazObra(QString codigo, QString resumen,QWidget *parent):QWid
     }
 }
 
-void InterfazObra::IniciarObra()
+void Instancia::IniciarObra()
 {
     O->IrAInicio();    
     pila = new QUndoStack(this);
     GenerarUI();
 }
 
-InterfazObra::~InterfazObra()
+Instancia::~Instancia()
 {
     delete O;    
 }
 
-void InterfazObra::GenerarUI()
+void Instancia::GenerarUI()
 {
     lienzoGlobal = new QVBoxLayout(this);
     separadorPrincipal = new QSplitter(Qt::Vertical);
@@ -92,17 +101,17 @@ void InterfazObra::GenerarUI()
 
 }
 
-Obra* InterfazObra::LeeObra()
+Obra* Instancia::LeeObra()
 {
     return O;
 }
 
-QUndoStack* InterfazObra::Pila()
+QUndoStack* Instancia::Pila()
 {
     return pila;
 }
 
-void InterfazObra::MostrarDeSegun(int indice)
+void Instancia::MostrarDeSegun(int indice)
 {
     bool verCertificacion;
     if (indice==0)
@@ -119,7 +128,7 @@ void InterfazObra::MostrarDeSegun(int indice)
     tablaPrincipal->setColumnHidden(tipoColumna::IMPCERT,verCertificacion);
 }
 
-void InterfazObra::SubirNivel()
+void Instancia::SubirNivel()
 {   
     /*GuardarTextoPartida();
     GuardarTextoPartidaInicial();
@@ -131,7 +140,7 @@ void InterfazObra::SubirNivel()
     Mover(movimiento::ARRIBA);
 }
 
-void InterfazObra::BajarNivel()
+void Instancia::BajarNivel()
 {
     /*Q_UNUSED (indice);
     GuardarTextoPartidaInicial();
@@ -143,7 +152,7 @@ void InterfazObra::BajarNivel()
     Mover(movimiento::ABAJO);
 }
 
-/*void InterfazObra::Avanzar()
+/*void Instancia::Avanzar()
 {
     GuardarTextoPartida();
     GuardarTextoPartidaInicial();
@@ -153,7 +162,7 @@ void InterfazObra::BajarNivel()
     RefrescarVista(QModelIndex(),QModelIndex());
 }*/
 
-/*void InterfazObra::Retroceder()
+/*void Instancia::Retroceder()
 {
     GuardarTextoPartida();
     GuardarTextoPartidaInicial();
@@ -164,7 +173,7 @@ void InterfazObra::BajarNivel()
 }
 */
 
-void InterfazObra::Mover(int tipomovimiento)
+void Instancia::Mover(int tipomovimiento)
 {
     GuardarTextoPartidaInicial();
     switch (tipomovimiento)
@@ -197,19 +206,19 @@ void InterfazObra::Mover(int tipomovimiento)
     RefrescarVista();
 }
 
-void InterfazObra::Undo()
+void Instancia::Undo()
 {
     qDebug()<<"Undo en: "<<O->LeeResumenObra();
     pila->undo();
 }
 
-void InterfazObra::Redo()
+void Instancia::Redo()
 {
     qDebug()<<"Redo en: "<<O->LeeResumenObra();
     pila->redo();
 }
 
-void InterfazObra::RefrescarVista()
+void Instancia::RefrescarVista()
 {
     modeloTablaP->ActualizarDatos(O->LeeDescompuesto());
     modeloTablaMed->ActualizarDatos();
@@ -232,12 +241,12 @@ void InterfazObra::RefrescarVista()
     separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)    
 }
 
-void InterfazObra::EscribirTexto()
+void Instancia::EscribirTexto()
 {
     editor->EscribeTexto(O->VerTexto());
 }
 
-void InterfazObra::PosicionarTablaP(QModelIndex indice)
+void Instancia::PosicionarTablaP(QModelIndex indice)
 {
     int linea = indice.row();
     if (modeloTablaP->HayFilaVacia())
@@ -251,13 +260,13 @@ void InterfazObra::PosicionarTablaP(QModelIndex indice)
     O->PosicionarAristaActual(linea);
 }
 
-void InterfazObra::PosicionarTablaM(QModelIndex indice)
+void Instancia::PosicionarTablaM(QModelIndex indice)
 {
     O->PosicionarLineaActualMedicion(indice.row());
     
 }
 
-void InterfazObra::GuardarTextoPartidaInicial()
+void Instancia::GuardarTextoPartidaInicial()
 {
     if (!O->EsPartidaVacia())
     {
@@ -266,7 +275,7 @@ void InterfazObra::GuardarTextoPartidaInicial()
     }
 }
 
-void InterfazObra::GuardarTextoPartida()
+void Instancia::GuardarTextoPartida()
 {
     qDebug()<<QApplication::focusWidget();
     if (editor->HayCambios())
@@ -280,22 +289,22 @@ void InterfazObra::GuardarTextoPartida()
     }
 }
 
-TEXTO InterfazObra::TextoPartidaInicial()
+TEXTO Instancia::TextoPartidaInicial()
 {
     return textoPartidaInicial;
 }
 
-void InterfazObra::CopiarPartidasTablaP()
+void Instancia::CopiarPartidasTablaP()
 {
     emit CopiarP();
 }
 
-void InterfazObra::CopiarMedicionTablaM()
+void Instancia::CopiarMedicionTablaM()
 {
     emit CopiarM();
 }
 
-void InterfazObra::CopiarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
+void Instancia::CopiarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodosCopiarPegar)
 {
     //en esta funcion creo una lista de int para almacenar los indices de las lineas seleccionadas de la tabla
     //con esta lista de indices y las lista de nodos seleccionados me voy a la funcion Obra::CopiarPartidas
@@ -314,7 +323,7 @@ void InterfazObra::CopiarPartidas(std::list<std::pair<pArista, pNodo>>&listaNodo
     selecmodel->clearSelection();
 }
 
-void InterfazObra::CopiarPartidasPortapapeles(const QModelIndexList &lista)
+void Instancia::CopiarPartidasPortapapeles(const QModelIndexList &lista)
 {
     QString textoACopiar;
     for(int i = 0; i < lista.size(); i++)
@@ -346,17 +355,17 @@ void InterfazObra::CopiarPartidasPortapapeles(const QModelIndexList &lista)
 
 }
 
-void InterfazObra::PegarPartidasTablaP()
+void Instancia::PegarPartidasTablaP()
 {
     emit PegarP();
 }
 
-void InterfazObra::PegarMedicionTablaM()
+void Instancia::PegarMedicionTablaM()
 {
     emit PegarM();
 }
 
-void InterfazObra::PegarPartidas(const Obra::ListaAristasNodos &listaNodosCopiarPegar)
+void Instancia::PegarPartidas(const Obra::ListaAristasNodos &listaNodosCopiarPegar)
 {
     qDebug()<<"Pegar partidas";
     QModelIndex indice = tablaPrincipal->currentIndex();
@@ -372,7 +381,7 @@ void InterfazObra::PegarPartidas(const Obra::ListaAristasNodos &listaNodosCopiar
     RefrescarVista();
 }
 
-void InterfazObra::CopiarMedicion(Medicion& listaMedicionCopiarPegar)
+void Instancia::CopiarMedicion(Medicion& listaMedicionCopiarPegar)
 {
     listaMedicionCopiarPegar.BorrarMedicion();
     QItemSelectionModel *selecmodel = tablaMediciones->selectionModel();
@@ -391,7 +400,7 @@ void InterfazObra::CopiarMedicion(Medicion& listaMedicionCopiarPegar)
     selecmodel->clearSelection();
 }
 
-void InterfazObra::CopiarMedicionPortapapeles(const QModelIndexList& lista)
+void Instancia::CopiarMedicionPortapapeles(const QModelIndexList& lista)
 {
     QString textoACopiar;
     for(int i = 0; i < lista.size(); i++)
@@ -422,7 +431,7 @@ void InterfazObra::CopiarMedicionPortapapeles(const QModelIndexList& lista)
     clipboard->setText(textoACopiar);    
 }
 
-void InterfazObra::PegarMedicion(const Medicion& ListaMedicion)
+void Instancia::PegarMedicion(const Medicion& ListaMedicion)
 {    
     QModelIndex indice = tablaMediciones->currentIndex();
     QString cadenaundo = tr("Pegar lineas de medicion");
@@ -430,29 +439,29 @@ void InterfazObra::PegarMedicion(const Medicion& ListaMedicion)
     RefrescarVista();
 }
 
-void InterfazObra::ActivarDesactivarUndoRedo(int indice)
+void Instancia::ActivarDesactivarUndoRedo(int indice)
 {
     ActivarBoton(indice);
 }
 
-void InterfazObra::AjustarPresupuesto(float cantidades[2])
+void Instancia::AjustarPresupuesto(float cantidades[2])
 {
     pila->push(new UndoAjustarPresupuesto(O,cantidades));
 }
 
-void InterfazObra::Certificar()
+void Instancia::Certificar()
 {
     Medicion listaParaCertificar;
     CopiarMedicion(listaParaCertificar);
     O->Certificar(listaParaCertificar);
 }
 
-void InterfazObra::CambiarEntreMedicionYCertificacion(int n)
+void Instancia::CambiarEntreMedicionYCertificacion(int n)
 {
     O->cambiarEntreMedYCert(n);
 }
 
-void InterfazObra::GuardarBC3(QString fileName)
+void Instancia::GuardarBC3(QString fileName)
 {
     QFile ficheroBC3(fileName);
     if (ficheroBC3.open(QIODevice::WriteOnly|QIODevice::Text))
@@ -464,12 +473,26 @@ void InterfazObra::GuardarBC3(QString fileName)
     }
 }
 
-PrincipalModel* InterfazObra::ModeloTablaPrincipal()
+PrincipalModel* Instancia::ModeloTablaPrincipal()
 {
     return modeloTablaP;
 }
 
-TablaBase* InterfazObra::LeeTablaPrincipal()
+TablaBase* Instancia::LeeTablaPrincipal()
 {
     return tablaPrincipal;
+}
+
+int Instancia::TipoFichero(TEXTO nombrefichero)
+{
+    nombrefichero=nombrefichero.toLower();
+    if (nombrefichero.endsWith(".bc3"))
+    {
+        return tipoFichero::BC3;
+    }
+    else if (nombrefichero.endsWith(".seg"))
+    {
+        return tipoFichero::SEG;
+    }
+    else return tipoFichero::NOVALIDO;
 }

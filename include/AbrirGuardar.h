@@ -19,20 +19,15 @@ class AbrirGuardar
 {
     public:
 
-        //redefinicion de tipos
-        typedef nodo<Concepto,MedCert>* pNodo;
-        typedef arista<MedCert,Concepto>* pArista;
-
         virtual Obra* Leer(QString nombre) = 0;
         virtual void Escribir(QFile& fichero, const Obra* obra) = 0;
 };
 
-class AbrirGuardarNormal : public AbrirGuardar
+class AbrirGuardarSEG : public AbrirGuardar
 {
     public:
 
         /*****************LEER****************************************/
-        //Obra* Leer(std::ifstream &ifs);
         Obra* Leer(QString nombre);
         Concepto* leerConcepto( std::ifstream &ifs);
         std::string leerString(std::ifstream& ifs);

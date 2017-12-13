@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
-    <height>330</height>
+    <width>424</width>
+    <height>378</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>About SDMed</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Bienvenido a SDMed, v.1.0&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SDMed&lt;/span&gt; es un programa de mediciones y presupuestos multiplataforma. &lt;/p&gt;&lt;p&gt;Código fuente disponbile en &lt;a href=&quot;https://github.com/exodehm/SDMed&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Dudas, problemas, sugerencias u otros escribir a:  &lt;a href=&quot;mailto:SDMed.contacto@gmail.com&quot;&gt;SDMed.contacto@gmail.com&lt;/a&gt; &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;SDMed, v.0.9 Beta&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SDMed&lt;/span&gt; es un programa de mediciones y presupuestos multiplataforma&lt;/p&gt;&lt;p align=&quot;center&quot;&gt; programado en Qt&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Copyright © 2017 &lt;/p&gt;&lt;p align=&quot;center&quot;&gt;David E. de las Heras Moreno&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Código fuente disponbile en &lt;a href=&quot;https://github.com/exodehm/SDMed&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Dudas, problemas, sugerencias u otros escribir a:&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;mailto:SDMed.contacto@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;SDMed.contacto@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -42,6 +42,13 @@
         <widget class="QPushButton" name="botonCreditos">
          <property name="text">
           <string>Créditos</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botonLicencia">
+         <property name="text">
+          <string>Licencia</string>
          </property>
         </widget>
        </item>
@@ -80,8 +87,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>328</x>
-     <y>273</y>
+     <x>454</x>
+     <y>307</y>
     </hint>
     <hint type="destinationlabel">
      <x>393</x>

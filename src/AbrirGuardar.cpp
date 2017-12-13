@@ -1,6 +1,6 @@
 #include "../include/AbrirGuardar.h"
 
-AbrirGuardarBC3::AbrirGuardarBC3()
+AbrirGuardarSEG::AbrirGuardarSEG()
 {
     NuevaLinea=10;
     RetornoCarro=13;
@@ -8,10 +8,10 @@ AbrirGuardarBC3::AbrirGuardarBC3()
 }
 
 
-/*Obra* AbrirGuardarNormal::Leer(std::ifstream &ifs )
+Obra* AbrirGuardarSEG::Leer(QString nombre)
 {
     /*************variables auxiliares*********************/
-    /*int numNodos;
+    int numNodos;
     Concepto* C;
     pNodo nuevonodo;
     bool hoja;
@@ -20,15 +20,15 @@ AbrirGuardarBC3::AbrirGuardarBC3()
     /*ifs.read(reinterpret_cast<char*>(&numNodos),sizeof(int));
     std::cout<<"Total nodos son: "<<numNodos<<std::endl;
     C=leerConcepto(ifs);
-    std::cout<<"Raiz: "<<C->LeeCodigo()<<std::endl;
-    obra = new Obra(*C);
-    delete C;
+    std::cout<<"Raiz: "<<C->LeeCodigo()<<std::endl;*/
+    Obra* obra = new Obra("KK", "Kaka de la vaka SEG");
+    //delete C;
     //obra->G.listaHojas.clear();//otro chapú....quito la raiz de la lista de hojas porque voy a introducirla de forma manual
-    ifs.read(reinterpret_cast<char*>(&hoja),sizeof(bool));
-    std::cout<<"Bool= "<<hoja<<std::endl;
+    //ifs.read(reinterpret_cast<char*>(&hoja),sizeof(bool));
+    //std::cout<<"Bool= "<<hoja<<std::endl;
     //guardarNodoEnLista(hoja,listaNoHojas,obra,obra->G.LeeRaiz());
 
-    for (int i=0; i<numNodos-1; i++)//numNodos-1`porque no cuento el raiz
+    /*for (int i=0; i<numNodos-1; i++)//numNodos-1`porque no cuento el raiz
     {
         C=leerConcepto(ifs);
         std::cout<<C->LeeCodigo()<<std::endl;
@@ -53,12 +53,12 @@ AbrirGuardarBC3::AbrirGuardarBC3()
     }
     obra->aristaActual=obra->G.LeeRaiz()->adyacente;
     obra->padre=obra->G.LeeRaiz();
-    obra->aristaPadre->destino=obra->G.LeeRaiz();
+    obra->aristaPadre->destino=obra->G.LeeRaiz();*/
 
     return obra;
-}*/
+}
 
-Concepto* AbrirGuardarNormal::leerConcepto( std::ifstream &ifs)
+Concepto* AbrirGuardarSEG::leerConcepto( std::ifstream &ifs)
 {
     //tamaño de los miembros no variables
    /* int tamannoconcepto=sizeof(Unidad)+sizeof(Precio)+5*sizeof(int)+sizeof(float)+sizeof(Fecha)+sizeof(Concepto::Divisas);
@@ -81,7 +81,7 @@ Concepto* AbrirGuardarNormal::leerConcepto( std::ifstream &ifs)
 }
 
 
-void AbrirGuardarNormal::procesarAristas(Obra* O, pNodo n, std::ifstream& ifs)
+void AbrirGuardarSEG::procesarAristas(Obra* O, pNodo n, std::ifstream& ifs)
 {
     /*std::string codigonodohijo=leerString(ifs);
     std::cout<<"Nodo hijo: "<<codigonodohijo<<std::endl;
@@ -110,7 +110,7 @@ void AbrirGuardarNormal::procesarAristas(Obra* O, pNodo n, std::ifstream& ifs)
 //    O->G.InsertarHijo(n,hijo,A->anterior,A);*/
 }
 
-void AbrirGuardarNormal::InsertarMedicion(pArista& a, int MedCer, std::ifstream& ifs)
+void AbrirGuardarSEG::InsertarMedicion(pArista& a, int MedCer, std::ifstream& ifs)
 {
     int tamLista=0;
     ifs.read(reinterpret_cast<char*>(&tamLista),sizeof(int));
@@ -120,7 +120,7 @@ void AbrirGuardarNormal::InsertarMedicion(pArista& a, int MedCer, std::ifstream&
     }
 }
 
-void AbrirGuardarNormal::InsertarLineaMedicion(pArista& a, int MedCer, std::ifstream& ifs)
+void AbrirGuardarSEG::InsertarLineaMedicion(pArista& a, int MedCer, std::ifstream& ifs)
 {
     /*int tamanno=2*sizeof(int)+6*sizeof(float)+2*sizeof(bool)+sizeof(LineaMedicion::tipo);
     LineaMedicion m;
@@ -133,7 +133,7 @@ void AbrirGuardarNormal::InsertarLineaMedicion(pArista& a, int MedCer, std::ifst
 
 /*********************GUARDAR****************************************/
 
-void AbrirGuardarNormal::Escribir(QFile &fichero, const Obra *obra)
+void AbrirGuardarSEG::Escribir(QFile &fichero, const Obra *obra)
 {
 //    int numeronodos=obra->G.LeeNumNodos();
 
@@ -163,7 +163,7 @@ void AbrirGuardarNormal::Escribir(QFile &fichero, const Obra *obra)
     std::cout<<"Fichero escrito"<<std::endl;
 }
 
-void AbrirGuardarNormal::EscribirConcepto(Concepto C, std::ofstream &ofs)
+void AbrirGuardarSEG::EscribirConcepto(Concepto C, std::ofstream &ofs)
 {
     /*std::cout<<"Guardando nodo: "<<C.LeeCodigo()<<std::endl;
     //el tamaño de todos los miembros fijos (todos menos los strings)
@@ -179,7 +179,7 @@ void AbrirGuardarNormal::EscribirConcepto(Concepto C, std::ofstream &ofs)
     std::cout<<"Ya he guardado el nodo"<<std::endl;*/
 }
 
-void AbrirGuardarNormal::escribirAristas(pArista a,std::ofstream &ofs)
+void AbrirGuardarSEG::escribirAristas(pArista a,std::ofstream &ofs)
 {
     /*std::cout<<"Guardando lista de aristas"<<std::endl;
     pArista ref=a;//guardo la posicion de a;
@@ -220,7 +220,7 @@ void AbrirGuardarNormal::escribirAristas(pArista a,std::ofstream &ofs)
     }*/
 }
 
-void AbrirGuardarNormal::guardarMedicion(pArista a, std::ofstream& ofs, int i)
+void AbrirGuardarSEG::guardarMedicion(pArista a, std::ofstream& ofs, int i)
 {
     /*std::cout<<"Guardando medicion: "<<std::endl;
     int tamLista=a->datoarista.LeeMedCer(i).LeeLista().size();
@@ -235,7 +235,7 @@ void AbrirGuardarNormal::guardarMedicion(pArista a, std::ofstream& ofs, int i)
     std::cout<<"Salgo de la funcion1: "<<std::endl;*/
 }
 
-void AbrirGuardarNormal::guardarLineaMedicion(LineaMedicion& lm, std::ofstream& ofs)
+void AbrirGuardarSEG::guardarLineaMedicion(LineaMedicion& lm, std::ofstream& ofs)
 {
     /*std::cout<<"Guardando linea de medicion: "<<std::endl;
     int tamanno=2*sizeof(int)+6*sizeof(float)+2*sizeof(bool)+sizeof(LineaMedicion::tipo);
@@ -246,7 +246,7 @@ void AbrirGuardarNormal::guardarLineaMedicion(LineaMedicion& lm, std::ofstream& 
     std::cout<<"Salgo de la funcion2: "<<std::endl;*/
 }
 
-bool AbrirGuardarNormal::esHoja(pNodo n)
+bool AbrirGuardarSEG::esHoja(pNodo n)
 {
     if (n->adyacente)
     {
@@ -255,7 +255,7 @@ bool AbrirGuardarNormal::esHoja(pNodo n)
     return true;
 }
 
-void AbrirGuardarNormal::guardarNodoEnLista(bool valor, std::list<pNodo>& lista, Obra* O, pNodo n)
+void AbrirGuardarSEG::guardarNodoEnLista(bool valor, std::list<pNodo>& lista, Obra* O, pNodo n)
 {
     /*if (valor==true)//si es hoja
     {
@@ -267,14 +267,14 @@ void AbrirGuardarNormal::guardarNodoEnLista(bool valor, std::list<pNodo>& lista,
     }*/
 }
 
-void AbrirGuardarNormal::guardarString(const std::string& s, std::ofstream& ofs)
+void AbrirGuardarSEG::guardarString(const std::string& s, std::ofstream& ofs)
 {
     int tam=s.size()+1;
     ofs.write(reinterpret_cast<char*>(&tam),sizeof(tam));
     ofs.write(s.c_str(),tam);
 }
 
-std::string AbrirGuardarNormal::leerString(std::ifstream& ifs)
+std::string AbrirGuardarSEG::leerString(std::ifstream& ifs)
 {
     int tamAux=0;
     ifs.read(reinterpret_cast<char*>(&tamAux),sizeof(tamAux));

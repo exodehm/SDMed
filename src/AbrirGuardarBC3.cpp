@@ -2,6 +2,13 @@
 
 float tofloat(std::string cadena);
 
+AbrirGuardarBC3::AbrirGuardarBC3()
+{
+    NuevaLinea=10;
+    RetornoCarro=13;
+    FinDeArchivo=0x1A;
+}
+
 Obra*  AbrirGuardarBC3::Leer(TEXTO nombrefichero)
 {
     Obra* obra = nullptr;//= new Obra;

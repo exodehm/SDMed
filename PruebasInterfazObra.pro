@@ -13,7 +13,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        interfazobra.cpp \
     Editor/editor.cpp \
     Modelos/PrincipalModel.cpp \
     Calc/src/Calc.cpp \
@@ -55,9 +54,12 @@ SOURCES += main.cpp\
     Dialogos/dialogoabout.cpp \
     Dialogos/dialogocreditos.cpp \
     Dialogos/dialogoajustarprecio.cpp \
-    Undo/undoajustarpresupuesto.cpp
+    Undo/undoajustarpresupuesto.cpp \
+    Dialogos/dialogolicencia.cpp \
+    instancia.cpp \
+    Ficheros/abrirguardarseg.cpp
 
-HEADERS  += interfazobra.h \
+HEADERS  += \
     Editor/editor.h \
     defs.h \
     Calc/include/Calc.h \
@@ -106,7 +108,10 @@ HEADERS  += interfazobra.h \
     Dialogos/dialogoabout.h \
     Dialogos/dialogocreditos.h \
     Dialogos/dialogoajustarprecio.h \
-    Undo/undoajustarpresupuesto.h
+    Undo/undoajustarpresupuesto.h \
+    Dialogos/dialogolicencia.h \
+    instancia.h \
+    Ficheros/abrirguardarseg.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \
@@ -118,7 +123,8 @@ FORMS    += \
     Editor/editor.ui \
     Dialogos/dialogoabout.ui \
     Dialogos/dialogocreditos.ui \
-    Dialogos/dialogoajustarprecio.ui
+    Dialogos/dialogoajustarprecio.ui \
+    Dialogos/dialogolicencia.ui
 
 RESOURCES += \
     Editor/iconosEditor.qrc \

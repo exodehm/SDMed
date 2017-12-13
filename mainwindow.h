@@ -10,7 +10,7 @@
 #include <QDir>
 #include <QSettings>
 
-#include "interfazobra.h"
+#include "instancia.h"
 #include "Dialogos/dialogodatoscodigoresumen.h"
 #include "Dialogos/dialogonuevacertificacion.h"
 #include "Dialogos/dialogoajustarprecio.h"
@@ -72,7 +72,7 @@ private:
 
     struct MetaObra
     {
-        InterfazObra* miobra;
+        Instancia* miobra;
         QString nombrefichero;
         MetaObra():miobra(nullptr){}
         //~MetaObra(){delete miobra;}

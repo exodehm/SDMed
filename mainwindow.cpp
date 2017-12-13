@@ -49,7 +49,7 @@ void MainWindow::ActionNuevo()
     if (cuadro->exec())
     {
         MetaObra NuevaObra;
-        NuevaObra.miobra=new InterfazObra(cuadro->LeeCodigo(),cuadro->LeeResumen());
+        NuevaObra.miobra=new Instancia(cuadro->LeeCodigo(),cuadro->LeeResumen());
         AnadirObraAVentanaPrincipal(NuevaObra);
     }
     delete cuadro;
@@ -162,7 +162,7 @@ void MainWindow::AbrirArchivo(const QString &nombrefichero)
 {
     MetaObra NuevaObra;
     NuevaObra.nombrefichero = nombrefichero;
-    NuevaObra.miobra = new InterfazObra(nombrefichero);
+    NuevaObra.miobra = new Instancia(nombrefichero);
     AnadirObraAVentanaPrincipal(NuevaObra);
     comboMedCert->setEnabled(true);
     botonNuevaCertificacion->setEnabled(true);
