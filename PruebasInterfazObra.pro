@@ -16,8 +16,6 @@ SOURCES += main.cpp\
     Editor/editor.cpp \
     Modelos/PrincipalModel.cpp \
     Calc/src/Calc.cpp \
-    src/AbrirGuardar.cpp \
-    src/AbrirGuardarBC3.cpp \
     src/Certificacion.cpp \
     src/Concepto.cpp \
     src/Datos.cpp \
@@ -57,7 +55,9 @@ SOURCES += main.cpp\
     Undo/undoajustarpresupuesto.cpp \
     Dialogos/dialogolicencia.cpp \
     instancia.cpp \
-    Ficheros/abrirguardarseg.cpp
+    Ficheros/abrirguardarseg.cpp \
+    Ficheros/abrirguardarbc3.cpp \
+    Ficheros/abrirguardar.cpp
 
 HEADERS  += \
     Editor/editor.h \
@@ -65,7 +65,6 @@ HEADERS  += \
     Calc/include/Calc.h \
     Calc/include/nodocalc.h \
     Calc/include/pila.h \
-    include/AbrirGuardar.h \
     include/arista.h \
     include/Certificacion.h \
     include/Concepto.h \
@@ -111,7 +110,9 @@ HEADERS  += \
     Undo/undoajustarpresupuesto.h \
     Dialogos/dialogolicencia.h \
     instancia.h \
-    Ficheros/abrirguardarseg.h
+    Ficheros/abrirguardarseg.h \
+    Ficheros/abrirguardarbc3.h \
+    Ficheros/abrirguardar.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \

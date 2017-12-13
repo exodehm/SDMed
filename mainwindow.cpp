@@ -64,7 +64,7 @@ bool MainWindow::ActionAbrir()
     nombrefichero = QFileDialog::getOpenFileName(this,\
                                                  tr("Abrir Obra"),\
                                                  rutaarchivo,\
-                                                 tr("Archivos BC3 (*.bc3);;Archivos SDM (*.sdm)"));
+                                                 tr("Archivos BC3 (*.bc3);;Archivos SEG (*.seg)"));
     for (auto elem : ListaObras)
     {
         if (nombrefichero == elem.nombrefichero)
@@ -183,7 +183,7 @@ bool MainWindow::ActionGuardar()
 
 bool MainWindow::ActionGuardarComo()
 {
-    QFileDialog d(this,tr("Guardar fichero"),QDir::homePath(),tr("Archivos BC3 (*.bc3);;Archivos SDM (*.sdm)"));
+    QFileDialog d(this,tr("Guardar fichero"),QDir::homePath(),tr("Archivos BC3 (*.bc3);;Archivos SEG (*.seg)"));
     if (d.exec())
     {
         QString fileName = d.selectedFiles()[0];

@@ -15,7 +15,9 @@
 #include <QUndoStack>
 
 #include "./include/Obra.h"
-#include "./include/AbrirGuardar.h"
+#include "./Ficheros/abrirguardar.h"
+#include "./Ficheros/abrirguardarbc3.h"
+#include "./Ficheros/abrirguardarseg.h"
 
 #include "./Modelos/PrincipalModel.h"
 #include "./Modelos/MedCertModel.h"

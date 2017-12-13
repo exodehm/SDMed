@@ -1,12 +1,10 @@
-#include "../include/AbrirGuardar.h"
+#include "./abrirguardarbc3.h"
 
 float tofloat(std::string cadena);
 
 AbrirGuardarBC3::AbrirGuardarBC3()
 {
-    NuevaLinea=10;
-    RetornoCarro=13;
-    FinDeArchivo=0x1A;
+
 }
 
 Obra*  AbrirGuardarBC3::Leer(TEXTO nombrefichero)
@@ -35,28 +33,28 @@ Obra*  AbrirGuardarBC3::Leer(TEXTO nombrefichero)
             linea.remove(0,2);
             //qDebug()<<linea;
             registroC.append(linea);
-        }        
+        }
         if (linea[0]=='D' && linea[1]=='|')
         {
             linea.chop(2);
             linea.remove(0,2);
             //qDebug()<<linea;
             registroD.append(linea);
-        }        
+        }
         if (linea[0]=='M' && linea[1]=='|')
         {
             linea.chop(2);
             linea.remove(0,2);
             //qDebug()<<linea;
             registroM.append(linea);
-        }        
+        }
         if (linea[0]=='T')
         {
             linea.chop(2);
             linea.remove(0,2);
             //qDebug()<<linea;
             registroT.append(linea);
-        }        
+        }
     }
     qDebug()<<"Total lineas Resitro C: "<<registroC.size();
     qDebug()<<"Total lineas Resitro D: "<<registroD.size();
@@ -144,7 +142,7 @@ void AbrirGuardarBC3::procesarRelaciones (Obra* &obra, const QString &linea, QSt
 }
 
 void AbrirGuardarBC3::procesarConceptos(Obra* &obra, QStringList &registroC)
-{    
+{
     foreach (const QString& linea, registroC)
     {
         QStringList datos = linea.split("|");
@@ -181,7 +179,7 @@ void AbrirGuardarBC3::procesarConceptos(Obra* &obra, QStringList &registroC)
             {
                 nat=Codificacion::Partida;
             }
-            minodo->datonodo.EscribeNaturaleza(nat);            
+            minodo->datonodo.EscribeNaturaleza(nat);
         }
     }
 }
@@ -246,7 +244,7 @@ MedCert AbrirGuardarBC3::procesarMediciones(QStringList &registroM, TEXTO nombre
 }
 
 void AbrirGuardarBC3::procesarTexto(Obra *&obra,const QStringList &registroT)
-{    
+{
     QString linea;
     foreach (linea, registroT)
     {
@@ -267,11 +265,11 @@ void AbrirGuardarBC3::Escribir(QFile &fichero, const Obra *obra)
 {
     TEXTO cadenabc3;
     EscribirRegistroV(cadenabc3);
-    EscribirRegistroK(cadenabc3);    
+    EscribirRegistroK(cadenabc3);
     /********Registros C y D**************/
     pNodo indice=obra->G.LeeRaiz();
     for (int i=0; i<obra->G.LeeNumNodos(); i++)
-    {        
+    {
         EscribirRegistroC(indice,cadenabc3,obra);
         if (indice->adyacente)
         {
