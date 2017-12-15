@@ -1,294 +1,216 @@
 #include "abrirguardarseg.h"
 
-AbrirGuardarSEG::AbrirGuardarSEG()
+AbrirGuardarSEG::AbrirGuardarSEG():AbrirGuardar()
 {
 
 }
 
-Obra* AbrirGuardarSEG::Leer(QString nombre)
+Obra* AbrirGuardarSEG::Leer(QString nombrefichero)
 {
-    /*************variables auxiliares*********************/
+    Obra* obra = nullptr;//= new Obra;
+    QFile fichero(nombrefichero);
+    if(!fichero.open(QIODevice::ReadOnly))
+    {
+        qFatal("No puedo abrir el fichero");
+        return obra;
+    }
+    QDataStream datos(&fichero);
+    quint32 numbermagic;
+    datos>>numbermagic;
+    if (numbermagic!=0xA0B0C0D0)
+    {
+        qFatal("Numero magico incorrecto");
+        return obra;
+    }
+    //version
+    quint32 version;
+    datos>>version;
     int numNodos;
-    Concepto* C;
-    pNodo nuevonodo;
-    bool hoja;
-    std::list<pNodo>listaNoHojas;
-    /*******************************************************/
-    /*ifs.read(reinterpret_cast<char*>(&numNodos),sizeof(int));
-    std::cout<<"Total nodos son: "<<numNodos<<std::endl;
-    C=leerConcepto(ifs);
-    std::cout<<"Raiz: "<<C->LeeCodigo()<<std::endl;*/
-    Obra* obra = new Obra("KK", "Kaka de la vaka SEG");
-    //delete C;
-    //obra->G.listaHojas.clear();//otro chapú....quito la raiz de la lista de hojas porque voy a introducirla de forma manual
-    //ifs.read(reinterpret_cast<char*>(&hoja),sizeof(bool));
-    //std::cout<<"Bool= "<<hoja<<std::endl;
-    //guardarNodoEnLista(hoja,listaNoHojas,obra,obra->G.LeeRaiz());
-
-    /*for (int i=0; i<numNodos-1; i++)//numNodos-1`porque no cuento el raiz
+    datos>>numNodos;
+    qDebug()<<"El numero de nodos es: "<<numNodos;
+    Concepto concepto;
+    leerConcepto(concepto,datos);
+    obra = new Obra(concepto.LeeCodigo(),concepto.LeeResumen());
+    pNodo indice = obra->LeeGrafo().LeeRaiz();
+    indice->datonodo.EscribeTexto(concepto.LeeTexto());//para poner el texto de la partida raiz
+    indice->datonodo.EscribeImportePres(concepto.LeeImportePres());//poner el precio a la raizr
+    obra->InsertarMapa(concepto.LeeCodigo(),indice);
+    //hago la lista de nodos
+    for (int i=0;i<numNodos-1;i++)//-1 porque la raiz se mete antes, fuera del bucle
     {
-        C=leerConcepto(ifs);
-        std::cout<<C->LeeCodigo()<<std::endl;
-        nuevonodo=new nodo<Concepto,MedCert> (*C);
-        //obra->G.anadirNodo(nuevonodo);
-        obra->CrearPartida();
-        delete C;
-        ifs.read(reinterpret_cast<char*>(&hoja),sizeof(bool));
-        //std::cout<<"Bool= "<<hoja<<std::endl;
-        //guardarNodoEnLista(hoja,listaNoHojas,obra,nuevonodo);
+        leerConcepto(concepto,datos);
+        pNodo nodo = new t_nodo(concepto);
+        obra->InsertarMapa(concepto.LeeCodigo(),nodo);
+        indice->siguiente=nodo;        
+        indice = indice->siguiente;        
     }
-    //recorro cada nodo padre y le inserto las aristas
-    for (auto it=listaNoHojas.begin(); it!=listaNoHojas.end(); ++it)
+    //lista de aristas por cada nodo
+    int numhijos;
+    for (int i=0;i<numNodos;i++)//recorro la lista de nodos
     {
-        int numAristas=0;
-        ifs.read(reinterpret_cast<char*>(&numAristas),sizeof(int));
-        std::cout<<"El nodo tiene: "<<numAristas<<" aristas."<<std::endl;
-        for (int i=0; i<numAristas; i++)
+        datos>>numhijos;
+        std::cout<<"Numero de hijos: "<<numhijos<<std::endl;
+        TEXTO padre;
+        datos>>padre;
+        std::cout<<"padre: "<<padre.toStdString()<<std::endl;
+        for (int i=0;i<numhijos;i++)
         {
-            procesarAristas(obra,*it,ifs);
-        }
-    }
-    obra->aristaActual=obra->G.LeeRaiz()->adyacente;
-    obra->padre=obra->G.LeeRaiz();
-    obra->aristaPadre->destino=obra->G.LeeRaiz();*/
-
-    return obra;
-}
-
-Concepto* AbrirGuardarSEG::leerConcepto( std::ifstream &ifs)
-{
-    //tamaño de los miembros no variables
-   /* int tamannoconcepto=sizeof(Unidad)+sizeof(Precio)+5*sizeof(int)+sizeof(float)+sizeof(Fecha)+sizeof(Concepto::Divisas);
-    std::string sAux;
-    Concepto* C=new Concepto;
-    //en esta lectura capturo todos los miembros fijos
-    ifs.read(reinterpret_cast<char*>(C),tamannoconcepto);
-    //ahora voy a por los strings
-    //codigo
-    sAux=leerString(ifs);
-    C->EscribeCodigo(sAux);
-    //resumen
-    sAux=leerString(ifs);
-    C->EscribeResumen(sAux);
-    //texto
-    sAux=leerString(ifs);
-    C->EscribeTexto(sAux);
-
-    return C;*/
-}
-
-
-void AbrirGuardarSEG::procesarAristas(Obra* O, pNodo n, std::ifstream& ifs)
-{
-    /*std::string codigonodohijo=leerString(ifs);
-    std::cout<<"Nodo hijo: "<<codigonodohijo<<std::endl;
-//    pNodo hijo=buscaNodoPorCodigo(codigonodohijo,O);
-    bool haymedicion=true;
-    pArista A=new arista<MedCert,Concepto>(0);
-    for (int i=0; i<2; i++)
-    {
-
-        ifs.read(reinterpret_cast<char*>(&haymedicion),sizeof(bool));
-        std::cout<<"Hay medicion? "<<haymedicion<<std::endl;
-        float cantidad=0;
-        if (!haymedicion)
-        {
-            std::cout<<"No hay medicion"<<std::endl;
-            ifs.read(reinterpret_cast<char*>(&cantidad),sizeof(float));
-            A->datoarista.LeeMedCer(i).EscribeTotal(cantidad);
-        }
-        else
-        {
-            std::cout<<"Si hay medicion"<<std::endl;
-            InsertarMedicion(A,i,ifs);
-        }
-        std::cout<<"Cantidad de la arista: "<<cantidad<<std::endl;
-    }
-//    O->G.InsertarHijo(n,hijo,A->anterior,A);*/
-}
-
-void AbrirGuardarSEG::InsertarMedicion(pArista& a, int MedCer, std::ifstream& ifs)
-{
-    int tamLista=0;
-    ifs.read(reinterpret_cast<char*>(&tamLista),sizeof(int));
-    for (int i=0; i<tamLista; i++)
-    {
-        InsertarLineaMedicion(a,MedCer,ifs);
-    }
-}
-
-void AbrirGuardarSEG::InsertarLineaMedicion(pArista& a, int MedCer, std::ifstream& ifs)
-{
-    /*int tamanno=2*sizeof(int)+6*sizeof(float)+2*sizeof(bool)+sizeof(LineaMedicion::tipo);
-    LineaMedicion m;
-    ifs.read(reinterpret_cast<char*>(&m),tamanno);
-    std::string sAux=leerString(ifs);
-    m.EscribeComentario(sAux);
-    a->datoarista.LeeMedCer(MedCer).Insertar(m);*/
-}
-
-
-/*********************GUARDAR****************************************/
-
-void AbrirGuardarSEG::Escribir(QFile &fichero, const Obra *obra)
-{
-//    int numeronodos=obra->G.LeeNumNodos();
-
-//    ofs.write(reinterpret_cast<char*>(&numeronodos),sizeof(int));
-//    std::cout<<"Los nodos son: "<<numeronodos<<std::endl;
-    /*pNodo indice=obra->G.LeeRaiz();
-    //nodos
-    for (int i=0; i<numeronodos; i++)
-    {
-        EscribirConcepto(indice->datonodo,ofs);
-        hoja=esHoja(indice);
-        ofs.write(reinterpret_cast<char*>(&hoja),sizeof(bool));
-        std::cout<<indice->datonodo.LeeCodigo()<<"-"<<hoja<<"-";
-        indice=indice->siguiente;
-    }
-    std::cout<<"Ya he guardado los nodos y el valor auxiliar"<<std::endl;
-    //aristas
-    indice=obra->G.LeeRaiz();
-    while (indice)
-    {
-        if (indice->adyacente)
-        {
-            escribirAristas(indice->adyacente,ofs);
-        }
-        indice=indice->siguiente;
-    }*/
-    std::cout<<"Fichero escrito"<<std::endl;
-}
-
-void AbrirGuardarSEG::EscribirConcepto(Concepto C, std::ofstream &ofs)
-{
-    /*std::cout<<"Guardando nodo: "<<C.LeeCodigo()<<std::endl;
-    //el tamaño de todos los miembros fijos (todos menos los strings)
-    int tamannoconcepto=sizeof(Unidad)+sizeof(Precio)+5*sizeof(int)+sizeof(float)+sizeof(Fecha)+sizeof(Concepto::Divisas);
-    //guardo los miembros fijos
-    ofs.write (reinterpret_cast<char*>(&C),tamannoconcepto);
-    //codigo
-    guardarString(C.LeeCodigo(),ofs);
-    //resumen
-    guardarString(C.LeeResumen(),ofs);
-    //texto
-    guardarString(C.LeeTexto(),ofs);
-    std::cout<<"Ya he guardado el nodo"<<std::endl;*/
-}
-
-void AbrirGuardarSEG::escribirAristas(pArista a,std::ofstream &ofs)
-{
-    /*std::cout<<"Guardando lista de aristas"<<std::endl;
-    pArista ref=a;//guardo la posicion de a;
-    std::string sAux;//usaré un string para guardar los codigos de los nodos destino
-    int nAristas=0;
-    while (a)
-    {
-        nAristas++;
-        a=a->siguiente;
-    }
-    std::cout<<"Num aristas: "<<nAristas<<std::endl;
-    ofs.write(reinterpret_cast<char*>(&nAristas),sizeof(int));//guardo el nº de aristas de cada nodo
-    a=ref;//vuelvo a poner a "a" en la primera arista
-    while (a)
-    {
-        guardarString(a->destino->datonodo.LeeCodigo(),ofs);
-        bool haymedicion;
-        for (int i=0; i<2; i++)
-        {
-            if (!a->datoarista.LeeMedCer(i).hayMedicion())
+            TEXTO hijo;
+            datos>>hijo;
+            float cantidad;
+            datos>>cantidad;
+            std::cout<<"Hijo "<<i<<":"<<hijo.toStdString()<<std::endl;
+            MedCert M;
+            leerMedicion(M,datos);
+            if (M.hayMedCert())
             {
-                std::cout<<"Entrando en modo NO medicion"<<std::endl;
-                haymedicion=false;
-                ofs.write(reinterpret_cast<char*>(&haymedicion),sizeof(bool));
-                float cantidad=a->datoarista.LeeMedCer(i).LeeTotal();
-                std::cout<<"Cantidad guardada: "<<cantidad<<std::endl;
-                ofs.write(reinterpret_cast<char*>(&cantidad),sizeof(float));
+                obra->CrearPartida(padre,M, hijo);
             }
             else
             {
-                std::cout<<"Entrando en modo SI medicion"<<std::endl;
-                haymedicion=true;
-                ofs.write(reinterpret_cast<char*>(&haymedicion),sizeof(bool));
-                guardarMedicion(a,ofs,i);
+                obra->CrearPartida(padre,cantidad,hijo);
             }
         }
-        a=a->siguiente;
-    }*/
+    }   
+    return obra;
 }
 
-void AbrirGuardarSEG::guardarMedicion(pArista a, std::ofstream& ofs, int i)
+void AbrirGuardarSEG::leerConcepto(Concepto &C, QDataStream &datos)
 {
-    /*std::cout<<"Guardando medicion: "<<std::endl;
-    int tamLista=a->datoarista.LeeMedCer(i).LeeLista().size();
-    ofs.write(reinterpret_cast<char*>(&tamLista),sizeof(int));
-    std::cout<<"Numero de lineas de medicion: "<<tamLista<<std::endl;
-    std::cout<<"Total en la lista: "<<a->datoarista.LeeMedCer(i).LeeTotal()<<std::endl;
-    for (auto it=a->datoarista.LeeMedCer(i).LeeLista().begin(); it!=a->datoarista.LeeMedCer(i).LeeLista().end(); ++it)
+    TEXTO codigo;datos>>codigo;    
+    C.EscribeCodigo(codigo);//datos<<C.LeeCodigo();
+    TEXTO unidad;datos>>unidad;
+    C.EscribeUd(unidad);//datos<<C.LeeUd();
+    int nat;datos>>nat;
+    C.EscribeNaturaleza(nat);//datos<<(int)C.LeeNat();
+    int div;datos>>div;
+    //datos<<(int)C.LeeDivisa();//pendiente de asignacion
+    int dur;datos>>dur;
+    //datos<<(int)C.LeeDuracion();//pendiente de asignacion
+    int exis;datos>>exis;
+    //datos<<(int)C.LeeExistencias();//pendiente de asignacion
+    float fac;datos>>fac;
+    //datos<<(float)C.LeeFactorRendimiento();//pendiente de asignacion
+    int form;datos>>form;
+    //datos<<(int)C.LeeFormula();//pendiente de asinacion
+    int info;datos>>info;
+    //datos<<(int)C.LeeInfo();//pendiente de asignacion
+    TEXTO fecha;datos>>fecha;
+    Fecha efe(fecha.toStdString());
+    C.EscribeFecha(efe);//datos<<C.LeeFecha();
+    TEXTO res;datos>>res;
+    C.EscribeResumen(res);//datos<<C.LeeResumen();
+    float impres;datos>>impres;
+    C.EscribeImportePres(impres);//datos<<(float)C.LeeImportePres();
+    float impcert;datos>>impcert;
+    C.EscribeImporteCert(impcert);//datos<<(float)C.LeeImporteCert();
+    TEXTO tex;datos>>tex;
+    C.EscribeTexto(tex);//datos<<C.LeeTexto();
+    std::cout<<"codigo:"<<codigo.toStdString()<<" importe: "<<impres<<std::endl;
+}
+
+void AbrirGuardarSEG::leerMedicion(MedCert& MC, QDataStream &datos)
+{
+    int tamListamedicion;
+    datos>>tamListamedicion;
+    Medicion med;
+    for (int i=0;i<tamListamedicion;i++)
     {
-        std::cout<<"Guardando la linea con comentario: "<<(*it).LeeComentario()<<std::endl;
-        guardarLineaMedicion(*it,ofs);
+        LineaMedicion l;
+        leerLineaMedicion(l,datos);
+        med.Insertar(i,l);
     }
-    std::cout<<"Salgo de la funcion1: "<<std::endl;*/
+    MC.EscribeMedicion(med);
 }
 
-void AbrirGuardarSEG::guardarLineaMedicion(LineaMedicion& lm, std::ofstream& ofs)
-{
-    /*std::cout<<"Guardando linea de medicion: "<<std::endl;
-    int tamanno=2*sizeof(int)+6*sizeof(float)+2*sizeof(bool)+sizeof(LineaMedicion::tipo);
-    std::cout<<"Tamaño es: "<<tamanno<<std::endl;
-    ofs.write(reinterpret_cast<char*>(&lm),tamanno);
-    std::cout<<"Contenido es: "<<lm.LeeComentario().toStdString()<<std::endl;
-    guardarString(lm.LeeComentario().toStdString(),ofs);
-    std::cout<<"Salgo de la funcion2: "<<std::endl;*/
+void AbrirGuardarSEG::leerLineaMedicion(LineaMedicion& l,  QDataStream &datos)
+{    
+    int fase;datos>>fase;
+    l.EscribeFase(fase);
+    TEXTO comentario;datos>>comentario;
+    l.EscribeComentario(comentario);
+    float ud;datos>>ud;
+    l.EscribeUds(ud);
+    float largo;datos>>largo;
+    l.EscribeLargo(largo);
+    float ancho;datos>>ancho;
+    l.EscribeAncho(ancho);
+    float alto;datos>>alto;
+    l.EscribeAlto(alto);
+    TEXTO formula;datos>>formula;
+    l.EscribeFormula(formula);
+    int tipo;datos>>tipo;
+    l.EscribeTipo(tipo);
+    float subtotal;datos>>subtotal;
+    l.EscribeSubtotal(subtotal);
+    //el parcial se escribe en funcion de los otros campos
+    l.EscribeParcial();
 }
 
-bool AbrirGuardarSEG::esHoja(pNodo n)
+/*********************GUARDAR****************************************/
+
+void AbrirGuardarSEG::Escribir(QFile &fichero, Obra *obra)
 {
-    if (n->adyacente)
+    std::cout<<"Funcion Escribir SEG"<<std::endl;
+    QDataStream datos(&fichero);
+    //Write a header with a "magic number" and a version
+    datos << (quint32)0xA0B0C0D0;
+    datos << (qint32)90;
+    datos.setVersion(QDataStream::Qt_5_4);
+    //
+    std::list<pNodo>listanodos = obra->ListaConceptos();
+    datos << (int)listanodos.size();    
+    for (auto elem:listanodos)
     {
-        return false;
+        EscribirConcepto(elem->datonodo,datos);
     }
-    return true;
-}
-
-void AbrirGuardarSEG::guardarNodoEnLista(bool valor, std::list<pNodo>& lista, Obra* O, pNodo n)
-{
-    /*if (valor==true)//si es hoja
+    for (auto elem:listanodos)
     {
-        O->G.listaHojas.push_back(n);
+        Obra::ListaAristasNodos lista = obra->LeeGrafo().recorrerHijos(elem);
+        datos<<(int)lista.size();//inserto el numero de hijos de cada nodo de la lista
+        datos<<elem->datonodo.LeeCodigo();//inserto el codigo del nodo padre
+        for (auto elem:lista)
+        {
+            datos<<elem.first->destino->datonodo.LeeCodigo();//inserto los codigos de los nodos hijos
+            datos<<(float)elem.first->datoarista.LeeMedicion().LeeTotal();
+            escribirMedicion(elem.first,datos,MedCert::MEDICION);
+        }
     }
-    else
+    std::cout<<"Fichero escrito"<<std::endl;
+}
+
+void AbrirGuardarSEG::EscribirConcepto(Concepto &C, QDataStream& datos)
+{
+    datos<<C.LeeCodigo();
+    datos<<C.LeeUd();
+    datos<<(int)C.LeeNat();
+    datos<<(int)C.LeeDivisa();
+    datos<<(int)C.LeeDuracion();
+    datos<<(int)C.LeeExistencias();
+    datos<<(float)C.LeeFactorRendimiento();
+    datos<<(int)C.LeeFormula();
+    datos<<(int)C.LeeInfo();
+    datos<<C.LeeFecha();
+    datos<<C.LeeResumen();
+    datos<<(float)C.LeeImportePres();
+    datos<<(float)C.LeeImporteCert();
+    datos<<C.LeeTexto();    
+}
+
+void AbrirGuardarSEG::escribirMedicion(pArista a, QDataStream &datos, int tabla)
+{
+    int numlineasmedicion=a->datoarista.LeeMedCer(tabla).LeeLista().size();
+    datos<<numlineasmedicion;
+    for (auto elem:a->datoarista.LeeMedCer(tabla).LeeLista())
     {
-        lista.push_back(n);
-    }*/
-}
-
-void AbrirGuardarSEG::guardarString(const std::string& s, std::ofstream& ofs)
-{
-    int tam=s.size()+1;
-    ofs.write(reinterpret_cast<char*>(&tam),sizeof(tam));
-    ofs.write(s.c_str(),tam);
-}
-
-std::string AbrirGuardarSEG::leerString(std::ifstream& ifs)
-{
-    int tamAux=0;
-    ifs.read(reinterpret_cast<char*>(&tamAux),sizeof(tamAux));
-    char* cadAux=new char[tamAux+1];
-    ifs.read(cadAux,tamAux);
-    std::string s=cadAux;
-    delete cadAux;
-    return s;
-}
-
-/*nodo<Concepto,MedCert>* AbrirGuardarNormal::buscaNodoPorCodigo (std::string codigo, const Obra* O)
-{
-    pNodo indice=O->G.LeeRaiz();
-    while (indice->datonodo.LeeCodigo()!=codigo)
-    {
-        indice=indice->siguiente;
+        datos<<(int)elem.LeeFase();
+        datos<<elem.LeeComentario();
+        datos<<(float)elem.Lee_N_Uds();
+        datos<<(float)elem.LeeLargo();
+        datos<<(float)elem.LeeAncho();
+        datos<<(float)elem.LeeAlto();
+        datos<<elem.LeeFormula();
+        datos<<(int)elem.LeeTipo();
+        datos<<(float)elem.LeeSubtotal();
     }
-    return indice;
-}*/
-
+}

@@ -2,7 +2,7 @@
 
 float tofloat(std::string cadena);
 
-AbrirGuardarBC3::AbrirGuardarBC3()
+AbrirGuardarBC3::AbrirGuardarBC3():AbrirGuardar()
 {
 
 }
@@ -261,7 +261,7 @@ void AbrirGuardarBC3::procesarTexto(Obra *&obra,const QStringList &registroT)
 
 /*********************GUARDAR****************************************/
 
-void AbrirGuardarBC3::Escribir(QFile &fichero, const Obra *obra)
+void AbrirGuardarBC3::Escribir(QFile &fichero, Obra *obra)
 {
     TEXTO cadenabc3;
     EscribirRegistroV(cadenabc3);
@@ -412,15 +412,6 @@ void AbrirGuardarBC3::EscribirRegistroT(const pNodo concepto, TEXTO& cadena)
 bool AbrirGuardarBC3::esRaiz(const QString& S)
 {
     return (S.at(S.length()-1)=='#' && S.at(S.length()-2)=='#');
-}
-
-void AbrirGuardarBC3::quitarSimbolos (pNodo n)
-{
-    /*std::size_t posicion=n->datonodo.LeeCodigo().find('#');
-    if (posicion!=std::string::npos)
-    {
-        n->datonodo.EscribeCodigo(n->datonodo.LeeCodigo().substr(0,posicion));
-    }*/
 }
 
 void AbrirGuardarBC3::quitarSimbolos (TEXTO &codigo)

@@ -94,7 +94,6 @@ public:
     void EditarCertificacionCant(float cantidad);
     void EditarCertificacionPorc(float porcentaje);
     void CopiarPartidas(ListaAristasNodos&listaNodosSeleccionados, const QList<int> &listaIndices);    
-    //void Pegar(Grafo<datonodo_t,datoarista_t> grafo);
     void Pegar(const ListaAristasNodos& listaNodosACopiar, bool ultimafila = false);
     void InsertarPartidas(const ListaAristasNodos& listaNodosACopiar, QList<int>indices);
     void EditarCodificacion(int n);
@@ -168,10 +167,12 @@ public:
     void DefineAristaActual(const pArista& aa);
     /***********varias***********************************/
     pNodo GrafoAPartirDeNodo(pNodo nodo);
-    Grafo<datonodo_t,datoarista_t> LeeGrafo()
+    std::list<pNodo> ListaConceptos();
+    void InsertarMapa(TEXTO codigo, pNodo nodo);
+    const Grafo<datonodo_t,datoarista_t>& LeeGrafo() const
     {
         return G;
-    }
+    }    
 
 private:
     Grafo<datonodo_t,datoarista_t> G;

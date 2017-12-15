@@ -48,9 +48,9 @@ struct LineaMedicion
     const TEXTO &LeeFormula() const;
     const TipoLinea& LeeTipo() const;
     const bool& EsSubTotal() const;
-    bool EsNormal() const;
+    const bool EsFormula() const;
     bool EsLineaVacia() const;
-    QStringList LeeLineaMedicion();
+    QStringList LeeLineaMedicion();    
 
     //metodos modificadores
     void EscribeFase (int F);
@@ -61,6 +61,7 @@ struct LineaMedicion
     void EscribeAlto (float Al);
     void EscribeFormula (TEXTO F);
     void EscribeTipo(TipoLinea tipo);
+    void EscribeTipo(int tipo);
     void EscribeParcial();
     void EscribeSubtotal(float Sub);
     float CalcularFormula (std::string expresion, float UD, float LONG, float LAT, float ALT);   

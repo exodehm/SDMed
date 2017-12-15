@@ -7,6 +7,7 @@
 #include <string>
 #include <QFile>
 #include <QTextStream>
+#include <QDataStream>
 #include <QDebug>
 #include "../include/Obra.h"
 #include "../include/definiciones.h"
@@ -18,8 +19,9 @@ class AbrirGuardar
 public:
 
     AbrirGuardar();
+    //virtual ~AbrirGuardar();
     virtual Obra* Leer(QString nombre) = 0;
-    virtual void Escribir(QFile& fichero, const Obra* obra) = 0;
+    virtual void Escribir(QFile& fichero, Obra* obra) = 0;
 
 protected:
     char NuevaLinea;

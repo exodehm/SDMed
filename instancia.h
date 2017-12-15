@@ -82,7 +82,8 @@ public slots:
     void PegarMedicion(const Medicion& ListaMedicion);
     void Certificar();
     void CambiarEntreMedicionYCertificacion(int n);
-    void GuardarBC3(QString fileName);
+    void GuardarBC3(QString filename);
+    void GuardarSEG(QString filename);
     void ActivarDesactivarUndoRedo(int indice);    
     void GuardarTextoPartidaInicial();
     void GuardarTextoPartida();

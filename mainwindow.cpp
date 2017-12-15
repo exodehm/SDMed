@@ -196,7 +196,7 @@ bool MainWindow::ActionGuardarComo()
             QString extension = d.selectedNameFilter();
             extension = extension.right(5);
             extension = extension.left(4);
-            if (fileName.right(4)==".bc3" || fileName.right(4)==".sdm")
+            if (fileName.right(4)==".bc3" || fileName.right(4)==".seg")
             {
                 fileName=fileName.left(fileName.size()-4);
             }
@@ -219,9 +219,10 @@ bool MainWindow::GuardarObra(QString nombreFichero)
         qDebug()<<"Guardada la obra "<<nombreFichero<<" con exito";
         toReturn = true;
     }
-    if (extension == ".sdm" || extension == ".SDM")
+    if (extension == ".seg" || extension == ".SEG")
     {
-        qDebug()<<"Guardando en formato SDM";
+        obraActual->miobra->GuardarSEG(nombreFichero);
+        qDebug()<<"Guardando en formato SEG";
         toReturn = true;
     }
     //qDebug()<<"Borrar Pila";
@@ -373,7 +374,7 @@ void MainWindow::ActionAdelante()
 {
     if (HayObra())
     {
-        qDebug()<<"Moviendo adelaten";
+        qDebug()<<"Moviendo adelante";
         obraActual->miobra->Mover(movimiento::DERECHA);
     }
 }

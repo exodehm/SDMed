@@ -17,7 +17,7 @@ Instancia::Instancia(QString nombrefichero, QWidget *parent):QWidget(parent)
     if (O)
     {
         IniciarObra();
-    }
+    }    
 }
 
 Instancia::Instancia(QString codigo, QString resumen,QWidget *parent):QWidget(parent)
@@ -461,15 +461,27 @@ void Instancia::CambiarEntreMedicionYCertificacion(int n)
     O->cambiarEntreMedYCert(n);
 }
 
-void Instancia::GuardarBC3(QString fileName)
+void Instancia::GuardarBC3(QString filename)
 {
-    QFile ficheroBC3(fileName);
+    QFile ficheroBC3(filename);
     if (ficheroBC3.open(QIODevice::WriteOnly|QIODevice::Text))
     {
         AbrirGuardarBC3* bc3 =  new AbrirGuardarBC3;
         bc3->Escribir(ficheroBC3,O);
         ficheroBC3.close();
         delete bc3;
+    }
+}
+
+void Instancia::GuardarSEG(QString filename)
+{
+    QFile ficheroSEG(filename);
+    if (ficheroSEG.open(QIODevice::WriteOnly))
+    {
+        AbrirGuardarSEG* seg = new AbrirGuardarSEG;
+        seg->Escribir(ficheroSEG,O);
+        ficheroSEG.close();
+        delete seg;
     }
 }
 

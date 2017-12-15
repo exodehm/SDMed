@@ -109,7 +109,10 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
     G.Insertar(padre,nuevoNodo,nuevaArista);
     aristaActual = G.hallarArista(padre,nuevoNodo);
     //Y actualizo el grafo partiendo del nodo insertado
-    Actualizar(aristaActual->destino);
+    if (aristaActual)
+    {
+        Actualizar(aristaActual->destino);
+    }
 }
 
 void Obra::CrearPartida(TEXTO CodigoHijo, int posicion)
@@ -1325,4 +1328,14 @@ void Obra::DefineAristaActual(const pArista& aa)
 pNodo Obra::GrafoAPartirDeNodo(pNodo nodo)
 {
     return G.CrearGrafoAPartirDeNodo(nodo);
+}
+
+std::list<pNodo> Obra::ListaConceptos()
+{
+    return G.recorrerNodos();
+}
+
+void Obra::InsertarMapa(TEXTO codigo, pNodo nodo)
+{
+    mapaNodos.insert(codigo,nodo);
 }

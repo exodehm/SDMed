@@ -16,7 +16,7 @@ public:
     MedCert procesarMediciones (QStringList& registroM, TEXTO nombrepadre, TEXTO nombrehijo);
     void procesarTexto(Obra* &obra, const QStringList& registroT);
 
-    void Escribir(QFile& fichero,const Obra* obra);
+    void Escribir(QFile& fichero,Obra* obra);
     void EscribirRegistroV(TEXTO& cadena);
     void EscribirRegistroK(TEXTO &cadena);
     void EscribirRegistroC(const pNodo concepto, TEXTO &cadena, const Obra* obra);
@@ -24,8 +24,7 @@ public:
     void EscribirRegistroM(pNodo padre, pArista A, TEXTO &cadena, const Obra* obra);
     void EscribirRegistroT(const pNodo concepto, TEXTO &cadena);
 
-    bool esRaiz(const QString &S);
-    void quitarSimbolos (pNodo n);
+    bool esRaiz(const QString &S);    
     void quitarSimbolos(TEXTO &codigo);
     void escribirAlmohadilla(const pNodo concepto, const Obra* obra, TEXTO &cadena);
 

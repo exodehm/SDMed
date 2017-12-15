@@ -84,6 +84,11 @@ bool LineaMedicion::EsLineaVacia() const
     return (nFase==1 && comentario.isEmpty() && n_unidades==0 && largo==0 && ancho==0 && alto==0 && formula.isEmpty());
 }
 
+const bool LineaMedicion::EsFormula() const
+{
+    return esFormula;
+}
+
 QStringList LineaMedicion::LeeLineaMedicion()
 {
     QStringList lineamedicion;
@@ -145,6 +150,28 @@ void LineaMedicion::EscribeFormula (TEXTO F)
 void LineaMedicion::EscribeTipo(TipoLinea tipo)
 {
     Tipo = tipo;
+}
+
+void LineaMedicion::EscribeTipo(int tipo)
+{
+    switch (tipo)
+    {
+        case 0:
+            Tipo=TipoLinea::NORMAL;
+            break;
+        case 1:
+            Tipo = TipoLinea::SUBPARCIAL;
+            break;
+        case 2:
+            Tipo = TipoLinea::SUBTOTAL;
+            break;
+        case 3:
+            Tipo = TipoLinea::FORMULA;
+            break;
+        default:
+            Tipo = TipoLinea::NORMAL;
+            break;
+    }
 }
 
 void LineaMedicion::EscribeParcial()

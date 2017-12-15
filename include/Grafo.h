@@ -30,6 +30,10 @@ public:
         Raiz = new t_nodo(*nodo);
         nNodos=0;
     }
+    Grafo (datonodo_t nodo)
+    {
+        Raiz = new t_nodo(nodo);
+    }
     //constructor copia
     Grafo (const Grafo& G);
     //sobrecarga del operador =
@@ -53,9 +57,9 @@ public:
     pNodo CrearGrafoAPartirDeNodo(pNodo& nodo);
     pNodo CrearRamaAPartirDeNodo(pNodo& nodo);
     /******funciones para recorrer el grafo*************************/
-    std::list<pNodo> recorrerNodos();
+    std::list<pNodo> recorrerNodos() const;
     std::list<pNodo> listaHojas();
-    std::list<std::pair<pArista,pNodo>> recorrerHijos(const pNodo& padre);
+    std::list<std::pair<pArista,pNodo>> recorrerHijos(const pNodo& padre) const;
     std::list<pNodo>& recorrerGrafo(pNodo& inicio);
     std::list<pNodo>& lista_recorrerGrafo(pNodo& inicio);
     std::list<std::pair<pNodo,int>>& recorrerGrafoConNiveles(const pNodo& inicio, int nivel=0);
@@ -669,20 +673,21 @@ nodo<datonodo_t,datoarista_t>* Grafo<datonodo_t,datoarista_t>::CrearRamaAPartirD
 //******************************************//
 
 template <typename datonodo_t, typename datoarista_t>
-std::list<nodo<datonodo_t,datoarista_t>*>Grafo<datonodo_t,datoarista_t>::recorrerNodos()
+std::list<nodo<datonodo_t,datoarista_t>*>Grafo<datonodo_t,datoarista_t>::recorrerNodos() const
 {
-    std::list<pNodo>lista;
+    //nodos.clear();
+    std::list<pNodo> nodos;
     if (Raiz)
-    {
+    {        
         pNodo indice = Raiz;
-        lista.push_back(indice);
+        nodos.push_back(indice);
         while (indice->siguiente)
         {
             indice= indice->siguiente;
-            lista.push_back(indice);
+                nodos.push_back(indice);
         }
     }
-    return lista;
+    return nodos;
 }
 
 
@@ -711,7 +716,7 @@ std::list<nodo<datonodo_t,datoarista_t>*>Grafo<datonodo_t,datoarista_t>::recorre
 //recorre solamente los nodos hijos directos que penden de un nodo padre//
 //**********************************************************************//
 template <typename datonodo_t, typename datoarista_t>
-std::list<std::pair<arista<datoarista_t, datonodo_t>*,nodo<datonodo_t,datoarista_t>*>> Grafo<datonodo_t,datoarista_t>::recorrerHijos(const pNodo& padre)
+std::list<std::pair<arista<datoarista_t, datonodo_t>*,nodo<datonodo_t,datoarista_t>*>> Grafo<datonodo_t,datoarista_t>::recorrerHijos(const pNodo& padre) const
 {
     std::list<std::pair<pArista,pNodo>>hijos;
     std::pair<pArista,pNodo> aux;
