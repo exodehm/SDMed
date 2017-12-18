@@ -341,6 +341,24 @@ void MainWindow::ActionPegar()
     }
 }
 
+void MainWindow::ActionSeleccionarTodo()
+{
+    if (HayObra())
+    {
+        QWidget* w = qApp->focusWidget();
+        obraActual->miobra->TablaSeleccionarTodo(w);
+    }
+}
+
+void MainWindow::ActionDeseleccionarTodo()
+{
+    if (HayObra())
+    {
+        QWidget* w = qApp->focusWidget();
+        obraActual->miobra->TablaDeseleccionarTodo(w);
+    }
+}
+
 void MainWindow::ActionCortar()
 {
     qDebug()<<"Accion Cortar";
@@ -507,6 +525,8 @@ void MainWindow::setupActions()
     QObject::connect(ui->actionPegar,SIGNAL(triggered(bool)),this,SLOT(ActionPegar()));
     QObject::connect(ui->actionDeshacer,SIGNAL(triggered(bool)),this,SLOT(ActionUndo()));
     QObject::connect(ui->actionRehacer,SIGNAL(triggered(bool)),this,SLOT(ActionRedo()));
+    QObject::connect(ui->actionSeleccionar_todo,SIGNAL(triggered(bool)),this,SLOT(ActionSeleccionarTodo()));
+    QObject::connect(ui->actionAnular_selecci_n,SIGNAL(triggered(bool)),this,SLOT(ActionDeseleccionarTodo()));
     QObject::connect(ui->tabPrincipal,SIGNAL(currentChanged(int)),this,SLOT(CambiarObraActual(int)));
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));

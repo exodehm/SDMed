@@ -60,6 +60,9 @@ public slots:
     void BajarNivel();
     void IrAInicio();
 
+    void TablaSeleccionarTodo(QWidget* widgetactivo);
+    void TablaDeseleccionarTodo(QWidget* widgetactivo);
+
     void PosicionarTablaP(QModelIndex indice);
     void PosicionarTablaM(QModelIndex indice);
     void MostrarDeSegun(int indice);    

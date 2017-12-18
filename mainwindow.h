@@ -50,8 +50,8 @@ private slots:
     void ActionAtras();
     void ActionInicio();
 
-    /*void ActionSeleccionarTodo();
-    void ActionDeseleccionarTodo();*/
+    void ActionSeleccionarTodo();
+    void ActionDeseleccionarTodo();
 
     void ActionAjustarPresupuesto();
 

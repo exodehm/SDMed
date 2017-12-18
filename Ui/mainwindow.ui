@@ -618,8 +618,8 @@
    </attribute>
    <addaction name="separator"/>
    <addaction name="actionAtras"/>
-   <addaction name="actionIr_a_inicio"/>
    <addaction name="actionAdelante"/>
+   <addaction name="actionIr_a_inicio"/>
   </widget>
   <widget class="QToolBar" name="CertBar">
    <property name="windowTitle">

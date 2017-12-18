@@ -212,6 +212,30 @@ void Instancia::IrAInicio()
     RefrescarVista();
 }
 
+void Instancia::TablaSeleccionarTodo(QWidget* widgetactivo)
+{
+    if (widgetactivo->objectName()=="TablaP")
+    {
+        tablaPrincipal->selectAll();
+    }
+    else if (widgetactivo->objectName()=="TablaMC")
+    {
+        tablaMediciones->selectAll();
+    }
+}
+
+void Instancia::TablaDeseleccionarTodo(QWidget* widgetactivo)
+{
+    if (widgetactivo->objectName()=="TablaP")
+    {
+        tablaPrincipal->clearSelection();
+    }
+    else if (widgetactivo->objectName()=="TablaMC")
+    {
+        tablaMediciones->clearSelection();
+    }
+}
+
 void Instancia::Undo()
 {
     qDebug()<<"Undo en: "<<O->LeeResumenObra();
