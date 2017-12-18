@@ -316,6 +316,14 @@ void Obra::IrAInicio()
     aristaActual = padre->adyacente;
 }
 
+void Obra::IrTope()
+{
+    while (padre!=G.LeeRaiz())
+    {
+        SubirNivel();
+    }
+}
+
 void Obra::PosicionarAristaActual(int pos)
 {
     if (padre->adyacente)

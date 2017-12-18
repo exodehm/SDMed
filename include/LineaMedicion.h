@@ -48,7 +48,7 @@ struct LineaMedicion
     const TEXTO &LeeFormula() const;
     const TipoLinea& LeeTipo() const;
     const bool& EsSubTotal() const;
-    const bool EsFormula() const;
+    bool EsFormula();
     bool EsLineaVacia() const;
     QStringList LeeLineaMedicion();    
 

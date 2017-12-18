@@ -208,6 +208,23 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
                 tabla->edit(indice);
                 return true;
             }
+            case (Qt::Key_A)://seleccionar todo
+            {
+                if (ke->modifiers()==Qt::ControlModifier)
+                {
+                    /*if (tabla->objectName()=="TablaP")
+                    {
+                        emit tabla->CopiarPartidas();
+                    }
+                    else
+                    {
+                        emit tabla->CopiarMedicion();
+                    }*/
+                    tabla->SeleccionarTodo();
+                    return true;
+                }
+                break;
+            }
             case (Qt::Key_C)://Copiar
             {
                 if (ke->modifiers()==Qt::ControlModifier)

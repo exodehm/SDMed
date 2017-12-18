@@ -88,6 +88,11 @@ void TablaBase::Pegar()
     }
 }
 
+void TablaBase::SeleccionarTodo()
+{
+    selectAll();
+}
+
 void TablaBase::Certificar()
 {    
     emit CertificarLineasMedicion();

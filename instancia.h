@@ -58,18 +58,15 @@ public slots:
     Obra* LeeObra();
     void SubirNivel();
     void BajarNivel();
-    /*void Avanzar();
-    void Retroceder();*/
-    /*void lineaMas();
-    void lineaMenos();
-    void PosicionarTablaP();*/
+    void IrAInicio();
+
     void PosicionarTablaP(QModelIndex indice);
     void PosicionarTablaM(QModelIndex indice);
     void MostrarDeSegun(int indice);    
     void Undo();
     void Redo();
     void RefrescarVista();
-    //void ActualizarTablaMedicion(QModelIndex indice1, QModelIndex indice2);
+
     void CopiarPartidasTablaP();
     void CopiarMedicionTablaM();
     void CopiarPartidas(std::list<std::pair<pArista, pNodo> > &listaNodosCopiarPegar);

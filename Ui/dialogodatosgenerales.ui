@@ -31,7 +31,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QTabWidget" name="tabWidget">
+  <widget class="QTabWidget" name="tabDatos">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -102,7 +102,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QComboBox" name="comboBox_2">
+           <widget class="QComboBox" name="ComboIdiomas">
             <property name="minimumSize">
              <size>
               <width>150</width>
@@ -188,8 +188,8 @@
       <rect>
        <x>100</x>
        <y>320</y>
-       <width>193</width>
-       <height>24</height>
+       <width>196</width>
+       <height>29</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_3">

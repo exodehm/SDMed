@@ -31,7 +31,7 @@ Instancia::Instancia(QString codigo, QString resumen,QWidget *parent):QWidget(pa
 
 void Instancia::IniciarObra()
 {
-    O->IrAInicio();    
+    O->IrAInicio();
     pila = new QUndoStack(this);
     GenerarUI();
 }
@@ -203,6 +203,12 @@ void Instancia::Mover(int tipomovimiento)
     }
     //modeloTablaP->QuitarIndicadorFilaVacia();
     tablaPrincipal->clearSelection();
+    RefrescarVista();
+}
+
+void Instancia::IrAInicio()
+{
+    O->IrTope();
     RefrescarVista();
 }
 

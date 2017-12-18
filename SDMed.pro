@@ -6,11 +6,12 @@
 
 QT       += core gui
 
+#CONFIG += static
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = PruebasInterfazObra
+TARGET = SDMed
 TEMPLATE = app
-
 
 SOURCES += main.cpp\
     Editor/editor.cpp \
@@ -133,4 +134,4 @@ RESOURCES += \
     recursos.qrc
 
 CONFIG +=C++14
-CONFIG +=static
+

@@ -531,7 +531,6 @@
     <addaction name="separator"/>
     <addaction name="actionSubir_nivel"/>
     <addaction name="actionBajar_nivel"/>
-    <addaction name="actionIr_a_raiz"/>
     <addaction name="separator"/>
     <addaction name="actionAdelante"/>
     <addaction name="actionAtras"/>
@@ -619,6 +618,7 @@
    </attribute>
    <addaction name="separator"/>
    <addaction name="actionAtras"/>
+   <addaction name="actionIr_a_inicio"/>
    <addaction name="actionAdelante"/>
   </widget>
   <widget class="QToolBar" name="CertBar">
@@ -781,11 +781,6 @@
     <string>Bajar nivel</string>
    </property>
   </action>
-  <action name="actionIr_a_raiz">
-   <property name="text">
-    <string>Ir a raiz</string>
-   </property>
-  </action>
   <action name="actionAdelante">
    <property name="icon">
     <iconset resource="../recursos.qrc">
@@ -909,11 +904,6 @@
     <bool>false</bool>
    </property>
   </action>
-  <action name="actionD">
-   <property name="text">
-    <string>d</string>
-   </property>
-  </action>
   <action name="actionDeshacer">
    <property name="enabled">
     <bool>false</bool>
@@ -948,6 +938,18 @@
    </property>
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
+   </property>
+  </action>
+  <action name="actionIr_a_inicio">
+   <property name="icon">
+    <iconset resource="../recursos.qrc">
+     <normaloff>:/images/SubirTodo.png</normaloff>:/images/SubirTodo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Ir a inicio</string>
+   </property>
+   <property name="toolTip">
+    <string>Ir a inicio</string>
    </property>
   </action>
  </widget>

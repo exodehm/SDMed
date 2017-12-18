@@ -387,6 +387,15 @@ void MainWindow::ActionAtras()
     }
 }
 
+void MainWindow::ActionInicio()
+{
+    if (HayObra())
+    {
+        obraActual->miobra->IrAInicio();
+    }
+
+}
+
 void MainWindow::ActionAjustarPresupuesto()
 {
     if (HayObra())
@@ -501,6 +510,7 @@ void MainWindow::setupActions()
     QObject::connect(ui->tabPrincipal,SIGNAL(currentChanged(int)),this,SLOT(CambiarObraActual(int)));
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
+    QObject::connect(ui->actionIr_a_inicio,SIGNAL(triggered(bool)),this,SLOT(ActionInicio()));
     QObject::connect(ui->actionAjustar_precio,SIGNAL(triggered(bool)),this,SLOT(ActionAjustarPresupuesto()));
     QObject::connect(ui->actionAcerca_de,SIGNAL(triggered(bool)),this,SLOT(AcercaDe()));
     QObject::connect(ui->actionAcerca_de_Qt,SIGNAL(triggered(bool)),this,SLOT(AcercaDeQt()));

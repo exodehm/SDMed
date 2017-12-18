@@ -63,6 +63,7 @@ public:
     void HijoSiguiente();
     void HijoAnterior();
     void IrAInicio();
+    void IrTope();
     void PosicionarAristaActual(int pos);
     /******funciones para mostrar datos*******/    
     void VerNodos();

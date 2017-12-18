@@ -84,7 +84,7 @@ bool LineaMedicion::EsLineaVacia() const
     return (nFase==1 && comentario.isEmpty() && n_unidades==0 && largo==0 && ancho==0 && alto==0 && formula.isEmpty());
 }
 
-const bool LineaMedicion::EsFormula() const
+bool LineaMedicion::EsFormula()
 {
     return esFormula;
 }
