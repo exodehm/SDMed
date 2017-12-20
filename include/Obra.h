@@ -22,7 +22,7 @@ struct TipoDato
 struct Dato
 {
     TipoDato dato;
-    int color;    
+    int color;
 };
 
 class Obra
@@ -67,7 +67,7 @@ public:
     void PosicionarAristaActual(int pos);
     /******funciones para mostrar datos*******/    
     void VerNodos();
-    void VerArbol();
+    std::list<std::pair<pNodo, int> > &VerArbol();
     void VerRama();
     TEXTO VerTexto();
     /*********funciones de calculo**************/

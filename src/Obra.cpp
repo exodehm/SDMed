@@ -650,15 +650,16 @@ void Obra::VerNodos()
     std::cout<<std::endl;
 }
 
-void Obra::VerArbol()
+std::list<std::pair<pNodo, int>>& Obra::VerArbol()
 {
-    std::list<std::pair<pNodo,int>>lista = G.recorrerGrafoConNiveles(G.LeeRaiz());
-    //std::cout<<G.LeeRaiz()->datonodo.LeeCodigo()<<std::endl;
+    /*std::list<std::pair<pNodo,int>>lista = G.recorrerGrafoConNiveles(G.LeeRaiz());
+    std::cout<<G.LeeRaiz()->datonodo.LeeCodigo().toStdString()<<std::endl;
     for (auto elem : lista)
     {
-        std::cout<<std::setw(elem.second*2);
-       // std::cout<<elem.first->datonodo.LeeCodigo()<<std::endl;
-    }
+        std::cout<<elem.second<<std::setw(elem.second*2);
+        std::cout<<elem.first->datonodo.LeeCodigo().toStdString()<<std::endl;
+    }*/
+    return G.recorrerGrafoConNiveles(G.LeeRaiz());
 }
 
 void Obra::VerRama()

@@ -21,10 +21,12 @@
 
 #include "./Modelos/PrincipalModel.h"
 #include "./Modelos/MedCertModel.h"
+#include "./Modelos/TreeModel.h"
 
 #include "./Tablas/tablaprincipal.h"
 #include "./Tablas/tablamedcert.h"
 #include "./Editor/editor.h"
+#include "./Tablas/vistaarbol.h"
 
 #include "./Undo/undoajustarpresupuesto.h"
 
@@ -49,6 +51,7 @@ public:
 
     QUndoStack* Pila();
     void Mover(int tipomovimiento);
+    void VerArbol();
     void AjustarPresupuesto(float cantidades[2]);
 
     int TipoFichero(TEXTO nombrefichero);
@@ -97,22 +100,25 @@ signals:
 
 private:
     QHeaderView* cabeceraTablaP;
+    //modelos
     PrincipalModel* modeloTablaP;
     MedCertModel* modeloTablaMed;
     MedCertModel* modeloTablaCert;
+    TreeModel* modeloArbol;
 
     QVBoxLayout* lienzoGlobal;
-    QVBoxLayout* lienzoSuperior;
-    QWidget* widgetSuperior;
 
     QSplitter* separadorPrincipal;
+    QSplitter* separadorTablas;
 
+    //tablas, editor y arbol
     QTabWidget* separadorTablasMedicion;
 
     TablaBase* tablaPrincipal;
     TablaBase* tablaMediciones;
     TablaBase* tablaCertificaciones;
     Editor* editor;
+    VistaArbol* arbol;
 
     QModelIndex indiceActual;
 

@@ -542,7 +542,6 @@
     <property name="title">
      <string>&amp;Ver</string>
     </property>
-    <addaction name="actionArbol"/>
     <addaction name="actionConceptos"/>
    </widget>
    <widget class="QMenu" name="menuHerraminetas">
@@ -618,8 +617,9 @@
    </attribute>
    <addaction name="separator"/>
    <addaction name="actionAtras"/>
-   <addaction name="actionAdelante"/>
    <addaction name="actionIr_a_inicio"/>
+   <addaction name="actionAdelante"/>
+   <addaction name="actionVer_Arbol"/>
   </widget>
   <widget class="QToolBar" name="CertBar">
    <property name="windowTitle">
@@ -809,11 +809,6 @@
     <string>Retroceder línea</string>
    </property>
   </action>
-  <action name="actionArbol">
-   <property name="text">
-    <string>Arbol</string>
-   </property>
-  </action>
   <action name="actionConceptos">
    <property name="text">
     <string>Conceptos</string>
@@ -950,6 +945,18 @@
    </property>
    <property name="toolTip">
     <string>Ir a inicio</string>
+   </property>
+  </action>
+  <action name="actionVer_Arbol">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../recursos.qrc">
+     <normaloff>:/images/tree.png</normaloff>:/images/tree.png</iconset>
+   </property>
+   <property name="text">
+    <string>Ver Arbol</string>
    </property>
   </action>
  </widget>

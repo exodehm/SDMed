@@ -49,6 +49,7 @@ private slots:
     void ActionAdelante();
     void ActionAtras();
     void ActionInicio();
+    void ActionVerArbol();
 
     void ActionSeleccionarTodo();
     void ActionDeseleccionarTodo();

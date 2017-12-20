@@ -44,14 +44,22 @@ Instancia::~Instancia()
 void Instancia::GenerarUI()
 {
     lienzoGlobal = new QVBoxLayout(this);
-    separadorPrincipal = new QSplitter(Qt::Vertical);
+    separadorPrincipal = new QSplitter(Qt::Horizontal);
+
+    //arbol
+    modeloArbol = new TreeModel(O);
+    arbol = new VistaArbol;
+    arbol->setModel(modeloArbol);
+    arbol->setVisible(false);
+
+    separadorTablas = new QSplitter(Qt::Vertical);
 
     //tabla principal
     modeloTablaP = new PrincipalModel(O, pila);
     tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()), separadorPrincipal);
     tablaPrincipal->setObjectName("TablaP");
     tablaPrincipal->setModel(modeloTablaP);
-    separadorPrincipal->addWidget(tablaPrincipal);
+    separadorTablas->addWidget(tablaPrincipal);
 
     //tabla mediciones
     modeloTablaMed = new MedCertModel(O, MedCert::MEDICION, pila);
@@ -68,18 +76,22 @@ void Instancia::GenerarUI()
     separadorTablasMedicion->addTab(tablaMediciones,QString(tr("Medicion")));
     separadorTablasMedicion->addTab(tablaCertificaciones,QString(tr("Certificacion")));
 
-    separadorPrincipal->addWidget(separadorTablasMedicion);
+    separadorTablas->addWidget(separadorTablasMedicion);
 
     //editor
-    editor = new Editor(separadorPrincipal);
-    separadorPrincipal->addWidget(editor);
+    editor = new Editor;//(separadorTablas);
+    separadorTablas->addWidget(editor);
 
     //añado el separador al layout
+    separadorPrincipal->addWidget(separadorTablas);
+    separadorPrincipal->addWidget(arbol);
     lienzoGlobal->addWidget(separadorPrincipal);
+
+    this->setLayout(lienzoGlobal);
 
     RefrescarVista();
     MostrarDeSegun(0);
-    O->cambiarEntreMedYCert(MedCert::MEDICION);    
+    O->cambiarEntreMedYCert(MedCert::MEDICION);
 
     /************signals y slots*****************/
     QObject::connect(tablaPrincipal,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(BajarNivel()));
@@ -98,7 +110,6 @@ void Instancia::GenerarUI()
     QObject::connect(pila,SIGNAL(indexChanged(int)),this,SLOT(RefrescarVista()));
     QObject::connect(editor->LeeEditor(),SIGNAL(GuardaTexto()),this,SLOT(GuardarTextoPartida()));
     QObject::connect(editor,SIGNAL(GuardaTexto()),this,SLOT(GuardarTextoPartida()));
-
 }
 
 Obra* Instancia::LeeObra()
@@ -206,6 +217,11 @@ void Instancia::Mover(int tipomovimiento)
     RefrescarVista();
 }
 
+void Instancia::VerArbol()
+{
+    arbol->setVisible(!arbol->isVisible());
+}
+
 void Instancia::IrAInicio()
 {
     O->IrTope();
@@ -268,7 +284,12 @@ void Instancia::RefrescarVista()
     tablaPrincipal->setCurrentIndex(indiceActual);
     tablaMediciones->resizeColumnsToContents();
     tablaCertificaciones->resizeColumnsToContents();
-    separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)    
+    separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
+    modeloArbol->layoutChanged();
+    arbol->resizeColumnToContents(tipoColumna::CODIGO);
+    arbol->resizeColumnToContents(tipoColumna::NATURALEZA);
+    arbol->resizeColumnToContents(tipoColumna::UD);
+    arbol->resizeColumnToContents(tipoColumna::RESUMEN);
 }
 
 void Instancia::EscribirTexto()
@@ -292,8 +313,7 @@ void Instancia::PosicionarTablaP(QModelIndex indice)
 
 void Instancia::PosicionarTablaM(QModelIndex indice)
 {
-    O->PosicionarLineaActualMedicion(indice.row());
-    
+    O->PosicionarLineaActualMedicion(indice.row());    
 }
 
 void Instancia::GuardarTextoPartidaInicial()

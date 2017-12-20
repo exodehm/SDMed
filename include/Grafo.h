@@ -776,7 +776,7 @@ std::list<std::pair<nodo<datonodo_t,datoarista_t>*,int>>&Grafo<datonodo_t,datoar
 {
     VaciarPila(aristasConNiveles);
     nodosConNiveles.clear();
-    return lista_recorrerGrafoConNiveles(inicio);
+    return lista_recorrerGrafoConNiveles(inicio, nivel);
 }
 
 template <typename datonodo_t, typename datoarista_t>

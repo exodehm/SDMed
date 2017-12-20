@@ -58,7 +58,11 @@ SOURCES += main.cpp\
     instancia.cpp \
     Ficheros/abrirguardarseg.cpp \
     Ficheros/abrirguardarbc3.cpp \
-    Ficheros/abrirguardar.cpp
+    Ficheros/abrirguardar.cpp \
+    Modelos/TreeModel.cpp \
+    Modelos/treeitem.cpp \
+    Delegados/delegadoarbol.cpp \
+    Tablas/vistaarbol.cpp
 
 HEADERS  += \
     Editor/editor.h \
@@ -113,7 +117,11 @@ HEADERS  += \
     instancia.h \
     Ficheros/abrirguardarseg.h \
     Ficheros/abrirguardarbc3.h \
-    Ficheros/abrirguardar.h
+    Ficheros/abrirguardar.h \
+    Modelos/TreeModel.h \
+    Modelos/treeitem.h \
+    Delegados/delegadoarbol.h \
+    Tablas/vistaarbol.h
 
 FORMS    += \
     Dialogos/dialogosuprimirmedicion.ui \

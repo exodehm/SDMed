@@ -56,6 +56,7 @@ void MainWindow::ActionNuevo()
     ui->actionGuardar->setEnabled(true);
     comboMedCert->setEnabled(true);
     botonNuevaCertificacion->setEnabled(true);
+    ui->actionVer_Arbol->setEnabled(true);
 }
 
 bool MainWindow::ActionAbrir()
@@ -166,6 +167,7 @@ void MainWindow::AbrirArchivo(const QString &nombrefichero)
     AnadirObraAVentanaPrincipal(NuevaObra);
     comboMedCert->setEnabled(true);
     botonNuevaCertificacion->setEnabled(true);
+    ui->actionVer_Arbol->setEnabled(true);
 }
 
 
@@ -253,6 +255,7 @@ void MainWindow::ActionCerrar()
         ui->actionGuardar->setEnabled(false);
         comboMedCert->setEnabled(false);
         botonNuevaCertificacion->setEnabled(false);
+        ui->actionVer_Arbol->setEnabled(false);
     }
 }
 
@@ -411,7 +414,14 @@ void MainWindow::ActionInicio()
     {
         obraActual->miobra->IrAInicio();
     }
+}
 
+void MainWindow::ActionVerArbol()
+{
+    if (HayObra())
+    {
+        obraActual->miobra->VerArbol();
+    }
 }
 
 void MainWindow::ActionAjustarPresupuesto()
@@ -531,6 +541,7 @@ void MainWindow::setupActions()
     QObject::connect(ui->actionAdelante,SIGNAL(triggered(bool)),this,SLOT(ActionAdelante()));
     QObject::connect(ui->actionAtras,SIGNAL(triggered(bool)),this,SLOT(ActionAtras()));
     QObject::connect(ui->actionIr_a_inicio,SIGNAL(triggered(bool)),this,SLOT(ActionInicio()));
+    QObject::connect(ui->actionVer_Arbol,SIGNAL(triggered(bool)),this,SLOT(ActionVerArbol()));
     QObject::connect(ui->actionAjustar_precio,SIGNAL(triggered(bool)),this,SLOT(ActionAjustarPresupuesto()));
     QObject::connect(ui->actionAcerca_de,SIGNAL(triggered(bool)),this,SLOT(AcercaDe()));
     QObject::connect(ui->actionAcerca_de_Qt,SIGNAL(triggered(bool)),this,SLOT(AcercaDeQt()));
