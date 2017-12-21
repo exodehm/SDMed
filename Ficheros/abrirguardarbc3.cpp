@@ -403,7 +403,10 @@ void AbrirGuardarBC3::EscribirRegistroT(const pNodo concepto, TEXTO& cadena)
     cadena.append("~T|");
     cadena.append(concepto->datonodo.LeeCodigo());
     cadena.append("|");
-    cadena.append(concepto->datonodo.LeeTexto());
+    QTextDocument doc;
+    doc.setHtml(concepto->datonodo.LeeTexto());
+    TEXTO cadenaSinHtml = doc.toPlainText();
+    cadena.append(cadenaSinHtml);
     cadena.append("|");
     cadena.append("\r\n");
 }

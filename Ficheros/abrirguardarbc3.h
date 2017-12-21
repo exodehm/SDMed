@@ -1,6 +1,8 @@
 #ifndef ABRIRGUARDARBC3_H
 #define ABRIRGUARDARBC3_H
 
+#include <QTextDocument>
+
 #include "./abrirguardar.h"
 
 

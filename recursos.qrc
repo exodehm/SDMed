@@ -14,9 +14,7 @@
         <file>images/Atras.png</file>
 		<file>images/deshacer.png</file>
 		<file>images/rehacer.png</file>
-		<file>images/SubirTodo.png</file>
-		<file>images/deshacer.png</file>
-		<file>images/rehacer.png</file>
+		<file>images/SubirTodo.png</file>		
 		<file>images/tree.png</file>
     </qresource>
 </RCC>
