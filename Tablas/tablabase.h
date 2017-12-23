@@ -50,10 +50,10 @@ public slots:
 
 signals:
     void CambiaFila(QModelIndex ind);
-    void CopiarPartidas();
-    void CopiarMedicion();
-    void PegarPartidas();
-    void PegarMedicion();
+    /*void CopiarPartidas();
+    void CopiarMedicion();*/
+    void CopiarContenido();
+    void PegarContenido();
     void CertificarLineasMedicion();    
 
 protected:

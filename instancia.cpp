@@ -49,26 +49,26 @@ void Instancia::GenerarUI()
     //arbol
     modeloArbol = new TreeModel(O);
     arbol = new VistaArbol;
-    arbol->setModel(modeloArbol);
+    arbol->setModel(modeloArbol);    
     arbol->setVisible(false);
 
     separadorTablas = new QSplitter(Qt::Vertical);
 
     //tabla principal
     modeloTablaP = new PrincipalModel(O, pila);
-    tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()), separadorPrincipal);
+    tablaPrincipal = new TablaPrincipal(modeloTablaP->columnCount(QModelIndex()));
     tablaPrincipal->setObjectName("TablaP");
     tablaPrincipal->setModel(modeloTablaP);
     separadorTablas->addWidget(tablaPrincipal);
 
     //tabla mediciones
     modeloTablaMed = new MedCertModel(O, MedCert::MEDICION, pila);
-    tablaMediciones =  new TablaMedCert(modeloTablaMed->columnCount(QModelIndex()), this);
+    tablaMediciones =  new TablaMedCert(modeloTablaMed->columnCount(QModelIndex()));
     tablaMediciones->setObjectName("TablaMC");
     tablaMediciones->setModel(modeloTablaMed);
     //tabla certificaciones
     modeloTablaCert = new MedCertModel(O, MedCert::CERTIFICACION, pila);
-    tablaCertificaciones =  new TablaMedCert(modeloTablaCert->columnCount(QModelIndex()), this);
+    tablaCertificaciones =  new TablaMedCert(modeloTablaCert->columnCount(QModelIndex()));
     tablaCertificaciones->setModel(modeloTablaCert);
     tablaCertificaciones->setEnabled(false);
     //tab para las tablas de mediciones y certificaciones
@@ -84,12 +84,11 @@ void Instancia::GenerarUI()
 
     //añado el separador al layout
     separadorPrincipal->addWidget(separadorTablas);
-    separadorPrincipal->addWidget(arbol);
+    separadorPrincipal->addWidget(arbol);    
     lienzoGlobal->addWidget(separadorPrincipal);
 
-    this->setLayout(lienzoGlobal);
-
     RefrescarVista();
+    arbol->expandAll();
     MostrarDeSegun(0);
     O->cambiarEntreMedYCert(MedCert::MEDICION);
 
@@ -99,11 +98,12 @@ void Instancia::GenerarUI()
     QObject::connect(tablaPrincipal,SIGNAL(clicked(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaPrincipal,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaP(QModelIndex)));
     QObject::connect(tablaMediciones,SIGNAL(CambiaFila(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
-    QObject::connect(modeloTablaMed,SIGNAL(Posicionar(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));
-    QObject::connect(tablaPrincipal,SIGNAL(CopiarPartidas()),this,SLOT(CopiarPartidasTablaP()));
-    QObject::connect(tablaPrincipal,SIGNAL(PegarPartidas()),this,SLOT(PegarPartidasTablaP()));
-    QObject::connect(tablaMediciones,SIGNAL(CopiarMedicion()),this,SLOT(CopiarMedicionTablaM()));
-    QObject::connect(tablaMediciones,SIGNAL(PegarMedicion()),this,SLOT(PegarMedicionTablaM()));
+    QObject::connect(modeloTablaMed,SIGNAL(Posicionar(QModelIndex)),this,SLOT(PosicionarTablaM(QModelIndex)));    
+    QObject::connect(tablaPrincipal,SIGNAL(CopiarContenido()),this,SLOT(CopiarPartidasTablaP()));
+    QObject::connect(tablaPrincipal,SIGNAL(PegarContenido()),this,SLOT(PegarPartidasTablaP()));
+    QObject::connect(tablaMediciones,SIGNAL(CopiarContenido()),this,SLOT(CopiarMedicionTablaM()));
+    QObject::connect(tablaMediciones,SIGNAL(PegarContenido()),this,SLOT(PegarMedicionTablaM()));
+
     QObject::connect(tablaMediciones,SIGNAL(CertificarLineasMedicion()),this,SLOT(Certificar()));    
     QObject::connect(separadorTablasMedicion,SIGNAL(currentChanged(int)),this,SLOT(CambiarEntreMedicionYCertificacion(int)));
     QObject::connect(pila,SIGNAL(indexChanged(int)),this,SLOT(ActivarDesactivarUndoRedo(int)));

@@ -229,14 +229,15 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             {
                 if (ke->modifiers()==Qt::ControlModifier)
                 {
-                    if (tabla->objectName()=="TablaP")
+                    /*if (tabla->objectName()=="TablaP")
                     {
                         emit tabla->CopiarPartidas();
                     }
                     else
                     {
                         emit tabla->CopiarMedicion();
-                    }
+                    }*/
+                    emit tabla->CopiarContenido();
                     return true;
                 }
                 break;
@@ -253,14 +254,7 @@ bool Filter::eventFilter(QObject *obj, QEvent* event)
             {
                 if (ke->modifiers()==Qt::ControlModifier)
                 {
-                    if (tabla->objectName()=="TablaP")
-                    {
-                        emit tabla->PegarPartidas();
-                    }
-                    else
-                    {
-                        emit tabla->PegarMedicion();
-                    }
+                    emit tabla->PegarContenido();
                     return true;
                 }
                 break;

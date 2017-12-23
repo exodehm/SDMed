@@ -61,7 +61,7 @@ void TablaBase::Bloquear(int columna)
 void TablaBase::Copiar()
 {
     qDebug()<<sender()->parent();
-    TablaBase* tabla = qobject_cast<TablaBase*>(sender()->parent());
+    /*TablaBase* tabla = qobject_cast<TablaBase*>(sender()->parent());
     MedCertModel* mod = qobject_cast<MedCertModel*>(tabla->model());//pruebo a castear a modelo de tabla medicion
     if (mod)
     {
@@ -70,22 +70,14 @@ void TablaBase::Copiar()
     else
     {
         emit CopiarPartidas();
-    }
+    }*/
+    emit CopiarContenido();
 }
 
 void TablaBase::Pegar()
 {
-    qDebug()<<sender()->parent();
-    TablaBase* tabla = qobject_cast<TablaBase*>(sender()->parent());
-    MedCertModel* mod = qobject_cast<MedCertModel*>(tabla->model());//pruebo a castear a modelo de tabla medicion
-    if (mod)
-    {
-        emit PegarMedicion();
-    }
-    else
-    {
-        emit PegarPartidas();
-    }
+    qDebug()<<sender()->parent();    
+    emit PegarContenido();
 }
 
 void TablaBase::SeleccionarTodo()

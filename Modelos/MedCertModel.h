@@ -53,11 +53,10 @@ signals:
 
 protected:
     Obra* miobra;
+    int tabla;
+    QUndoStack* pila;
     QList<QStringList>datos;
     QStringList LeyendasCabecera;
-    int tabla;
-
-    QUndoStack* pila;
 };
 
 

@@ -104,4 +104,5 @@ std::ostream& operator <<(std::ostream& os, const Certificacion& C)
     {
         os<<(*it).first<<" - "<<(*it).second<<std::endl;
     }
+    return os;
 }

@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         recentFileActions[i] = new QAction(this);
         connect (recentFileActions[i], SIGNAL(triggered()), this, SLOT(ActionAbrirDesdeReciente()));
         ui->menuAbrir_reciente->addAction(recentFileActions[i]);
-    }
+    }    
     updateArchivosRecientesActions();
 }
 
