@@ -1,17 +1,8 @@
 #include "TreeModel.h"
 
-TreeModel::TreeModel(Obra *O, QObject *parent) : obra(O), QAbstractItemModel(parent)
+TreeModel::TreeModel(Obra *O, QObject *parent) : obra(O), rootItem(nullptr), QAbstractItemModel(parent)
 {
-    QList<QVariant> rootData;
-    rootData << tr("Código")<<tr("Nat")<<tr("Ud")<<tr("Resumen");
-    rootItem = new TreeItem(rootData);
-    QList<QVariant> ObraData;
-    ObraData<<O->LeeCodigoObra()<<"6"<<" "<<O->LeeResumenObra();
-    TreeItem* primerItem = new TreeItem(ObraData,rootItem);
-    rootItem->appendChild(primerItem);
-    std::pair <TreeItem*, int> pareja(primerItem,0);
-    listaitems.push_back(pareja);
-    setupModelData(obra, primerItem);
+    ActualizarDatos();
 }
 
 TreeModel::~TreeModel()
@@ -102,7 +93,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    return QAbstractItemModel::flags(index);
+    return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
 }
 
 QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -115,7 +106,7 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
 
 void TreeModel::setupModelData(Obra* obra, TreeItem *parent)
 {
-    std::list<std::pair<pNodo, int>>listado = obra->VerArbol();    
+    std::list<std::pair<pNodo, int>>listado = obra->VerArbol();
     auto iterador = listaitems.begin();
     for (auto elem:listado)
     {
@@ -142,6 +133,25 @@ void TreeModel::setupModelData(Obra* obra, TreeItem *parent)
         listaitems.push_back(pareja);
         iterador++;
     }
+}
+
+void TreeModel::ActualizarDatos()
+{
+    if (rootItem)
+    {
+        delete rootItem;
+    }
+    listaitems.clear();
+    QList<QVariant> rootData;
+    rootData << tr("Código")<<tr("Nat.")<<tr("Ud.")<<tr("Resumen");
+    rootItem = new TreeItem(rootData);
+    QList<QVariant> ObraData;
+    ObraData<<obra->LeeCodigoObra()<<"6"<<" "<<obra->LeeResumenObra();
+    TreeItem* primerItem = new TreeItem(ObraData,rootItem);
+    rootItem->appendChild(primerItem);
+    std::pair <TreeItem*, int> pareja(primerItem,0);
+    listaitems.push_back(pareja);
+    setupModelData(obra, primerItem);
 }
 
 TreeItem* TreeModel::CrearItem(pNodo nodo, TreeItem *parent)

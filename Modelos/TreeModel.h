@@ -25,14 +25,15 @@ public:
       int rowCount(const QModelIndex &parent = QModelIndex()) const override;
       int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-  private:
-      void setupModelData(Obra *obra, TreeItem *parent);
-      void ActualizarDatos(const std::list<std::list<Dato>>& datosStd);
-      TreeItem* CrearItem(pNodo nodo, TreeItem* parent = nullptr);
+      void ActualizarDatos();
 
+  private:
+      Obra* obra;
       TreeItem *rootItem;
       std::list<std::pair<TreeItem*,int>>listaitems;
-      Obra* obra;
+
+      void setupModelData(Obra *obra, TreeItem *parent);
+      TreeItem* CrearItem(pNodo nodo, TreeItem* parent = nullptr);
 };
 
 #endif // TREEMODEL_H
