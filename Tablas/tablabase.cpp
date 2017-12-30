@@ -27,6 +27,10 @@ TablaBase::TablaBase(int nColumnas, QWidget *parent): QTableView(parent)
 
     cabeceraHorizontal->setSectionResizeMode(QHeaderView::Fixed);
     alturaFilas->setDefaultSectionSize(24);
+
+    setStyleSheet("QHeaderView::section{\
+                                color: black;\
+                                background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 lightgray, stop:1 #e6ecf7);}");
     QObject::connect(cabeceraHorizontal, SIGNAL(customContextMenuRequested(QPoint)), SLOT(MostrarMenuCabecera(QPoint)));
     QObject::connect(cabeceraVertical, SIGNAL(customContextMenuRequested(QPoint)), SLOT(MostrarMenuLateralTabla(QPoint)));
 }
