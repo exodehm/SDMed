@@ -125,7 +125,7 @@ public:
     int CertificacionActiva();
     void EstablecerCertificacionActual(int n);
     void cambiarFechaCertificacion(std::string fecha);
-    const Medicion LeeListaMedicion(int tabla=MedCert::MEDICION) const;
+    const Medicion LeeListaMedicion(pArista A, int tabla=MedCert::MEDICION) const;
     const float& LeeTotalMedicion(int tabla=MedCert::MEDICION) const;
     /**********seleccionar entre medicion y certificacion********/
     void cambiarEntreMedYCert(int n);

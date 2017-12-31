@@ -58,7 +58,7 @@ UndoBorrarLineasMedicion::UndoBorrarLineasMedicion(Obra *O, MedCertModel *M, QLi
     //cuando hago redo borro de la lista las lineas indicadas y cuando
     //hago undo sustituyo la lista con elementos borrada por la lista original
     indices=listaindices;
-    listaMedicion=obra->LeeListaMedicion(MedCert::MEDICION);
+    listaMedicion=obra->LeeListaMedicion(obra->AristaPadre(), MedCert::MEDICION);
     pilaAristas = obra->LeePilaAristas();
     setText(text());
 }
@@ -98,7 +98,7 @@ UndoInsertarLineasMedicion::UndoInsertarLineasMedicion(Obra *O, MedCertModel *M,
     //cuando hago redo inserto en la lista las lineas indicadas y cuando
     //hago undo sustituyo la lista con elementos insertados por la lista original
     indices=listaindices;
-    listaMedicion=obra->LeeListaMedicion(MedCert::MEDICION);
+    listaMedicion=obra->LeeListaMedicion(obra->AristaPadre(), MedCert::MEDICION);
     pilaAristas = obra->LeePilaAristas();
     setText(text());
 }
@@ -138,7 +138,7 @@ UndoPegarLineasMedicion::UndoPegarLineasMedicion(Obra* O, int F, const Medicion&
     //para implementar el undo guardo la lista de mediciones original
     //cuando hago redo inserto en la lista las lineas de la nueva lista a copiar y cuando
     //hago undo sustituyo la lista con elementos insertados por la lista original
-    listaMedicionOriginal=obra->LeeListaMedicion(MedCert::MEDICION);
+    listaMedicionOriginal=obra->LeeListaMedicion(obra->AristaPadre(), MedCert::MEDICION);
     listaMedicionACopiar = listaM;
     pilaAristas = obra->LeePilaAristas();
     setText(text());

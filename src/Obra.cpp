@@ -883,9 +883,10 @@ void Obra::EditarLineaMedicion (int fila, int columna, float valor, TEXTO coment
     Actualizar(aristaPadre->destino);
 }
 
-const Medicion Obra::LeeListaMedicion(int tabla) const
+const Medicion Obra::LeeListaMedicion(pArista A, int tabla) const
 {
-    return aristaPadre->datoarista.LeeMedCer(tabla);
+    return A->datoarista.LeeMedCer(tabla);
+    //return aristaPadre->datoarista.LeeMedCer(tabla);
     //return aristaActual->datoarista.LeeMedCer(tabla);
 }
 

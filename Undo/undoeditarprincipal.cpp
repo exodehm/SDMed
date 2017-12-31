@@ -155,7 +155,7 @@ void UndoEditarResumen::redo()
 UndoEditarCantidad::UndoEditarCantidad(Obra* O, PrincipalModel* M,  QModelIndex I, QVariant D, QString descripcion, QUndoCommand* parent):
     UndoEditarPrincipal(O,M,I,D,descripcion,parent)
 {    
-    ListaMedicion = obra->LeeListaMedicion(MedCert::MEDICION);//habra que completarlo para que trabaje sobre la certificacion
+    ListaMedicion = obra->LeeListaMedicion(obra->AristaActual(), MedCert::MEDICION);//habra que completarlo para que trabaje sobre la certificacion
     cantidadAntigua = obra->LeeTotalMedicion(MedCert::MEDICION);//idem
     cantidadNueva = datoNuevo.toFloat();
 }
@@ -166,11 +166,13 @@ void UndoEditarCantidad::undo()
     Posicionar();    
     if (ListaMedicion.hayMedicion())
     {
+        qDebug()<<"Caso 1";
         obra->EditarCantidad(0);//pongo a 0 el valor
         obra->PegarMedicion(0,ListaMedicion,obra->AristaActual());
     }
     else
     {
+        qDebug()<<"Caso 2";
         obra->EditarCantidad(cantidadAntigua);
     }   
 }
@@ -179,7 +181,7 @@ void UndoEditarCantidad::redo()
 {
     qDebug()<<"RedoEditarCantidad con datoNuevo: "<<cantidadNueva<<" y datoAntiguo: "<<cantidadAntigua;
     //guardo la medicion
-    Posicionar();    
+    Posicionar();
     obra->EditarCantidad(cantidadNueva);
 }
 
