@@ -5,13 +5,12 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    qDebug() << QApplication::style()->metaObject()->className();
-    qDebug() << QStyleFactory::keys();
+    QApplication a(argc, argv);    
+    //qDebug() << QApplication::style()->metaObject()->className();
+    //qDebug() << QStyleFactory::keys();
     a.setWindowIcon(QIcon("../SDMed/Iconos/gobernante.png"));
-    qDebug()<<QDir::currentPath();
-    qDebug()<<argv[0];
-    MainWindow m;
+    MainWindow m;    
     m.show();
     return a.exec();
 }
+

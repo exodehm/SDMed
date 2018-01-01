@@ -4,6 +4,21 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //cargar el estilo
+    QFile FicheroEstilo("../SDMed/estilo.qss" );
+    if (!FicheroEstilo.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug()<<"No se puede abrir el fichero";
+        QMessageBox mensaje(QMessageBox::Warning,QApplication::tr("Advertencia"),QApplication::tr("No se puede abrir el fichero de estilos\nestilos.css. Se usará el estilo estandar"),0);
+        mensaje.exec();
+    }
+    else
+    {
+        QTextStream in(&FicheroEstilo);
+        QString estilo(in.readAll());
+        estilo.replace(QRegExp("[\r\n]"),"");
+        setStyleSheet(estilo);
+    }
     //seccion ver medicion/certificacion
     labelVerMedCert = new QLabel("Ver:");
     comboMedCert = new QComboBox;

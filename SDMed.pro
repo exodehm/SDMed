@@ -144,3 +144,6 @@ RESOURCES += \
 
 CONFIG +=C++14
 
+DISTFILES += \
+    estilo.qss
+
