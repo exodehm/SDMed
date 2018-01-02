@@ -23,6 +23,19 @@ void DelegadoNumerosTablaPrincipal::paint( QPainter *painter,const QStyleOptionV
         painter->save();
         //qDebug()<<"Indice: "<<indice.row()<<" - "<<indice.column()<<"-"<<indice.data().toString()<<"-"<<modelo->LeeColorS(indice.row(),indice.column());
         painter->setPen(modelo->LeeColor(indice.row()+1,indice.column()));
+        if (option.showDecorationSelected && (option.state & QStyle::State_Selected)){
+            if (option.state & QStyle::State_Active)
+            {
+                // Celda seleccionadas
+                painter->fillRect(option.rect, option.palette.highlight().color());
+            }
+            else
+            {
+                // Celdas seleccionadas no activas
+                QPalette p=option.palette;
+                painter->fillRect(option.rect, p.color(QPalette::Inactive, QPalette::Background));
+            }
+        }
         painter->drawText(option.rect, Qt::AlignRight | Qt::AlignVCenter,index.data().toString());
         painter->restore();
     }
