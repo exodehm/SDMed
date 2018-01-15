@@ -67,11 +67,11 @@ public:
     friend bool operator==(const Concepto& C1, const Concepto& C2);
     friend bool operator!=(const Concepto& C1, const Concepto& C2);
 
-    /*friend std::ostream& operator<<(std::ostream& os, const Concepto& C)
+    friend std::ostream& operator<<(std::ostream& os, const Concepto& C)
     {
-        os<<C.LeeCodigo();
+        os<<"["<<C.LeeCodigo().toStdString()<<"]";
         return os;
-    }*/
+    }
 
 private:
 
