@@ -30,22 +30,6 @@ Concepto::Concepto(const Concepto& Ref)
     //std::cout<<"Constructor copia"<<std::endl;
 }
 
-void Concepto::anadirConcepto()
-{
-    TEXTO C;
-    TEXTO R;
-    float P;
-    /*std::cout<<"Introduce código: "<<std::endl;
-    std::cin>>C;
-    std::cout<<"Introduce resúmen: "<<std::endl;
-    std::cin>>R;
-    std::cout<<"Introduce precio: "<<std::endl;
-    std::cin>>P;*/
-    Codigo=C;
-    Resumen=R;
-    Importe[MEDICION]=P;
-}
-
 const TEXTO Concepto::LeeCodigo() const
 {
     return Codigo;

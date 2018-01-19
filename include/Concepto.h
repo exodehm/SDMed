@@ -30,7 +30,6 @@ public:
     //destructor
     ~Concepto();
     //funciones miembro
-    void anadirConcepto();
     void bloquearPrecio();
     void desbloquearPrecio();
     //getters
