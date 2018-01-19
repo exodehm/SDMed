@@ -9,7 +9,7 @@
 #include <QDebug>
 #include <QTextStream>
 #include <QMessageBox>
-#include<QLocale>
+#include <QLocale>
 
 #include "../include/Obra.h"
 #include "../Dialogos/dialogosuprimirmedicion.h"
@@ -77,13 +77,14 @@ public:
 
 private:
 
+    QUndoStack* pila;
+    Obra* miobra;
+    bool hayFilaVacia;
     QList<QList<DatoCelda>>datos;
     QStringList cabecera;
     QString LeyendasCabecera[11];
-    Obra* miobra;
-    bool hayFilaVacia;
     int filavacia;
-    QUndoStack* pila;
+
     QLocale locale;
     int FactorRedondeoVisualizacion;
 };

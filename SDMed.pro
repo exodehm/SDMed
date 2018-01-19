@@ -22,7 +22,6 @@ SOURCES += main.cpp\
     src/Concepto.cpp \
     src/Datos.cpp \
     src/Fecha.cpp \
-    src/GestorEntradaDatosLineasMedicion.cpp \
     src/LineaMedicion.cpp \
     src/MedCert.cpp \
     src/Medicion.cpp \
@@ -77,7 +76,6 @@ HEADERS  += \
     include/Datos.h \
     include/definiciones.h \
     include/Fecha.h \
-    include/GestorEntradaDatosLineasMedicion.h \
     include/Grafo.h \
     include/Importar.h \
     include/LineaMedicion.h \

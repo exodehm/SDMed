@@ -80,7 +80,6 @@ public:
     /***********consultoras*************************/
     int LeeNumNodos()const
     {
-        //return nNodos;
         int i=0;
         pNodo indice = Raiz;
         while (indice)

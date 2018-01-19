@@ -10,23 +10,18 @@
 #include <iomanip>
 
 #include "LineaMedicion.h"
-#include "GestorEntradaDatosLineasMedicion.h"
 #include "Fecha.h"
 #include "../defs.h"
 
 class Medicion
 {
 private:
-    float TotalCantidad;
     std::list<LineaMedicion> lm;
+    float TotalCantidad;
     std::list<LineaMedicion>::iterator actual;
 
-
-    //LineaMedicion* actual;
     bool todoseleccionado;
     Fecha fecha;
-    //enum {COM,UD,LONG,LAT,ALT,FOR} campo;
-    GestorEntradaDatosLineasMedicion Gestor;
 
 public:
     //constructores
