@@ -31,7 +31,7 @@ Obra* AbrirGuardarSEG::Leer(QString nombrefichero)
     Concepto concepto;
     leerConcepto(concepto,datos);
     obra = new Obra(concepto.LeeCodigo(),concepto.LeeResumen());
-    pNodo indice = obra->LeeGrafo().LeeRaiz();
+    pNodo indice = obra->LeeGrafo()->LeeRaiz();
     indice->datonodo.EscribeTexto(concepto.LeeTexto());//para poner el texto de la partida raiz
     indice->datonodo.EscribeImportePres(concepto.LeeImportePres());//poner el precio a la raizr
     obra->InsertarMapa(concepto.LeeCodigo(),indice);
@@ -166,7 +166,7 @@ void AbrirGuardarSEG::Escribir(QFile &fichero, Obra *obra)
     }
     for (auto elem:listanodos)
     {
-        Obra::ListaAristasNodos lista = obra->LeeGrafo().recorrerHijos(elem);
+        Obra::ListaAristasNodos lista = obra->LeeGrafo()->recorrerHijos(elem);
         datos<<(int)lista.size();//inserto el numero de hijos de cada nodo de la lista
         datos<<elem->datonodo.LeeCodigo();//inserto el codigo del nodo padre
         for (auto elem:lista)

@@ -2,7 +2,7 @@
 
 Obra::Obra():G(),selectorMedCer(MedCert::MEDICION),Redondeos() {}
 
-Obra::Obra(TEXTO Cod, TEXTO Res, int ud, int CuadroDePrecios):G(),codificacion(CuadroDePrecios),
+Obra::Obra(TEXTO Cod, TEXTO Res, int ud, int CuadroDePrecios):codificacion(CuadroDePrecios),
     selectorMedCer(MedCert::MEDICION),Redondeos()
 {
     Concepto* conceptoRaiz=new Concepto(Cod,ud,Res);
@@ -20,7 +20,7 @@ Obra::Obra(const Obra& origen)
     G=origen.G;
     Redondeos=origen.Redondeos;
     Cert=origen.Cert;
-    padre=G.LeeRaiz();
+    padre=G->LeeRaiz();
     aristaPadre=new arista<MedCert,Concepto>(1);//el concepto raiz en principio tiene siempre el valor 1 (una unidad de obra)
     aristaPadre->destino=padre;
     pilaAristas.push(aristaPadre);
@@ -34,7 +34,7 @@ Obra& Obra::operator=(const Obra& origen)
         G=origen.G;
         Redondeos=origen.Redondeos;
         Cert=origen.Cert;
-        padre=G.LeeRaiz();
+        padre=G->LeeRaiz();
         aristaPadre=new arista<MedCert,Concepto>(1);//el concepto raiz en principio tiene siempre el valor 1 (una unidad de obra)
         aristaPadre->destino=padre;
         pilaAristas.push(aristaPadre);
@@ -45,17 +45,19 @@ Obra& Obra::operator=(const Obra& origen)
 
 Obra::~Obra()
 {
-    //delete G;
+    delete G;
 }
 
 void Obra::IniciarObra (Concepto conceptoRaiz)
 {
-    pNodo primero=new nodo<Concepto,MedCert> (conceptoRaiz);
-    pArista aristaInicial=new arista<MedCert,Concepto>(1);
-    G.Insertar(primero,primero, aristaInicial);
-    //mapaNodos.insert(std::pair<const TEXTO,pNodo>(primero->datonodo.LeeCodigo(),primero));
-    mapaNodos.insert(primero->datonodo.LeeCodigo(),primero);
-    padre=primero;
+    //pNodo primero=new nodo<Concepto,MedCert> (conceptoRaiz);
+    //pArista aristaInicial=new arista<MedCert,Concepto>(1);
+    //G.Insertar(primero,primero, aristaInicial);
+    G = new Grafo<datonodo_t,datoarista_t>(conceptoRaiz);
+    //mapaNodos.insert(primero->datonodo.LeeCodigo(),primero);
+    mapaNodos.insert(G->LeeRaiz()->datonodo.LeeCodigo(),G->LeeRaiz());
+    //padre=primero;
+    padre = G->LeeRaiz();
     aristaPadre=new arista<MedCert,Concepto>(1);//el concepto raiz en principio tiene siempre el valor 1 (una unidad de obra)
     aristaPadre->destino=padre;
     pilaAristas.push(aristaPadre);
@@ -82,7 +84,7 @@ void Obra::CrearPartida (TEXTO CodPadre, MedCert med, TEXTO CodHijo)
         hijo = DefinirConcepto(CodHijo);
     }
     pArista relacion=new arista<MedCert,Concepto>(med);
-    G.Insertar(padre, hijo, relacion);
+    G->Insertar(padre, hijo, relacion);
 }
 
 void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int ud, int nat)
@@ -106,8 +108,8 @@ void Obra::CrearPartida(TEXTO Cod, TEXTO Res, float cantidad, float precio, int 
         nuevaArista->datoarista.escribeTotalMedCer(selectorMedCer,0);
         selectorMedCer=MedCert::MEDICION;
     } 
-    G.Insertar(padre,nuevoNodo,nuevaArista);
-    aristaActual = G.hallarArista(padre,nuevoNodo);
+    G->Insertar(padre,nuevoNodo,nuevaArista);
+    aristaActual = G->hallarArista(padre,nuevoNodo);
     //Y actualizo el grafo partiendo del nodo insertado
     if (aristaActual)
     {
@@ -129,7 +131,7 @@ void Obra::CrearPartida(TEXTO CodigoHijo, int posicion)
         cantidad=1;
     }
     pArista A = new arista<MedCert,Concepto>(cantidad);
-    G.Insertar(padre, nuevoNodo, A, posicion);
+    G->Insertar(padre, nuevoNodo, A, posicion);
 }
 
 pNodo Obra::DefinirConcepto(TEXTO Cod, TEXTO Res, float precio,int ud, int nat)
@@ -201,7 +203,7 @@ void Obra::DuplicarPartida(TEXTO codigo)
     //creo una nueva arista con valor 0
     pArista aux= new arista<MedCert,Concepto>(0);
     //la inserto bajo el mismo padre que el nodo que estoy copiando
-    G.Insertar(padre,Nuevo, aux);
+    G->Insertar(padre,Nuevo, aux);
     //G.Insertar(padre,Nuevo, 0);
     //ahora ligo el nuevo nodo con los hijos del nodo que he copiado
     if (aristaActual->destino->adyacente)//si tiene hijos
@@ -311,14 +313,14 @@ void Obra::HijoAnterior()
 
 void Obra::IrAInicio()
 {
-    padre = G.LeeRaiz();
+    padre = G->LeeRaiz();
     aristaPadre->destino = padre;
     aristaActual = padre->adyacente;
 }
 
 void Obra::IrTope()
 {
-    while (padre!=G.LeeRaiz())
+    while (padre!=G->LeeRaiz())
     {
         SubirNivel();
     }
@@ -349,7 +351,7 @@ void Obra:: SumarHijos(pNodo padre)
         float sumapres=0, sumacert=0;
         float medicion = 0, certificacion = 0;
         float precio = 0;
-        ListaAristasNodos lista = G.recorrerHijos(padre);
+        ListaAristasNodos lista = G->recorrerHijos(padre);
         for (auto elem : lista)
         {
             medicion = elem.first->datoarista.LeeMedicion().LeeTotal();
@@ -381,10 +383,10 @@ void Obra::BorrarPartida()
     if (it!=mapaNodos.end())
     {
         qDebug()<<"Borro el nodo: "<<aristaActual->destino->datonodo.LeeCodigo();
-        G.borrarNodos(aristaActual);
+        G->borrarNodos(aristaActual);
     }
     //mapaNodos.erase(aristaActual->destino->datonodo.LeeCodigo());
-    std::list<pNodo> lista = G.recorrerNodos();
+    std::list<pNodo> lista = G->recorrerNodos();
     mapaNodos.clear();
     for (auto elem : lista)
     {
@@ -409,7 +411,7 @@ void Obra::SuprimirDescomposicion()
     pArista auxiliar=nodo->adyacente;
     while (auxiliar)
     {
-        G.borrarNodos(auxiliar);
+        G->borrarNodos(auxiliar);
         if (nodo->adyacente)
         {
             auxiliar=nodo->adyacente;
@@ -642,7 +644,7 @@ void Obra::cambiarFechaCertificacion(std::string fecha)
 
 void Obra::VerNodos()
 {
-    std::list<pNodo> lista = G.recorrerNodos();
+    std::list<pNodo> lista = G->recorrerNodos();
     for (auto elem:lista)
     {
         std::cout<<elem->datonodo.LeeCodigo().toStdString()<<"-";
@@ -659,12 +661,12 @@ std::list<std::pair<pNodo, int>>& Obra::VerArbol()
         std::cout<<elem.second<<std::setw(elem.second*2);
         std::cout<<elem.first->datonodo.LeeCodigo().toStdString()<<std::endl;
     }*/
-    return G.recorrerGrafoConNiveles(G.LeeRaiz());
+    return G->recorrerGrafoConNiveles(G->LeeRaiz());
 }
 
 void Obra::VerRama()
 {
-    std::list<std::pair<pNodo,int>>lista = G.recorrerGrafoConNiveles(padre);
+    std::list<std::pair<pNodo,int>>lista = G->recorrerGrafoConNiveles(padre);
     for (auto elem : lista)
     {
         std::cout<<std::setw(elem.second*2);
@@ -683,7 +685,7 @@ void Obra::Actualizar(pNodo nodoactual)
         nodoactual=padre;
     }
     qDebug()<<"Actualizando desde el nodo: "<<nodoactual->datonodo.LeeCodigo();
-    std::list<pNodo>lista = G.recorrerAncestrosOrdenado(nodoactual);
+    std::list<pNodo>lista = G->recorrerAncestrosOrdenado(nodoactual);
     for (auto elem:lista)
     {
         qDebug()<<"Lista a actualizar: "<<elem->datonodo.LeeCodigo()<<"-"<<elem;
@@ -697,11 +699,11 @@ void Obra::Actualizar(pNodo nodoactual)
 
 void Obra::AjustarPrecio(float nuevoprecio)
 {
-    float precioActual=G.LeeRaiz()->datonodo.LeeImportePres();
+    float precioActual=G->LeeRaiz()->datonodo.LeeImportePres();
     std::cout<<"Ajustar el precio: "<<precioActual<<" a: "<<nuevoprecio<<std::endl;
     float factorDeAjuste=nuevoprecio/precioActual;
     std::cout<<"Factor de correción: "<<factorDeAjuste<<std::endl;
-    std::list<pNodo> listahojas = G.listaHojas();
+    std::list<pNodo> listahojas = G->listaHojas();
 
     std::cout<<"Las hojas son: ";
     for(auto elem:listahojas)
@@ -897,7 +899,7 @@ const float& Obra::LeeTotalMedicion(int tabla) const
 
 void Obra::CopiarPartidas(ListaAristasNodos &listaNodosSeleccionados, const QList<int> &listaIndices)
 {
-    std::list<std::pair<pArista,pNodo>>listaNodos=G.recorrerHijos(padre);
+    std::list<std::pair<pArista,pNodo>>listaNodos=G->recorrerHijos(padre);
     auto iterator = listaNodos.begin();
     ListaN.clear();
     for (auto elem:listaIndices)
@@ -912,7 +914,7 @@ void Obra::CopiarPartidas(ListaAristasNodos &listaNodosSeleccionados, const QLis
     for (auto elem : ListaN)
     {
         qDebug()<<"Hijos de "<<elem->datonodo.LeeCodigo()<<" :";
-        std::list<std::pair<pNodo,int>>listaB=G.recorrerGrafoConNiveles(elem);
+        std::list<std::pair<pNodo,int>>listaB=G->recorrerGrafoConNiveles(elem);
         for (auto elem2:listaB)
         {
             qDebug()<<"Nodo:"<<elem2.first->datonodo.LeeCodigo();
@@ -936,9 +938,9 @@ void Obra::Pegar(const ListaAristasNodos &listaNodosACopiar, bool ultimafila)
     for (auto elem : listaNodosACopiar)
     {
         qDebug()<<"Nodos a copiar: "<<elem.second->datonodo.LeeCodigo();
-        G.Copiar(padre,elem.second,elem.first,A);
+        G->Copiar(padre,elem.second,elem.first,A);
     }
-    std::list<pNodo> lista = G.recorrerNodos();
+    std::list<pNodo> lista = G->recorrerNodos();
     for (auto elem : lista)
     {
        if (!mapaNodos.contains(elem->datonodo.LeeCodigo()))
@@ -966,11 +968,11 @@ void Obra::InsertarPartidas(const ListaAristasNodos &listaNodosACopiar, QList<in
         {
             A=A->siguiente;
         }
-        G.Copiar(padre,elem.second,elem.first,A);
+        G->Copiar(padre,elem.second,elem.first,A);
         i++;
         A = padre->adyacente;
     }
-    std::list<pNodo> lista = G.recorrerNodos();
+    std::list<pNodo> lista = G->recorrerNodos();
     for (auto elem : lista)
     {
        if (!mapaNodos.contains(elem->datonodo.LeeCodigo()))
@@ -1082,7 +1084,7 @@ pNodo Obra::ExisteConcepto(const TEXTO &codigo)
 bool Obra::ExisteHermano(const TEXTO &codigo)
 {
     pNodo hijo=nullptr;
-    std::list<pNodo> lista = G.recorrerNodos();
+    std::list<pNodo> lista = G->recorrerNodos();
     for (auto elem:lista)
     {
         if (elem->datonodo.LeeCodigo()==codigo)
@@ -1090,12 +1092,12 @@ bool Obra::ExisteHermano(const TEXTO &codigo)
             hijo=elem;
         }
     }
-    return G.existeHermano(padre,hijo);
+    return G->existeHermano(padre,hijo);
 }
 
 bool Obra::NivelCero() const
 {
-    return padre==G.LeeRaiz();
+    return padre==G->LeeRaiz();
 }
 
 bool Obra::NivelUno()
@@ -1106,7 +1108,7 @@ bool Obra::NivelUno()
         pilaAristas.pop();
         pArista anterior=pilaAristas.top();
         pilaAristas.push(A);//la vuelvo a meter
-        if (anterior->destino==G.LeeRaiz())
+        if (anterior->destino==G->LeeRaiz())
         {
             return true;
         }
@@ -1116,7 +1118,7 @@ bool Obra::NivelUno()
 
 bool Obra::NivelUno(pNodo nodo)
 {
-    std::list<std::pair<pArista,pNodo>>lista = G.recorrerHijos(G.LeeRaiz());
+    std::list<std::pair<pArista,pNodo>>lista = G->recorrerHijos(G->LeeRaiz());
     for (auto elem : lista)
     {
         if (elem.second==nodo)
@@ -1138,7 +1140,7 @@ bool Obra::EsPartida()
 
 const TEXTO Obra::LeeCodigoObra() const
 {
-    return G.LeeRaiz()->datonodo.LeeCodigo();
+    return G->LeeRaiz()->datonodo.LeeCodigo();
 }
 
 const TEXTO Obra::LeeCodigoPartida() const
@@ -1153,33 +1155,33 @@ const TEXTO Obra::LeeCodigoActual() const
 
 const TEXTO Obra::LeeResumenObra() const
 {
-    return G.LeeRaiz()->datonodo.LeeResumen();
+    return G->LeeRaiz()->datonodo.LeeResumen();
 }
 
 float Obra::LeePrecioObra() const
 {
-    return G.LeeRaiz()->datonodo.LeeImportePres();
+    return G->LeeRaiz()->datonodo.LeeImportePres();
 }
 
 const TEXTO Obra::LeeFechaObra() const
 {
-    return G.LeeRaiz()->datonodo.LeeFecha();
+    return G->LeeRaiz()->datonodo.LeeFecha();
 }
 
 void Obra::EscribeCodigoObra(TEXTO codigo)
 {
-    G.LeeRaiz()->datonodo.EscribeCodigo(codigo);
+    G->LeeRaiz()->datonodo.EscribeCodigo(codigo);
 }
 
 void Obra::EscribeResumenObra(TEXTO resumen)
 {
-    G.LeeRaiz()->datonodo.EscribeResumen(resumen);
+    G->LeeRaiz()->datonodo.EscribeResumen(resumen);
 }
 
 void Obra::EscribeRaiz(TEXTO nombreRaiz)
 {
     pNodo raiz = ExisteConcepto(nombreRaiz);
-    G.escribeRaiz(raiz);
+    G->escribeRaiz(raiz);
 }
 
 pNodo Obra::Padre()
@@ -1208,7 +1210,7 @@ std::list<std::list<Dato>> Obra::LeeDescompuesto()
     //padre
     toReturn.push_back(RellenaDatoLinea(padre,AristaPadre()));
     //hijos
-    std::list<std::pair<pArista,pNodo>>listaHijos = G.recorrerHijos(padre);
+    std::list<std::pair<pArista,pNodo>>listaHijos = G->recorrerHijos(padre);
     for (auto it=listaHijos.begin();it!=listaHijos.end();++it)
     {
         toReturn.push_back(RellenaDatoLinea(it->second,it->first));
@@ -1337,12 +1339,12 @@ void Obra::DefineAristaActual(const pArista& aa)
 
 pNodo Obra::GrafoAPartirDeNodo(pNodo nodo)
 {
-    return G.CrearGrafoAPartirDeNodo(nodo);
+    return G->CrearGrafoAPartirDeNodo(nodo);
 }
 
 std::list<pNodo> Obra::ListaConceptos()
 {
-    return G.recorrerNodos();
+    return G->recorrerNodos();
 }
 
 void Obra::InsertarMapa(TEXTO codigo, pNodo nodo)

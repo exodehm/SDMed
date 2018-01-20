@@ -170,13 +170,13 @@ public:
     pNodo GrafoAPartirDeNodo(pNodo nodo);
     std::list<pNodo> ListaConceptos();
     void InsertarMapa(TEXTO codigo, pNodo nodo);
-    const Grafo<datonodo_t,datoarista_t>& LeeGrafo() const
+    const Grafo<datonodo_t,datoarista_t>* LeeGrafo() const
     {
         return G;
     }    
 
 private:
-    Grafo<datonodo_t,datoarista_t> G;
+    Grafo<datonodo_t,datoarista_t>* G;
     QHash<TEXTO,pNodo>mapaNodos;
     //elementos auxiliares para moverme por el grafo
     pNodo padre;
@@ -191,7 +191,6 @@ private:
     //redondeos de la obra
     Coeficientes Redondeos;
     float CI;//Costes Indirectos
-
     //auxiliar para copiado de partidas
     QList<pNodo>ListaN;
 

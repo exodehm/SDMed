@@ -267,8 +267,8 @@ void AbrirGuardarBC3::Escribir(QFile &fichero, Obra *obra)
     EscribirRegistroV(cadenabc3);
     EscribirRegistroK(cadenabc3);
     /********Registros C y D**************/
-    pNodo indice=obra->G.LeeRaiz();
-    for (int i=0; i<obra->G.LeeNumNodos(); i++)
+    pNodo indice=obra->G->LeeRaiz();
+    for (int i=0; i<obra->G->LeeNumNodos(); i++)
     {
         EscribirRegistroC(indice,cadenabc3,obra);
         if (indice->adyacente)
@@ -279,7 +279,7 @@ void AbrirGuardarBC3::Escribir(QFile &fichero, Obra *obra)
     }
     /*******Registro M y N************/
     /**vuelvo al inicio**/
-    indice=obra->G.LeeRaiz();
+    indice=obra->G->LeeRaiz();
     while(indice)
     {
         if (indice->adyacente)
@@ -294,7 +294,7 @@ void AbrirGuardarBC3::Escribir(QFile &fichero, Obra *obra)
         indice=indice->siguiente;
     }
     /******************Registro T*************/
-    indice=obra->G.LeeRaiz();
+    indice=obra->G->LeeRaiz();
     while(indice)
     {
         if (!indice->datonodo.LeeTexto().isEmpty())
@@ -429,13 +429,13 @@ void AbrirGuardarBC3::quitarSimbolos (TEXTO &codigo)
 
 void AbrirGuardarBC3::escribirAlmohadilla(const pNodo concepto, const Obra* obra, TEXTO &cadena)
 {
-    if (concepto==obra->G.LeeRaiz())
+    if (concepto==obra->G->LeeRaiz())
     {
         cadena.append("##");
     }
-    if (obra->G.LeeRaiz()->adyacente)
+    if (obra->G->LeeRaiz()->adyacente)
     {
-        pArista A=obra->G.LeeRaiz()->adyacente;
+        pArista A=obra->G->LeeRaiz()->adyacente;
         while (A)
         {
             if (concepto==A->destino)

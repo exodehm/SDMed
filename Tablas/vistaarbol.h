@@ -15,7 +15,6 @@ public:
     VistaArbol(QWidget *parent=nullptr);
 
 private:
-    //TreeModel* modelo;// = new TreeModel(O);
     DelegadoArbol* delegado;
 };
 

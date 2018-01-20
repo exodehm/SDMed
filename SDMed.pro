@@ -140,7 +140,7 @@ RESOURCES += \
     iconos.qrc \
     recursos.qrc
 
-CONFIG +=C++14
+CONFIG +=c++14
 
 DISTFILES += \
     estilo.qss

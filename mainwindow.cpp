@@ -63,8 +63,8 @@ void MainWindow::ActionNuevo()
     DialogoDatosCodigoResumen* cuadro = new DialogoDatosCodigoResumen(this);
     if (cuadro->exec())
     {
-        MetaObra NuevaObra;
-        NuevaObra.miobra=new Instancia(cuadro->LeeCodigo(),cuadro->LeeResumen());
+        MetaObra NuevaObra;        
+        NuevaObra.miobra=new Instancia(cuadro->LeeCodigo(),cuadro->LeeResumen());        
         AnadirObraAVentanaPrincipal(NuevaObra);
     }
     delete cuadro;

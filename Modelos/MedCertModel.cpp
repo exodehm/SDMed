@@ -25,7 +25,7 @@ MedCertModel::MedCertModel(Obra *O, int tablaorigen, QUndoStack *p, QObject* par
 
 MedCertModel::~MedCertModel()
 {
-
+    qDebug()<<"Destructor modelo MedCertModel";
 }
 
 int MedCertModel::rowCount(const QModelIndex& parent) const

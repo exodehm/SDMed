@@ -19,7 +19,7 @@ class AbrirGuardar
 public:
 
     AbrirGuardar();
-    //virtual ~AbrirGuardar();
+    virtual ~AbrirGuardar() =  default;
     virtual Obra* Leer(QString nombre) = 0;
     virtual void Escribir(QFile& fichero, Obra* obra) = 0;
 

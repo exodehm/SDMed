@@ -3,6 +3,7 @@
 
 #include <map>
 #include <QIcon>
+#include <QDebug>
 
 enum class Naturaleza{Sin_clasificar, Mano_de_Obra, Maquinaria, Materiales, Comp_residuo,Clasificacion_residuo, Capitulo, Partida};
 using IconsMap = std::map<Naturaleza,QIcon>;
@@ -43,6 +44,10 @@ public:
 
     static QIcon GetIcon(int pos)
     {
+        if(_iconos.empty())
+        {
+            _iconos = initMap();
+        }
         auto it = _iconos.begin();
         for (int i=0;i<pos;i++)
         {

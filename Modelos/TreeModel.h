@@ -32,8 +32,8 @@ public:
       TreeItem *rootItem;
       std::list<std::pair<TreeItem*,int>>listaitems;
 
-      void setupModelData(Obra *obra, TreeItem *parent);
-      TreeItem* CrearItem(pNodo nodo, TreeItem* parent = nullptr);
+      void setupModelData(Obra *obra, TreeItem *&parent);
+      TreeItem* CrearItem(pNodo nodo, TreeItem *&parent);
 };
 
 #endif // TREEMODEL_H

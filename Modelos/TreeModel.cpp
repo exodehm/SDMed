@@ -1,6 +1,6 @@
 #include "TreeModel.h"
 
-TreeModel::TreeModel(Obra *O, QObject *parent) : obra(O), rootItem(nullptr), QAbstractItemModel(parent)
+TreeModel::TreeModel(Obra *O, QObject *parent) : obra(O), QAbstractItemModel(parent),rootItem(nullptr)
 {
     ActualizarDatos();
 }
@@ -76,7 +76,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
         {
             TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
             return RepoIconos::GetIcon(item->data(index.column()).toInt());
-        }
+        }        
     }
     else if (role == Qt::DisplayRole)//resto de columnas
     {
@@ -104,7 +104,7 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
     return QVariant();
 }
 
-void TreeModel::setupModelData(Obra* obra, TreeItem *parent)
+void TreeModel::setupModelData(Obra* obra, TreeItem *&parent)
 {
     std::list<std::pair<pNodo, int>>listado = obra->VerArbol();
     auto iterador = listaitems.begin();
@@ -139,14 +139,14 @@ void TreeModel::ActualizarDatos()
 {
     if (rootItem)
     {
+        listaitems.clear();
         delete rootItem;
-    }
-    listaitems.clear();
+    }    
     QList<QVariant> rootData;
     rootData << tr("Código")<<tr("Nat.")<<tr("Ud.")<<tr("Resumen");
     rootItem = new TreeItem(rootData);
     QList<QVariant> ObraData;
-    ObraData<<obra->LeeCodigoObra()<<"6"<<" "<<obra->LeeResumenObra();
+    ObraData<<obra->LeeCodigoObra()<<"6"<<"  "<<obra->LeeResumenObra();
     TreeItem* primerItem = new TreeItem(ObraData,rootItem);
     rootItem->appendChild(primerItem);
     std::pair <TreeItem*, int> pareja(primerItem,0);
@@ -154,7 +154,7 @@ void TreeModel::ActualizarDatos()
     setupModelData(obra, primerItem);
 }
 
-TreeItem* TreeModel::CrearItem(pNodo nodo, TreeItem *parent)
+TreeItem* TreeModel::CrearItem(pNodo nodo, TreeItem *&parent)
 {
     QList<QVariant> itemdata;
     itemdata<<nodo->datonodo.LeeCodigo()<<nodo->datonodo.LeeNat()<<nodo->datonodo.LeeUd()<<nodo->datonodo.LeeResumen();

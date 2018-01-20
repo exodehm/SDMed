@@ -40,7 +40,7 @@ public:
     PrincipalModel(Obra* O, QUndoStack* p, QObject* parent=nullptr);
     ~PrincipalModel();
 
-    static const int IconIndexRole = Qt::UserRole + 1;
+    //static const int IconIndexRole = Qt::UserRole + 1;
 
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;

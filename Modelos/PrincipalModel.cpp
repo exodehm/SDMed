@@ -28,6 +28,7 @@ PrincipalModel::PrincipalModel (Obra *O, QUndoStack *p, QObject* parent):pila(p)
 
 PrincipalModel::~PrincipalModel()
 {
+    qDebug()<<"Destructor modelo Principalmodel";
 
 }
 

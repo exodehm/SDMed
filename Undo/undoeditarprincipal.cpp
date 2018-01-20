@@ -292,7 +292,7 @@ UndoBorrarPartidas::UndoBorrarPartidas(Obra* O, PrincipalModel* M, QList<int>lis
         rIndices.push_front(elem);//indices de mayor a menor
     }
     Obra::ListaAristasNodos listaAux;
-    listaAux = obra->LeeGrafo().recorrerHijos(obra->Padre());
+    listaAux = obra->LeeGrafo()->recorrerHijos(obra->Padre());
     auto iterator = listaAux.begin();
     for (auto elem:rIndices)
     {

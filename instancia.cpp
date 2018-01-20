@@ -17,7 +17,8 @@ Instancia::Instancia(QString nombrefichero, QWidget *parent):QWidget(parent)
     if (O)
     {
         IniciarObra();
-    }    
+    }
+    delete A;
 }
 
 Instancia::Instancia(QString codigo, QString resumen,QWidget *parent):QWidget(parent)
@@ -32,13 +33,18 @@ Instancia::Instancia(QString codigo, QString resumen,QWidget *parent):QWidget(pa
 void Instancia::IniciarObra()
 {
     O->IrAInicio();
-    pila = new QUndoStack(this);
+    pila = new QUndoStack(this);    
     GenerarUI();
 }
 
 Instancia::~Instancia()
 {
-    delete O;    
+    delete O;
+    delete modeloTablaP;
+    delete modeloTablaMed;
+    delete modeloTablaCert;
+    delete modeloArbol;
+    delete editor;
 }
 
 void Instancia::GenerarUI()
@@ -49,7 +55,7 @@ void Instancia::GenerarUI()
     //arbol
     modeloArbol = new TreeModel(O);
     arbol = new VistaArbol;
-    arbol->setModel(modeloArbol);    
+    arbol->setModel(modeloArbol);
     arbol->setVisible(false);
 
     separadorTablas = new QSplitter(Qt::Vertical);
@@ -84,10 +90,10 @@ void Instancia::GenerarUI()
 
     //añado el separador al layout
     separadorPrincipal->addWidget(separadorTablas);
-    separadorPrincipal->addWidget(arbol);    
+    separadorPrincipal->addWidget(arbol);
     lienzoGlobal->addWidget(separadorPrincipal);
 
-    RefrescarVista();    
+    RefrescarVista();
     MostrarDeSegun(0);
     O->cambiarEntreMedYCert(MedCert::MEDICION);
 
