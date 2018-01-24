@@ -93,6 +93,12 @@ void Instancia::GenerarUI()
     separadorPrincipal->addWidget(arbol);
     lienzoGlobal->addWidget(separadorPrincipal);
 
+    arbol->expandAll();
+    arbol->resizeColumnToContents(tipoColumna::CODIGO);
+    arbol->resizeColumnToContents(tipoColumna::NATURALEZA);
+    arbol->resizeColumnToContents(tipoColumna::UD);
+    arbol->resizeColumnToContents(tipoColumna::RESUMEN);
+
     RefrescarVista();
     MostrarDeSegun(0);
     O->cambiarEntreMedYCert(MedCert::MEDICION);
@@ -274,7 +280,7 @@ void Instancia::RefrescarVista()
     modeloTablaP->ActualizarDatos(O->LeeDescompuesto());
     modeloTablaMed->ActualizarDatos();
     modeloTablaCert->ActualizarDatos();
-    modeloArbol->ActualizarDatos();
+    //modeloArbol->ActualizarDatos();
     modeloTablaP->QuitarIndicadorFilaVacia();
     if (modeloTablaP->rowCount(QModelIndex())==0)
     {
@@ -291,12 +297,12 @@ void Instancia::RefrescarVista()
     tablaMediciones->resizeColumnsToContents();
     tablaCertificaciones->resizeColumnsToContents();
     separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
-    modeloArbol->layoutChanged();
+    /*modeloArbol->layoutChanged();
     arbol->expandAll();
     arbol->resizeColumnToContents(tipoColumna::CODIGO);
     arbol->resizeColumnToContents(tipoColumna::NATURALEZA);
     arbol->resizeColumnToContents(tipoColumna::UD);
-    arbol->resizeColumnToContents(tipoColumna::RESUMEN);
+    arbol->resizeColumnToContents(tipoColumna::RESUMEN);*/
 }
 
 void Instancia::EscribirTexto()

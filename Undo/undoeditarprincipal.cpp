@@ -26,7 +26,7 @@ void UndoEditarPrincipal::Posicionar()
     obra->DefineAristaPadre(pilaAristas.top());
     pArista aux = pilaAristas.top();
     obra->DefineNodoPadre(aux->destino);
-    //if (indice.isValid()&& indice.row()<modelo->rowCount(QModelIndex()))
+    if (indice.isValid()&& indice.row()<modelo->rowCount(QModelIndex()))
     {
         obra->PosicionarAristaActual(indice.row());
     }

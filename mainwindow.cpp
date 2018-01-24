@@ -63,15 +63,15 @@ void MainWindow::ActionNuevo()
     DialogoDatosCodigoResumen* cuadro = new DialogoDatosCodigoResumen(this);
     if (cuadro->exec())
     {
-        MetaObra NuevaObra;        
-        NuevaObra.miobra=new Instancia(cuadro->LeeCodigo(),cuadro->LeeResumen());        
+        MetaObra NuevaObra;
+        NuevaObra.miobra=new Instancia(cuadro->LeeCodigo(),cuadro->LeeResumen());
         AnadirObraAVentanaPrincipal(NuevaObra);
+        ui->actionGuardar->setEnabled(true);
+        comboMedCert->setEnabled(true);
+        botonNuevaCertificacion->setEnabled(true);
+        ui->actionVer_Arbol->setEnabled(true);
     }
     delete cuadro;
-    ui->actionGuardar->setEnabled(true);
-    comboMedCert->setEnabled(true);
-    botonNuevaCertificacion->setEnabled(true);
-    ui->actionVer_Arbol->setEnabled(true);
 }
 
 bool MainWindow::ActionAbrir()
