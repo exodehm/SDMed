@@ -9,27 +9,19 @@ UndoEditarPrincipal::UndoEditarPrincipal(Obra *O, PrincipalModel *M, QModelIndex
     setText(descripcion);
 }
 
+QModelIndex UndoEditarPrincipal::LeeIndice() const
+{
+    return indice;
+}
+
 void UndoEditarPrincipal::undo()
 {
     qDebug()<<"Undo en clase base";
-
 }
 
 void UndoEditarPrincipal::redo()
 {
     qDebug()<<"Redo en clase base";
-}
-
-void UndoEditarPrincipal::Posicionar()
-{
-    obra->DefinePilaAristas(pilaAristas);
-    obra->DefineAristaPadre(pilaAristas.top());
-    pArista aux = pilaAristas.top();
-    obra->DefineNodoPadre(aux->destino);
-    if (indice.isValid()&& indice.row()<modelo->rowCount(QModelIndex()))
-    {
-        obra->PosicionarAristaActual(indice.row());
-    }
 }
 
 //#############################CODIGO#############################//
@@ -39,17 +31,16 @@ UndoEditarCodigo::UndoEditarCodigo(Obra* O, PrincipalModel* M,  QModelIndex I, Q
 {
     accion = codigo::NADA;
     filaInsertar=modelo->FilaVacia();
-
 }
 
 void UndoEditarCodigo::undo()
 {
     qDebug()<<"UndoEditarCodigo";
-    Posicionar();
+    obra->Posicionar(pilaAristas, indice.row());
     switch (accion)
     {
     case codigo::NUEVO:
-        qDebug()<<"Borrando el codigo y la partida";
+        qDebug()<<"Borrando el codigo y la partida";       
         modelo->removeRow(indice.row());
         break;
     case codigo::CAMBIAR:
@@ -57,13 +48,13 @@ void UndoEditarCodigo::undo()
         break;
     default:
         break;
-    } 
+    }
 }
 
 void UndoEditarCodigo::redo()
 {
     qDebug()<<"RedoEditarCodigo";
-    Posicionar();
+    obra->Posicionar(pilaAristas, indice.row());
     qDebug()<<"La fila vacia esta en: "<<modelo->FilaVacia();
     if ((indice.row()==modelo->FilaVacia() && modelo->HayFilaVacia()) || accion==codigo::NUEVO)//insertar partida nueva
     {
@@ -78,7 +69,7 @@ void UndoEditarCodigo::redo()
         qDebug()<<"EDITAR codigo en la fila "<<indice.row();
         accion = codigo::CAMBIAR;
         obra->EditarCodigo(datoNuevo.toString());
-    }  
+    }
 }
 
 //#############################NATURALEZA#############################//
@@ -93,14 +84,14 @@ UndoEditarNaturaleza::UndoEditarNaturaleza(Obra* O, PrincipalModel* M,  QModelIn
 void UndoEditarNaturaleza::undo()
 {
     qDebug()<<"UndoEditarNaturaleza";
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     obra->EditarNaturaleza(datoAntiguo.toInt());    
 }
 
 void UndoEditarNaturaleza::redo()
 {
     qDebug()<<"RedoEditarNaturaleza";
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     obra->EditarNaturaleza(datoNuevo.toInt());   
 }
 
@@ -115,14 +106,14 @@ UndoEditarUnidad::UndoEditarUnidad(Obra* O, PrincipalModel* M,  QModelIndex I, Q
 void UndoEditarUnidad::undo()
 {
     qDebug()<<"UndoEditarUnidad";
-    Posicionar();    
-    obra->EditarUnidad(datoAntiguo.toString());   
+    obra->Posicionar(pilaAristas,indice.row());
+    obra->EditarUnidad(datoAntiguo.toString());
 }
 
 void UndoEditarUnidad::redo()
 {
     qDebug()<<"RedoEditarUnidad";
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     obra->EditarUnidad(datoNuevo.toString());   
 }
 
@@ -138,14 +129,14 @@ UndoEditarResumen::UndoEditarResumen(Obra* O, PrincipalModel* M,  QModelIndex I,
 void UndoEditarResumen::undo()
 {
     qDebug()<<"UndoEditarResumen";
-    Posicionar();    
+    obra->Posicionar(pilaAristas, indice.row());
     obra->EditarResumen(datoAntiguo.toString());
 }
 
 void UndoEditarResumen::redo()
 {
     qDebug()<<"RedoEditarResumen";
-    Posicionar();    
+    obra->Posicionar(pilaAristas, indice.row());
     obra->EditarResumen(datoNuevo.toString());
 }
 
@@ -156,14 +147,16 @@ UndoEditarCantidad::UndoEditarCantidad(Obra* O, PrincipalModel* M,  QModelIndex 
     UndoEditarPrincipal(O,M,I,D,descripcion,parent)
 {    
     ListaMedicion = obra->LeeListaMedicion(obra->AristaActual(), MedCert::MEDICION);//habra que completarlo para que trabaje sobre la certificacion
-    cantidadAntigua = obra->LeeTotalMedicion(MedCert::MEDICION);//idem
+    QString cantidadstring = datoAntiguo.toString();
+    cantidadstring.replace(",",".");
+    cantidadAntigua=cantidadstring.toFloat();
     cantidadNueva = datoNuevo.toFloat();
 }
 
 void UndoEditarCantidad::undo()
 {
     qDebug()<<"UndoEditarCantidad con datoAntiguo: "<<cantidadAntigua<<" y datonuevo: "<<cantidadNueva;
-    Posicionar();    
+    obra->Posicionar(pilaAristas,indice.row());
     if (ListaMedicion.hayMedicion())
     {
         qDebug()<<"Caso 1";
@@ -181,7 +174,7 @@ void UndoEditarCantidad::redo()
 {
     qDebug()<<"RedoEditarCantidad con datoNuevo: "<<cantidadNueva<<" y datoAntiguo: "<<cantidadAntigua;
     //guardo la medicion
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     obra->EditarCantidad(cantidadNueva);
 }
 
@@ -191,28 +184,28 @@ UndoEditarPrecio::UndoEditarPrecio(Obra* O, PrincipalModel* M,  QModelIndex I, Q
     UndoEditarPrincipal(O,M,I,D,descripcion,parent)
 {
     accion = A;
-    precioAntiguo=obra->LeePrecio();
+    QString preciostring = datoAntiguo.toString();
+    preciostring.replace(",",".");
+    precioAntiguo=preciostring.toFloat();
     precioNuevo=datoNuevo.toFloat();
 }
 
 void UndoEditarPrecio::undo()
 {
-    qDebug()<<"UndoEditarPrecio";
-    Posicionar();
+    qDebug()<<"UndoEditarPrecio en fila: "<<indice.row();
+    obra->Posicionar(pilaAristas,indice.row());
     switch (accion)
     {
     case precio::MODIFICAR:
         qDebug()<<"modificar undo";
         obra->EditarPrecio(precioAntiguo);
         break;
-    case precio::SUPRIMIR:
-    {
+    case precio::SUPRIMIR:    
         qDebug()<<"suprimir undo";
         obra->BajarNivel();
         obra->Pegar(listanodos);
         obra->SubirNivel();
-        break;
-    }
+        break;    
     case precio::BLOQUEAR:
         qDebug()<<"bloquear undo";
         obra->DesbloquearPrecio();
@@ -228,7 +221,7 @@ void UndoEditarPrecio::undo()
 void UndoEditarPrecio::redo()
 {
     qDebug()<<"RedoEditarPrecio";
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     switch (accion) {
     case precio::MODIFICAR:
         qDebug()<<"modificar undo";
@@ -270,14 +263,14 @@ UndoEditarTexto::UndoEditarTexto(Obra* O, PrincipalModel* M,  QModelIndex I, TEX
 void UndoEditarTexto::undo()
 {
     //qDebug()<<"Undo EditarTextoPartida: "<<textoantiguo<<"--"<<textonuevo;
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     obra->EditarTexto(textoantiguo);
 }
 
 void UndoEditarTexto::redo()
 {
     //qDebug()<<"Redo EditarTextoPartida: "<<textonuevo<<"--"<<textoantiguo;
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     obra->EditarTexto(textonuevo);
 }
 
@@ -312,15 +305,16 @@ UndoBorrarPartidas::UndoBorrarPartidas(Obra* O, PrincipalModel* M, QList<int>lis
 
 void UndoBorrarPartidas::undo()
 {
-    qDebug()<<"Undo borrar partidas";
-    Posicionar();
+    qDebug()<<"Undo borrar partidas en fila: "<<indice.row();
+    obra->Posicionar(pilaAristas,indice.row());
     obra->InsertarPartidas(rListanodos,indices);
+    qDebug()<<"Fin de undooo";
 }
 
 void UndoBorrarPartidas::redo()
 {
-    qDebug()<<"Redo borrar partidas";
-    Posicionar();
+    qDebug()<<"Redo borrar partidas en fila: "<<indice.row();
+    obra->Posicionar(pilaAristas,indice.row());
     foreach (int i, rIndices)
     {        
         obra->PosicionarAristaActual(i);
@@ -346,7 +340,7 @@ UndoPegarPartidas::UndoPegarPartidas(Obra* O, PrincipalModel* M, QModelIndex I, 
 void UndoPegarPartidas::undo()
 {
     qDebug()<<"Undo pegar partidas";
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     for (uint i=0;i<listanodos.size();i++)
     {
         obra->PosicionarAristaActual(indice.row());
@@ -357,7 +351,7 @@ void UndoPegarPartidas::undo()
 void UndoPegarPartidas::redo()
 {
     qDebug()<<"Redo pegar partidas";
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     if (ultimafila)
     {
         obra->PosicionarAristaActual(indice.row()-1);

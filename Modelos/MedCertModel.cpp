@@ -160,7 +160,7 @@ void MedCertModel::emitDataChanged(const QModelIndex &index)
 void MedCertModel::ActualizarDatos()
 {
     datos.clear();
-    qDebug()<<"Total medicion: "<<miobra->LeeTotalMedicion(tabla);
+    //qDebug()<<"Total medicion: "<<miobra->LeeTotalMedicion(tabla);
     LeyendasCabecera[tipoColumna::PARCIAL].clear();
     VerMedCert(datos);
     if (rowCount(QModelIndex())==0 && miobra->EsPartida())
@@ -168,7 +168,7 @@ void MedCertModel::ActualizarDatos()
         miobra->InsertarLineasVaciasMedicion(tabla,0,1);
     }
     VerMedCert(datos);
-    qDebug()<<"Num liNEAS: "<<rowCount(QModelIndex());
+    //qDebug()<<"Num liNEAS: "<<rowCount(QModelIndex());
     QString suma=QString::number(miobra->LeeTotalMedicion(tabla),'f',2);
     LeyendasCabecera[tipoColumna::PARCIAL].append("Parcial\n").append(suma);
 }

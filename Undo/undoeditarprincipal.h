@@ -20,8 +20,7 @@ public:
 
     void undo();
     void redo();
-
-    void Posicionar();
+    QModelIndex LeeIndice() const;
 
 protected:
 

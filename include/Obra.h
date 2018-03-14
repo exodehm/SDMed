@@ -162,10 +162,7 @@ public:
     std::list<std::list<Dato>>LeeDescompuesto();
     std::list<Dato> RellenaDatoLinea(pNodo nodo, pArista arista);
     std::stack<pArista> LeePilaAristas();
-    void DefinePilaAristas(const std::stack<pArista> &pila);
-    void DefineAristaPadre(const pArista& ap);
-    void DefineNodoPadre(const pNodo& np);
-    void DefineAristaActual(const pArista& aa);
+    void Posicionar(const std::stack<pArista> &pila, int fila=0);   
     /***********varias***********************************/
     pNodo GrafoAPartirDeNodo(pNodo nodo);
     std::list<pNodo> ListaConceptos();
@@ -194,7 +191,7 @@ private:
     //auxiliar para copiado de partidas
     QList<pNodo>ListaN;
 
-    friend class AbrirGuardarBC3;    
+    friend class AbrirGuardarBC3;
 };
 
 #endif // OBRA_H

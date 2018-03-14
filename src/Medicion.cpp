@@ -47,7 +47,7 @@ void Medicion::Insertar(int fila, LineaMedicion lineamed)
     TotalCantidad+=lineamed.LeeParcial();
     SumaSubParcial();
     SumaSubTotal();
-    std::cout<<"Total Cantidad: "<<TotalCantidad<<std::endl;
+    //std::cout<<"Total Cantidad: "<<TotalCantidad<<std::endl;
     for (actual=lm.begin();actual!=lm.end();++actual)
     {
         std::cout<<actual->LeeComentario().toStdString()<<"-"<<actual->Lee_N_Uds()<<std::endl;
@@ -81,7 +81,8 @@ void Medicion::BorrarMedicion()
 {
     lm.clear();
     TotalCantidad=0;    
-    std::cout<<"Borrada la medicion"<<std::endl;
+    //std::cout<<"Borrada la medicion"<<std::endl;
+    qDebug()<<"Borrada la medicion";
 }
 
 bool Medicion::hayMedicion() const

@@ -19,8 +19,6 @@ public:
     void undo();
     void redo();
 
-    void Posicionar();
-
 private:
 
     Obra* obra;
@@ -43,8 +41,6 @@ public:
     void undo();
     void redo();
 
-    void Posicionar();
-
 private:
 
     Obra* obra;
@@ -63,8 +59,6 @@ public:
 
     void undo();
     void redo();
-
-    void Posicionar();
 
 private:
 

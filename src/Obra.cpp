@@ -679,12 +679,16 @@ void Obra::Actualizar(pNodo nodoactual)
     //si no existe ningun nodo que pende del nodo actual
     //fijo manualmente el precio a 0 e indico que el nodo a partir del que se actualice será el
     //propio padre. Metodo cutre pero que parece funcionar
+    qDebug()<<"Metodo actualizar!!!";
     if (!nodoactual)
     {
         padre->datonodo.EscribeImportePres(0);
         nodoactual=padre;
     }
-    qDebug()<<"Actualizando desde el nodo: "<<nodoactual->datonodo.LeeCodigo();
+    if (nodoactual)
+    {
+        qDebug()<<"Actualizando desde el nodo: "<<nodoactual->datonodo.LeeCodigo();
+    }
     std::list<pNodo>lista = G->recorrerAncestrosOrdenado(nodoactual);
     for (auto elem:lista)
     {
@@ -758,6 +762,7 @@ bool Obra::esPrecioBloqueado(pArista A)
 
 void Obra::EditarPrecio(float precio)
 {
+    qDebug()<<"Editar el precio en el nodo: "<<aristaActual->destino->datonodo.LeeCodigo();
     aristaActual->destino->datonodo.EscribePrecio(precio);
     Actualizar(aristaActual->destino);
 }
@@ -977,14 +982,18 @@ void Obra::InsertarPartidas(const ListaAristasNodos &listaNodosACopiar, QList<in
     {
        if (!mapaNodos.contains(elem->datonodo.LeeCodigo()))
        {
-           //std::cout<<"Meto en el mapa el codigo: "<< elem->datonodo.LeeCodigo().toStdString()<<" del nodo: "<<elem<<std::endl;
+           std::cout<<"Meto en el mapa el codigo: "<< elem->datonodo.LeeCodigo().toStdString()<<" del nodo: "<<elem<<std::endl;
            mapaNodos.insert(elem->datonodo.LeeCodigo(),elem);
        }
     }
+    aristaActual=padre->adyacente;
     if (aristaActual->destino)
     {
+        qDebug()<<"AristaActual->destino";
+        qDebug()<<"AristaActual->destino: "<<aristaActual->destino;
         Actualizar(aristaActual->destino);
     }
+    qDebug()<<"Fin de la funcion de Insertar Partidas";
 }
 
 void Obra::cambiarEntreMedYCert(int n)
@@ -1314,27 +1323,34 @@ std::list<Dato> Obra::RellenaDatoLinea(pNodo nodo, pArista arista)
 
 std::stack<pArista> Obra::LeePilaAristas()
 {
+    //qDebug()<<"Codigo es: "<<pilaAristas.top()->destino->datonodo.LeeCodigo();
     return pilaAristas;
 }
 
-void Obra::DefinePilaAristas(const std::stack<pArista> &pila)
+void Obra::Posicionar(const std::stack<pArista> &pila, int fila)
 {
     pilaAristas = pila;
-}
-
-void Obra::DefineAristaPadre(const pArista& ap)
-{
-    aristaPadre = ap;
-}
-
-void Obra::DefineNodoPadre(const pNodo& np)
-{
-    padre = np;
-}
-
-void Obra::DefineAristaActual(const pArista& aa)
-{
-    aristaActual=aa;
+    aristaPadre=pilaAristas.top();
+    padre=aristaPadre->destino;
+    aristaActual = padre->adyacente;
+    for (int i=0;i<fila;i++)
+    {
+        aristaActual=aristaActual->siguiente;
+        if (aristaActual)
+        {
+            qDebug()<<"Me pongo en: "<<aristaActual->destino->datonodo.LeeCodigo();
+        }
+    }
+    if (aristaPadre)
+        qDebug()<<"Arista padre: "<<aristaPadre;
+    if (aristaPadre)
+        qDebug()<<"Nodo padre: "<<aristaPadre->destino->datonodo.LeeCodigo();
+    if (aristaActual)
+    {
+        qDebug()<<"Arista actual: "<<aristaActual;
+        qDebug()<<"Arista actual->destino: "<<aristaActual->destino->datonodo.LeeCodigo();
+    }
+    qDebug()<<"Tamaño de la pila: "<<pilaAristas.size();
 }
 
 pNodo Obra::GrafoAPartirDeNodo(pNodo nodo)

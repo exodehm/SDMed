@@ -4,7 +4,6 @@ UndoMedicion::UndoMedicion(Obra* O, MedCertModel* M,  QModelIndex I,
                            QVariant D, QString descripcion, QUndoCommand* parent):
     obra(O),modelo(M), indice(I), datoNuevo(D),QUndoCommand(descripcion,parent)
 {
-
     pilaAristas = obra->LeePilaAristas();
     datoAntiguo = indice.data();
     if (indice.column()==tipoColumna::COMENTARIO || indice.column()==tipoColumna::FORMULA)
@@ -13,7 +12,6 @@ UndoMedicion::UndoMedicion(Obra* O, MedCertModel* M,  QModelIndex I,
         fValorNuevo=0;
         sValorNuevo=datoNuevo.toString();
         sValorAntiguo=datoAntiguo.toString();
-
     }
     else if (indice.column()==tipoColumna::N || indice.column()==tipoColumna::LONGITUD || indice.column()==tipoColumna::ANCHURA || indice.column()==tipoColumna::ALTURA)
     {
@@ -21,7 +19,7 @@ UndoMedicion::UndoMedicion(Obra* O, MedCertModel* M,  QModelIndex I,
         fValorAntiguo=datoAntiguo.toFloat();
         sValorNuevo="";
         sValorAntiguo="";
-    } 
+    }
     setText(text());
     qDebug()<<"valor antiguo:"<<datoAntiguo.toString()<<"- valor nuevo: "<<datoNuevo.toString();
 }
@@ -29,24 +27,15 @@ UndoMedicion::UndoMedicion(Obra* O, MedCertModel* M,  QModelIndex I,
 void UndoMedicion::undo()
 {
     qDebug()<<"Undo EditarMedicion";
-    Posicionar();
+    obra->Posicionar(pilaAristas,indice.row());
     obra->EditarLineaMedicion(indice.row(), indice.column(),fValorAntiguo, sValorAntiguo);
 }
 
 void UndoMedicion::redo()
 {
     qDebug()<<"Redo EditarMedicion";
-    Posicionar();
+    obra->Posicionar(pilaAristas, indice.row());
     obra->EditarLineaMedicion(indice.row(), indice.column(),fValorNuevo, sValorNuevo);
-}
-
-void UndoMedicion::Posicionar()
-{
-    obra->DefinePilaAristas(pilaAristas);
-    obra->DefineAristaPadre(pilaAristas.top());
-    pArista aux = pilaAristas.top();
-    obra->DefineNodoPadre(aux->destino);
-    obra->PosicionarAristaActual(indice.row());
 }
 
 //#############################BORRAR LINEAS MEDICION#############################//
@@ -66,7 +55,7 @@ UndoBorrarLineasMedicion::UndoBorrarLineasMedicion(Obra *O, MedCertModel *M, QLi
 void UndoBorrarLineasMedicion::undo()
 {
     qDebug()<<"Undo Borrar Lineas Medicion";
-    Posicionar();
+    obra->Posicionar(pilaAristas);
     obra->borrarTodaMedicion();
     obra->PegarMedicion(0,listaMedicion);    
 }
@@ -74,19 +63,11 @@ void UndoBorrarLineasMedicion::undo()
 void UndoBorrarLineasMedicion::redo()
 {
     qDebug()<<"Redo Borrar Lineas Medicion";
-    Posicionar();
+    obra->Posicionar(pilaAristas);
     foreach (int i, indices)
     {
         modelo->removeRow(i);
     }
-}
-
-void UndoBorrarLineasMedicion::Posicionar()
-{
-    obra->DefinePilaAristas(pilaAristas);
-    obra->DefineAristaPadre(pilaAristas.top());
-    pArista aux = pilaAristas.top();
-    obra->DefineNodoPadre(aux->destino);
 }
 
 //#############################INSERTAR LINEAS MEDICION#############################//
@@ -106,7 +87,7 @@ UndoInsertarLineasMedicion::UndoInsertarLineasMedicion(Obra *O, MedCertModel *M,
 void UndoInsertarLineasMedicion::undo()
 {
     qDebug()<<"Undo Insertar Lineas Medicion";
-    Posicionar();
+    obra->Posicionar(pilaAristas);
     obra->borrarTodaMedicion();
     obra->PegarMedicion(0,listaMedicion);
 }
@@ -114,20 +95,11 @@ void UndoInsertarLineasMedicion::undo()
 void UndoInsertarLineasMedicion::redo()
 {
     qDebug()<<"Redo Insertar Lineas Medicion";
-
-    Posicionar();
+    obra->Posicionar(pilaAristas);
     //Cuando borro SI es necesaria una lista que albergue indices no correlativos, pero
     //al insertar no. No obstante uso una lista de QList<int> para mantener el constructor,
     //aunque no es lo apropiado para esta funcion.
     obra->InsertarLineasVaciasMedicion(0,indices.first(),indices.count());
-}
-
-void UndoInsertarLineasMedicion::Posicionar()
-{
-    obra->DefinePilaAristas(pilaAristas);
-    obra->DefineAristaPadre(pilaAristas.top());
-    pArista aux = pilaAristas.top();
-    obra->DefineNodoPadre(aux->destino);
 }
 
 //#############################PEGAR LINEAS MEDICION#############################//
@@ -161,8 +133,8 @@ void UndoPegarLineasMedicion::redo()
 
 void UndoPegarLineasMedicion::Posicionar()
 {
-    obra->DefinePilaAristas(pilaAristas);
+    /*obra->DefinePilaAristas(pilaAristas);
     obra->DefineAristaPadre(pilaAristas.top());
     pArista aux = pilaAristas.top();
-    obra->DefineNodoPadre(aux->destino);
+    obra->DefineNodoPadre(aux->destino);*/
 }

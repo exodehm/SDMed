@@ -53,9 +53,9 @@ void Instancia::GenerarUI()
     separadorPrincipal = new QSplitter(Qt::Horizontal);
 
     //arbol
-    modeloArbol = new TreeModel(O);
+    //modeloArbol = new TreeModel(O);
     arbol = new VistaArbol;
-    arbol->setModel(modeloArbol);
+    //arbol->setModel(modeloArbol);
     arbol->setVisible(false);
 
     separadorTablas = new QSplitter(Qt::Vertical);
@@ -293,7 +293,7 @@ void Instancia::RefrescarVista()
     modeloTablaMed->layoutChanged();
     modeloTablaCert->layoutChanged();
     tablaPrincipal->resizeColumnsToContents();
-    tablaPrincipal->setCurrentIndex(indiceActual);
+    tablaPrincipal->setCurrentIndex(indiceActual);   
     tablaMediciones->resizeColumnsToContents();
     tablaCertificaciones->resizeColumnsToContents();
     separadorTablasMedicion->setVisible(O->EsPartida());//solo se ve si es partida(Nat == 7)
