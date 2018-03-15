@@ -27,14 +27,14 @@ UndoMedicion::UndoMedicion(Obra* O, MedCertModel* M,  QModelIndex I,
 void UndoMedicion::undo()
 {
     qDebug()<<"Undo EditarMedicion";
-    obra->Posicionar(pilaAristas);
+    obra->Posicionar(pilaAristas);//no pongo el indice porque aqui va referenciado al indice de la tabla de mediciones
     obra->EditarLineaMedicion(indice.row(), indice.column(),fValorAntiguo, sValorAntiguo);
 }
 
 void UndoMedicion::redo()
 {
     qDebug()<<"Redo EditarMedicion en linea: "<<indice.row()<<" y columna: "<<indice.column();
-    obra->Posicionar(pilaAristas);
+    obra->Posicionar(pilaAristas);//no pongo el indice porque aqui va referenciado al indice de la tabla de mediciones
     obra->EditarLineaMedicion(indice.row(), indice.column(),fValorNuevo, sValorNuevo);
 }
 
