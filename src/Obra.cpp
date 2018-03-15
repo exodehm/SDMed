@@ -540,6 +540,7 @@ void Obra::InsertarLineasVaciasMedicion(int tabla, int pos, int num)
 {
     qDebug()<<"Insertando linea vacia en tabla: "<<selectorMedCer;
     qDebug()<<"Certificacion actual: "<<Cert.verCertificacionActual();
+    qDebug()<<"Estoy en la partida: "<<aristaPadre->destino->datonodo.LeeCodigo();
     if (tabla==MedCert::CERTIFICACION)
     {
         aristaPadre->datoarista.ModificaMedCer(tabla).InsertarLineasVacias(pos,num,Cert.verCertificacionActual());
